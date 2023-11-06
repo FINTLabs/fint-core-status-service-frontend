@@ -1,0 +1,631 @@
+export const consumerResponseEntities = [{
+    'id': 1,
+    'corrId': 'corr_0',
+    'orgId': 'org_0',
+    'adapterId': 'adapter_0',
+    'handledAt': 1623928979706,
+    'failed': 'true',
+    'errorMessage': 'Invalid data',
+    'rejected': 'false',
+    'rejectReason': null
+}, {
+    'id': 2,
+    'corrId': 'corr_1',
+    'orgId': 'org_1',
+    'adapterId': 'adapter_1',
+    'handledAt': 1659952057280,
+    'failed': 'true',
+    'errorMessage': null,
+    'rejected': 'false',
+    'rejectReason': null
+}, {
+    'id': 3,
+    'corrId': 'corr_2',
+    'orgId': 'org_2',
+    'adapterId': 'adapter_2',
+    'handledAt': 1658161880347,
+    'failed': 'true',
+    'errorMessage': null,
+    'rejected': 'true',
+    'rejectReason': 'Version conflict'
+}, {
+    'id': 4,
+    'corrId': 'corr_3',
+    'orgId': 'org_3',
+    'adapterId': 'adapter_3',
+    'handledAt': 1671102186433,
+    'failed': 'false',
+    'errorMessage': null,
+    'rejected': 'true',
+    'rejectReason': 'Version conflict'
+}, {
+    'id': 5,
+    'corrId': 'corr_4',
+    'orgId': 'org_4',
+    'adapterId': 'adapter_4',
+    'handledAt': 1630528202703,
+    'failed': 'false',
+    'errorMessage': null,
+    'rejected': 'false',
+    'rejectReason': null
+}, {
+    'id': 6,
+    'corrId': 'corr_5',
+    'orgId': 'org_5',
+    'adapterId': 'adapter_5',
+    'handledAt': 1621999931787,
+    'failed': 'false',
+    'errorMessage': null,
+    'rejected': 'true',
+    'rejectReason': 'Invalid format'
+}, {
+    'id': 7,
+    'corrId': 'corr_6',
+    'orgId': 'org_6',
+    'adapterId': 'adapter_6',
+    'handledAt': 1632354351392,
+    'failed': 'false',
+    'errorMessage': null,
+    'rejected': 'true',
+    'rejectReason': 'Version conflict'
+}, {
+    'id': 8,
+    'corrId': 'corr_7',
+    'orgId': 'org_7',
+    'adapterId': 'adapter_7',
+    'handledAt': 1631030914526,
+    'failed': 'true',
+    'errorMessage': null,
+    'rejected': 'true',
+    'rejectReason': 'Invalid format'
+}, {
+    'id': 9,
+    'corrId': 'corr_8',
+    'orgId': 'org_8',
+    'adapterId': 'adapter_8',
+    'handledAt': 1626975335368,
+    'failed': 'true',
+    'errorMessage': 'Invalid data',
+    'rejected': 'false',
+    'rejectReason': null
+}, {
+    'id': 10,
+    'corrId': 'corr_9',
+    'orgId': 'org_9',
+    'adapterId': 'adapter_9',
+    'handledAt': 1616948645950,
+    'failed': 'true',
+    'errorMessage': 'Invalid data',
+    'rejected': 'false',
+    'rejectReason': null
+}];
+
+export const consumerRequestEntities = [{
+    'id': 1,
+    'corrId': 'corr_0',
+    'orgId': 'org_0',
+    'domainName': 'personvern',
+    'packageName': 'kodeverk',
+    'resourceName': 'skole',
+    'operation': 'CREATE',
+    'created': 1659155035245,
+    'timeToLive': 4005902
+}, {
+    'id': 2,
+    'corrId': 'corr_1',
+    'orgId': 'org_1',
+    'domainName': 'personvern',
+    'packageName': 'kodeverk',
+    'resourceName': 'person',
+    'operation': 'DELETE',
+    'created': 1658761775634,
+    'timeToLive': 3450373
+}, {
+    'id': 3,
+    'corrId': 'corr_2',
+    'orgId': 'org_2',
+    'domainName': 'personvern',
+    'packageName': 'kodeverk',
+    'resourceName': 'elevfravar',
+    'operation': 'UPDATE',
+    'created': 1613284605013,
+    'timeToLive': 3000082
+}, {
+    'id': 4,
+    'corrId': 'corr_3',
+    'orgId': 'org_3',
+    'domainName': 'personvern',
+    'packageName': 'vurdering',
+    'resourceName': 'person',
+    'operation': 'UPDATE',
+    'created': 1663471257648,
+    'timeToLive': 8444843
+}, {
+    'id': 5,
+    'corrId': 'corr_4',
+    'orgId': 'org_4',
+    'domainName': 'personvern',
+    'packageName': 'kodeverk',
+    'resourceName': 'elevfravar',
+    'operation': 'UPDATE',
+    'created': 1617242165612,
+    'timeToLive': 5193795
+}, {
+    'id': 6,
+    'corrId': 'corr_5',
+    'orgId': 'org_5',
+    'domainName': 'administrasjon',
+    'packageName': 'vurdering',
+    'resourceName': 'elevfravar',
+    'operation': 'DELETE',
+    'created': 1639236624696,
+    'timeToLive': 9120727
+}, {
+    'id': 7,
+    'corrId': 'corr_6',
+    'orgId': 'org_6',
+    'domainName': 'personvern',
+    'packageName': 'vurdering',
+    'resourceName': 'skole',
+    'operation': 'DELETE',
+    'created': 1648730683736,
+    'timeToLive': 6631251
+}, {
+    'id': 8,
+    'corrId': 'corr_7',
+    'orgId': 'org_7',
+    'domainName': 'utdanning',
+    'packageName': 'elev',
+    'resourceName': 'skole',
+    'operation': 'CREATE',
+    'created': 1626215351171,
+    'timeToLive': 2470554
+}, {
+    'id': 9,
+    'corrId': 'corr_8',
+    'orgId': 'org_8',
+    'domainName': 'administrasjon',
+    'packageName': 'kodeverk',
+    'resourceName': 'admin',
+    'operation': 'UPDATE',
+    'created': 1665453502770,
+    'timeToLive': 2880233
+}, {
+    'id': 10,
+    'corrId': 'corr_9',
+    'orgId': 'org_9',
+    'domainName': 'personvern',
+    'packageName': 'vurdering',
+    'resourceName': 'skole',
+    'operation': 'CREATE',
+    'created': 1640170061420,
+    'timeToLive': 6691954
+}];
+
+export const adapterFullSyncEntities = [{
+    'id': 1,
+    'adapterId': 'adapter_0',
+    'corrId': 'corr_0',
+    'orgId': 'org_0',
+    'totalSize': 1013,
+    'page': 12,
+    'pageSize': 52,
+    'totalPages': 19,
+    'uriRef': 'https://example.com/uri_0',
+    'time': 1620527043843
+}, {
+    'id': 2,
+    'adapterId': 'adapter_1',
+    'corrId': 'corr_1',
+    'orgId': 'org_1',
+    'totalSize': 7874,
+    'page': 51,
+    'pageSize': 79,
+    'totalPages': 99,
+    'uriRef': 'https://example.com/uri_1',
+    'time': 1670628155747
+}, {
+    'id': 3,
+    'adapterId': 'adapter_2',
+    'corrId': 'corr_2',
+    'orgId': 'org_2',
+    'totalSize': 3688,
+    'page': 61,
+    'pageSize': 47,
+    'totalPages': 78,
+    'uriRef': 'https://example.com/uri_2',
+    'time': 1612039373569
+}, {
+    'id': 4,
+    'adapterId': 'adapter_3',
+    'corrId': 'corr_3',
+    'orgId': 'org_3',
+    'totalSize': 7635,
+    'page': 235,
+    'pageSize': 13,
+    'totalPages': 587,
+    'uriRef': 'https://example.com/uri_3',
+    'time': 1651247300881
+}, {
+    'id': 5,
+    'adapterId': 'adapter_4',
+    'corrId': 'corr_4',
+    'orgId': 'org_4',
+    'totalSize': 8343,
+    'page': 78,
+    'pageSize': 74,
+    'totalPages': 112,
+    'uriRef': 'https://example.com/uri_4',
+    'time': 1630711553947
+}, {
+    'id': 6,
+    'adapterId': 'adapter_5',
+    'corrId': 'corr_5',
+    'orgId': 'org_5',
+    'totalSize': 5478,
+    'page': 143,
+    'pageSize': 28,
+    'totalPages': 195,
+    'uriRef': 'https://example.com/uri_5',
+    'time': 1671501811291
+}, {
+    'id': 7,
+    'adapterId': 'adapter_6',
+    'corrId': 'corr_6',
+    'orgId': 'org_6',
+    'totalSize': 7364,
+    'page': 66,
+    'pageSize': 98,
+    'totalPages': 75,
+    'uriRef': 'https://example.com/uri_6',
+    'time': 1654671935254
+}, {
+    'id': 8,
+    'adapterId': 'adapter_7',
+    'corrId': 'corr_7',
+    'orgId': 'org_7',
+    'totalSize': 3895,
+    'page': 60,
+    'pageSize': 30,
+    'totalPages': 129,
+    'uriRef': 'https://example.com/uri_7',
+    'time': 1616751629642
+}, {
+    'id': 9,
+    'adapterId': 'adapter_8',
+    'corrId': 'corr_8',
+    'orgId': 'org_8',
+    'totalSize': 7579,
+    'page': 77,
+    'pageSize': 25,
+    'totalPages': 303,
+    'uriRef': 'https://example.com/uri_8',
+    'time': 1645305511867
+}, {
+    'id': 10,
+    'adapterId': 'adapter_9',
+    'corrId': 'corr_9',
+    'orgId': 'org_9',
+    'totalSize': 2663,
+    'page': 34,
+    'pageSize': 49,
+    'totalPages': 54,
+    'uriRef': 'https://example.com/uri_9',
+    'time': 1611586392910
+}];
+
+export const adapterDeleteSyncEntities = [{
+    'id': 1,
+    'adapterId': 'adapter_0',
+    'corrId': 'corr_0',
+    'orgId': 'org_0',
+    'totalSize': 1441,
+    'page': 3,
+    'pageSize': 76,
+    'totalPages': 18,
+    'uriRef': 'https://example.com/uri_0',
+    'time': 1670559782933
+}, {
+    'id': 2,
+    'adapterId': 'adapter_1',
+    'corrId': 'corr_1',
+    'orgId': 'org_1',
+    'totalSize': 8850,
+    'page': 68,
+    'pageSize': 89,
+    'totalPages': 99,
+    'uriRef': 'https://example.com/uri_1',
+    'time': 1660434512916
+}, {
+    'id': 3,
+    'adapterId': 'adapter_2',
+    'corrId': 'corr_2',
+    'orgId': 'org_2',
+    'totalSize': 8209,
+    'page': 660,
+    'pageSize': 12,
+    'totalPages': 684,
+    'uriRef': 'https://example.com/uri_2',
+    'time': 1610482785361
+}, {
+    'id': 4,
+    'adapterId': 'adapter_3',
+    'corrId': 'corr_3',
+    'orgId': 'org_3',
+    'totalSize': 7993,
+    'page': 66,
+    'pageSize': 33,
+    'totalPages': 242,
+    'uriRef': 'https://example.com/uri_3',
+    'time': 1658205911669
+}, {
+    'id': 5,
+    'adapterId': 'adapter_4',
+    'corrId': 'corr_4',
+    'orgId': 'org_4',
+    'totalSize': 9516,
+    'page': 6,
+    'pageSize': 29,
+    'totalPages': 328,
+    'uriRef': 'https://example.com/uri_4',
+    'time': 1635496682388
+}, {
+    'id': 6,
+    'adapterId': 'adapter_5',
+    'corrId': 'corr_5',
+    'orgId': 'org_5',
+    'totalSize': 6886,
+    'page': 124,
+    'pageSize': 36,
+    'totalPages': 191,
+    'uriRef': 'https://example.com/uri_5',
+    'time': 1650144448617
+}, {
+    'id': 7,
+    'adapterId': 'adapter_6',
+    'corrId': 'corr_6',
+    'orgId': 'org_6',
+    'totalSize': 2079,
+    'page': 24,
+    'pageSize': 69,
+    'totalPages': 30,
+    'uriRef': 'https://example.com/uri_6',
+    'time': 1668130603040
+}, {
+    'id': 8,
+    'adapterId': 'adapter_7',
+    'corrId': 'corr_7',
+    'orgId': 'org_7',
+    'totalSize': 8267,
+    'page': 92,
+    'pageSize': 78,
+    'totalPages': 105,
+    'uriRef': 'https://example.com/uri_7',
+    'time': 1612314932415
+}, {
+    'id': 9,
+    'adapterId': 'adapter_8',
+    'corrId': 'corr_8',
+    'orgId': 'org_8',
+    'totalSize': 9644,
+    'page': 95,
+    'pageSize': 78,
+    'totalPages': 123,
+    'uriRef': 'https://example.com/uri_8',
+    'time': 1649402193014
+}, {
+    'id': 10,
+    'adapterId': 'adapter_9',
+    'corrId': 'corr_9',
+    'orgId': 'org_9',
+    'totalSize': 8194,
+    'page': 46,
+    'pageSize': 88,
+    'totalPages': 93,
+    'uriRef': 'https://example.com/uri_9',
+    'time': 1644174033651
+}];
+
+export const adapterContractEntities = [{
+    'adapterId': 'adapter_0',
+    'orgId': 'org_0',
+    'username': 'user_0',
+    'heartbeatIntervalInMinutes': 23,
+    'time': 1621342555534,
+    'lastSeen': 1655138785617,
+    'isConsiderHealthy': 'true',
+    'capabilityEntities': [{
+        'id': 'capability_0_0',
+        'domainName': 'personvern',
+        'packageName': 'kodeverk',
+        'resourceName': 'person',
+        'fullSyncIntervalInDays': 9,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }, {
+        'id': 'capability_0_1',
+        'domainName': 'utdanning',
+        'packageName': 'vurdering',
+        'resourceName': 'skole',
+        'fullSyncIntervalInDays': 21,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}, {
+    'adapterId': 'adapter_1',
+    'orgId': 'org_1',
+    'username': 'user_1',
+    'heartbeatIntervalInMinutes': 23,
+    'time': 1646300320898,
+    'lastSeen': 1614188620462,
+    'isConsiderHealthy': 'true',
+    'capabilityEntities': [{
+        'id': 'capability_1_0',
+        'domainName': 'personvern',
+        'packageName': 'vurdering',
+        'resourceName': 'elevfravar',
+        'fullSyncIntervalInDays': 11,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }, {
+        'id': 'capability_1_1',
+        'domainName': 'utdanning',
+        'packageName': 'elev',
+        'resourceName': 'admin',
+        'fullSyncIntervalInDays': 15,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}, {
+    'adapterId': 'adapter_2',
+    'orgId': 'org_2',
+    'username': 'user_2',
+    'heartbeatIntervalInMinutes': 56,
+    'time': 1664869673680,
+    'lastSeen': 1645611993202,
+    'isConsiderHealthy': 'false',
+    'capabilityEntities': [{
+        'id': 'capability_2_0',
+        'domainName': 'personvern',
+        'packageName': 'vurdering',
+        'resourceName': 'elevfravar',
+        'fullSyncIntervalInDays': 1,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}, {
+    'adapterId': 'adapter_3',
+    'orgId': 'org_3',
+    'username': 'user_3',
+    'heartbeatIntervalInMinutes': 24,
+    'time': 1623975051066,
+    'lastSeen': 1667719292938,
+    'isConsiderHealthy': 'false',
+    'capabilityEntities': [{
+        'id': 'capability_3_0',
+        'domainName': 'personvern',
+        'packageName': 'vurdering',
+        'resourceName': 'person',
+        'fullSyncIntervalInDays': 2,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }, {
+        'id': 'capability_3_1',
+        'domainName': 'administrasjon',
+        'packageName': 'vurdering',
+        'resourceName': 'elevfravar',
+        'fullSyncIntervalInDays': 14,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}, {
+    'adapterId': 'adapter_4',
+    'orgId': 'org_4',
+    'username': 'user_4',
+    'heartbeatIntervalInMinutes': 23,
+    'time': 1614215148706,
+    'lastSeen': 1666093142080,
+    'isConsiderHealthy': 'false',
+    'capabilityEntities': [{
+        'id': 'capability_4_0',
+        'domainName': 'administrasjon',
+        'packageName': 'kodeverk',
+        'resourceName': 'admin',
+        'fullSyncIntervalInDays': 3,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }, {
+        'id': 'capability_4_1',
+        'domainName': 'utdanning',
+        'packageName': 'elev',
+        'resourceName': 'person',
+        'fullSyncIntervalInDays': 11,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}, {
+    'adapterId': 'adapter_5',
+    'orgId': 'org_5',
+    'username': 'user_5',
+    'heartbeatIntervalInMinutes': 26,
+    'time': 1645317520962,
+    'lastSeen': 1614492861096,
+    'isConsiderHealthy': 'false',
+    'capabilityEntities': [{
+        'id': 'capability_5_0',
+        'domainName': 'personvern',
+        'packageName': 'elev',
+        'resourceName': 'skole',
+        'fullSyncIntervalInDays': 27,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}, {
+    'adapterId': 'adapter_6',
+    'orgId': 'org_6',
+    'username': 'user_6',
+    'heartbeatIntervalInMinutes': 53,
+    'time': 1652154785222,
+    'lastSeen': 1636680236226,
+    'isConsiderHealthy': 'false',
+    'capabilityEntities': [{
+        'id': 'capability_6_0',
+        'domainName': 'administrasjon',
+        'packageName': 'elev',
+        'resourceName': 'admin',
+        'fullSyncIntervalInDays': 1,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}, {
+    'adapterId': 'adapter_7',
+    'orgId': 'org_7',
+    'username': 'user_7',
+    'heartbeatIntervalInMinutes': 47,
+    'time': 1644697391220,
+    'lastSeen': 1665224587077,
+    'isConsiderHealthy': 'false',
+    'capabilityEntities': [{
+        'id': 'capability_7_0',
+        'domainName': 'utdanning',
+        'packageName': 'kodeverk',
+        'resourceName': 'admin',
+        'fullSyncIntervalInDays': 8,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}, {
+    'adapterId': 'adapter_8',
+    'orgId': 'org_8',
+    'username': 'user_8',
+    'heartbeatIntervalInMinutes': 60,
+    'time': 1642712042774,
+    'lastSeen': 1641042990753,
+    'isConsiderHealthy': 'false',
+    'capabilityEntities': [{
+        'id': 'capability_8_0',
+        'domainName': 'utdanning',
+        'packageName': 'elev',
+        'resourceName': 'admin',
+        'fullSyncIntervalInDays': 30,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }, {
+        'id': 'capability_8_1',
+        'domainName': 'administrasjon',
+        'packageName': 'vurdering',
+        'resourceName': 'admin',
+        'fullSyncIntervalInDays': 27,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}, {
+    'adapterId': 'adapter_9',
+    'orgId': 'org_9',
+    'username': 'user_9',
+    'heartbeatIntervalInMinutes': 19,
+    'time': 1659947853182,
+    'lastSeen': 1647795149239,
+    'isConsiderHealthy': 'false',
+    'capabilityEntities': [{
+        'id': 'capability_9_0',
+        'domainName': 'personvern',
+        'packageName': 'kodeverk',
+        'resourceName': 'person',
+        'fullSyncIntervalInDays': 22,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }, {
+        'id': 'capability_9_1',
+        'domainName': 'administrasjon',
+        'packageName': 'kodeverk',
+        'resourceName': 'skole',
+        'fullSyncIntervalInDays': 16,
+        'deltaSyncInterval': 'SAMPLE_DELTA_INTERVAL'
+    }]
+}];
