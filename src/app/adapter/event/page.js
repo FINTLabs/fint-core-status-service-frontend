@@ -9,29 +9,25 @@ export default function Event() {
             id: 'corrId',
             label: 'UUID',
             minWidth: 170,
-            align: 'center',
-            searchable: true
+            align: 'center'
         },
         {
             id: 'adapterId',
             label: 'Adapter ID',
             minWidth: 170,
-            align: 'center',
-            searchable: true
+            align: 'center'
         },
         {
             id: 'orgId',
             label: 'OrgId',
             minWidth: 100,
-            align: 'center',
-            searchable: true
+            align: 'center'
         },
         {
             id: 'uriRef',
             label: 'Uri',
             minWidth: 100,
-            align: 'center',
-            searchable: true
+            align: 'center'
         },
         {
             id: 'totalSize',
