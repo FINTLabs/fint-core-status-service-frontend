@@ -51,7 +51,8 @@ export default function Event() {
             id: 'created',
             label: 'Time',
             minWidth: 170,
-            align: 'center'
+            align: 'center',
+            time: true
         }
     ];
 

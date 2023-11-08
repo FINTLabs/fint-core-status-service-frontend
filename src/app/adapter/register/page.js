@@ -33,13 +33,15 @@ export default function Register() {
             id: 'lastSeen',
             label: 'Last seen',
             minWidth: 170,
-            align: 'center'
+            align: 'center',
+            time: true
         },
         {
             id: 'time',
             label: 'Registered',
             minWidth: 170,
-            align: 'center'
+            align: 'center',
+            time: true
         }
 
     ];
