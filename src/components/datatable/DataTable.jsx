@@ -9,6 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import DataTableHeader from "./DataTableHeader";
 import DataTableRow from "./DataTableRow";
+import FilterSection from "@/components/datatable/FilterSection";
 
 export default function DataTable({columns, data}) {
     const [page, setPage] = React.useState(0);
@@ -25,12 +26,11 @@ export default function DataTable({columns, data}) {
 
     return (
         <Paper sx={{width: '80%', overflow: 'hidden', margin: "auto"}}>
+            <FilterSection columns={columns} data={data}/>
             <TableContainer sx={{maxHeight: "80vh"}}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
-                        <DataTableHeader
-                            columns={columns}
-                        />
+                        <DataTableHeader columns={columns}/>
                     </TableHead>
                     <TableBody>
                         {data

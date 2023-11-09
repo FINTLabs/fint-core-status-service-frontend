@@ -9,38 +9,38 @@ export default function Register() {
             id: 'adapterId',
             label: 'Adapter ID',
             minWidth: 170,
-            align: 'center'
+            align: 'left'
         },
         {
             id: 'username',
             label: 'Username',
             minWidth: 170,
-            align: 'center'
+            align: 'left'
         },
         {
             id: 'orgId',
             label: 'OrgId',
             minWidth: 100,
-            align: 'center'
+            align: 'left'
         },
         {
             id: 'isConsiderHealthy',
             label: 'Healthy',
             minWidth: 100,
-            align: 'center'
+            align: 'left'
         },
         {
             id: 'lastSeen',
             label: 'Last seen',
             minWidth: 170,
-            align: 'center',
+            align: 'left',
             time: true
         },
         {
             id: 'time',
             label: 'Registered',
             minWidth: 170,
-            align: 'center',
+            align: 'left',
             time: true
         }
 

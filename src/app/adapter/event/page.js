@@ -9,37 +9,38 @@ export default function Event() {
             id: 'corrId',
             label: 'UUID',
             minWidth: 170,
-            align: 'center'
+            align: 'left',
+            filter: true
         },
         {
             id: 'adapterId',
             label: 'Adapter ID',
             minWidth: 170,
-            align: 'center'
+            align: 'left'
         },
         {
             id: 'orgId',
             label: 'OrgId',
             minWidth: 100,
-            align: 'center'
+            align: 'left'
         },
         {
             id: 'uriRef',
             label: 'Uri',
             minWidth: 100,
-            align: 'center'
+            align: 'left'
         },
         {
             id: 'totalSize',
             label: 'Total size',
             minWidth: 100,
-            align: 'center'
+            align: 'left'
         },
         {
             id: 'time',
             label: 'Time',
             minWidth: 170,
-            align: 'center',
+            align: 'left',
             time: true
         }
     ];
