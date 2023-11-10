@@ -2,16 +2,11 @@
 
 import DataTable from "@/components/datatable/DataTable";
 import {adapterFullSyncEntities} from "@/components/dummydata/DummyData";
+import {sharedColumns} from "@/components/datatable/SharedColumns";
 
 export default function Event() {
     const columns = [
-        {
-            id: 'corrId',
-            label: 'UUID',
-            minWidth: 170,
-            align: 'left',
-            filter: true
-        },
+        sharedColumns.corrId,
         {
             id: 'adapterId',
             label: 'Adapter ID',
@@ -19,13 +14,7 @@ export default function Event() {
             align: 'left',
             filter: true
         },
-        {
-            id: 'orgId',
-            label: 'OrgId',
-            minWidth: 100,
-            align: 'left',
-            filter: true
-        },
+        sharedColumns.orgId,
         {
             id: 'uriRef',
             label: 'Uri',

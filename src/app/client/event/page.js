@@ -2,23 +2,12 @@
 
 import {consumerRequestEntities} from "@/components/dummydata/DummyData";
 import DataTable from "@/components/datatable/DataTable";
+import {sharedColumns} from "@/components/datatable/SharedColumns";
 
 export default function Event() {
     const columns = [
-        {
-            id: 'corrId',
-            label: 'UUID',
-            minWidth: 200,
-            align: 'left',
-            filter: true
-        },
-        {
-            id: 'orgId',
-            label: 'OrgId',
-            minWidth: 150,
-            align: 'left',
-            filter: true
-        },
+        sharedColumns.corrId,
+        sharedColumns.orgId,
         {
             id: 'domainName',
             label: 'Domain',
