@@ -23,7 +23,7 @@ export default function FilterSection({ columns, data, filterValues, onFilterCha
                             key={column.id}
                             options={uniqueColumnData[column.id] || []}
                             getOptionLabel={(option) => option.toString()}
-                            value={filterValues[column.id]} // Set value from filterValues
+                            value={filterValues[column.id]}
                             onChange={(event, value) => onFilterChange(column.id, value)}
                             renderInput={(params) => (
                                 <TextField {...params} label={column.label} variant="outlined" />
