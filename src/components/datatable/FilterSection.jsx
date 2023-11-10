@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Autocomplete, TextField } from '@mui/material';
 
-export default function FilterSection({ columns, data }) {
-    const [filterValues, setFilterValues] = useState({});
+export default function FilterSection({ columns, data, filterValues, onFilterChange }) {
     const [uniqueColumnData, setUniqueColumnData] = useState({});
 
     useEffect(() => {
@@ -15,10 +14,6 @@ export default function FilterSection({ columns, data }) {
         setUniqueColumnData(uniqueData);
     }, [columns, data]);
 
-    const handleFilterChange = (columnId, value) => {
-        setFilterValues({...filterValues, [columnId]: value});
-    };
-
     return (
         <div className="w-full p-4">
             {columns.map(column => {
@@ -28,11 +23,12 @@ export default function FilterSection({ columns, data }) {
                             key={column.id}
                             options={uniqueColumnData[column.id] || []}
                             getOptionLabel={(option) => option.toString()}
-                            sx={{width: column.minWidth}} // Set the base width and minimum width
-                            onChange={(event, value) => handleFilterChange(column.id, value)}
+                            value={filterValues[column.id]} // Set value from filterValues
+                            onChange={(event, value) => onFilterChange(column.id, value)}
                             renderInput={(params) => (
                                 <TextField {...params} label={column.label} variant="outlined" />
                             )}
+                            sx={{width: column.minWidth}}
                         />
                     );
                 } else {

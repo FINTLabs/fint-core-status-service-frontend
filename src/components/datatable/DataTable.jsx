@@ -14,6 +14,7 @@ import FilterSection from "@/components/datatable/FilterSection";
 export default function DataTable({columns, data}) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [filterValues, setFilterValues] = React.useState({});
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -24,16 +25,30 @@ export default function DataTable({columns, data}) {
         setPage(0);
     };
 
+    const handleFilterChange = (columnId, value) => {
+        setFilterValues({...filterValues, [columnId]: value});
+    };
+
+    const getFilteredData = () => {
+        return data.filter(row => {
+            return Object.entries(filterValues).every(([columnId, filterValue]) => {
+                if (filterValue == null || filterValue === '') return true;
+                return row[columnId] === filterValue;
+            });
+        });
+    };
+
     return (
         <Paper sx={{width: '80%', overflow: 'hidden', margin: "auto"}}>
-            <FilterSection columns={columns} data={data}/>
+            <FilterSection columns={columns} data={data} filterValues={filterValues}
+                           onFilterChange={handleFilterChange}/>
             <TableContainer sx={{maxHeight: "80vh"}}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <DataTableHeader columns={columns}/>
                     </TableHead>
                     <TableBody>
-                        {data
+                        {getFilteredData()
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => (
                                 <DataTableRow key={index} row={row} columns={columns}/>
@@ -44,7 +59,7 @@ export default function DataTable({columns, data}) {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={data.length}
+                count={getFilteredData().length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
