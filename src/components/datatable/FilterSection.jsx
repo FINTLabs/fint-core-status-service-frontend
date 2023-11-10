@@ -31,8 +31,6 @@ export default function FilterSection({ columns, data, filterValues, onFilterCha
                             sx={{width: column.minWidth}}
                         />
                     );
-                } else {
-                    return null;
                 }
             })}
         </div>
