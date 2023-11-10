@@ -16,19 +16,21 @@ export default function Event() {
             id: 'adapterId',
             label: 'Adapter ID',
             minWidth: 170,
-            align: 'left'
+            align: 'left',
+            filter: true
         },
         {
             id: 'orgId',
             label: 'OrgId',
             minWidth: 100,
-            align: 'left'
+            align: 'left',
+            filter: true
         },
         {
             id: 'uriRef',
             label: 'Uri',
             minWidth: 100,
-            align: 'left'
+            align: 'left',
         },
         {
             id: 'totalSize',

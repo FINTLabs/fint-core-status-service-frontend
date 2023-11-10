@@ -8,44 +8,51 @@ export default function Event() {
         {
             id: 'corrId',
             label: 'UUID',
-            minWidth: 170,
-            align: 'left'
+            minWidth: 200,
+            align: 'left',
+            filter: true
         },
         {
             id: 'orgId',
             label: 'OrgId',
-            minWidth: 100,
-            align: 'left'
+            minWidth: 150,
+            align: 'left',
+            filter: true
         },
         {
             id: 'domainName',
             label: 'Domain',
-            minWidth: 100,
-            align: 'left'
+            minWidth: 150,
+            align: 'left',
+            filter: true
         },
         {
             id: 'packageName',
             label: 'Package',
-            minWidth: 100,
-            align: 'left'
+            minWidth: 150,
+            align: 'left',
+            filter: true
         },
         {
             id: 'resourceName',
             label: 'Resource',
-            minWidth: 100,
-            align: 'left'
+            minWidth: 150,
+            align: 'left',
+            filter: true
         },
         {
             id: 'operation',
             label: 'Operation',
-            minWidth: 170,
-            align: 'left'
+            minWidth: 125,
+            align: 'left',
+            filter: true
         },
         {
             id: "response",
             label: 'Response',
-            minWidth: 170,
-            align: 'left'
+            minWidth: 150,
+            align: 'left',
+            filter: true
         },
         {
             id: 'created',

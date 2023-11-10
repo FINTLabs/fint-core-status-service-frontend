@@ -9,25 +9,29 @@ export default function Register() {
             id: 'adapterId',
             label: 'Adapter ID',
             minWidth: 170,
-            align: 'left'
+            align: 'left',
+            filter: true
         },
         {
             id: 'username',
             label: 'Username',
             minWidth: 170,
-            align: 'left'
+            align: 'left',
+            filter: true
         },
         {
             id: 'orgId',
             label: 'OrgId',
             minWidth: 100,
-            align: 'left'
+            align: 'left',
+            filter: true
         },
         {
             id: 'isConsiderHealthy',
             label: 'Healthy',
             minWidth: 100,
-            align: 'left'
+            align: 'left',
+            filter: true
         },
         {
             id: 'lastSeen',

@@ -15,7 +15,7 @@ export default function FilterSection({ columns, data, filterValues, onFilterCha
     }, [columns, data]);
 
     return (
-        <div className="w-full p-4">
+        <div className="w-full p-4 flex gap-1">
             {columns.map(column => {
                 if (column.filter) {
                     return (
