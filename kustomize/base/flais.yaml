@@ -18,6 +18,6 @@ spec:
   image: ghcr.io/fintlabs/fint-core-status-service-frontend:latest
   url:
     hostname: kunde-beta.felleskomponent.no
-    basePath: /
+    basePath: /status/
   ingress:
     enabled: true
