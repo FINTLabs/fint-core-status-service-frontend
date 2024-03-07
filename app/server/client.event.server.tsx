@@ -7,7 +7,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -16,7 +16,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -25,7 +25,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -34,7 +34,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -43,7 +43,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -52,7 +52,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -61,7 +61,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -70,7 +70,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue :) easter"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -79,7 +79,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue egg"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -88,7 +88,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -97,7 +97,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -106,7 +106,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -115,7 +115,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -124,7 +124,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -133,7 +133,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -142,7 +142,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -151,7 +151,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
         {
             id: "342c4698-5baa-4e81-8e58-3fb66fb77174",
@@ -160,7 +160,7 @@ export default async function GetClientEvents() {
             uri: "utdanning/vurdering/vurderingdfasdfasdfasdf",
             operation: "CREATE",
             response: true,
-            time: "OK its late XD"
+            time: "overdue"
         },
     ]
 }
