@@ -15,7 +15,7 @@ spec:
   port: 8000
   imagePullPolicy: Always
   orgId: fintlabs.no
-  image: ghcr.io/fintlabs/fint-core-status-service-frontend-remix:latest
+  image: ghcr.io/fintlabs/fint-core-status-service-frontend:latest
   url:
     hostname: kunde-beta.felleskomponent.no
     basePath: /status
