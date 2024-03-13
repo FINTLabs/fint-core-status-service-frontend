@@ -3,3 +3,8 @@ kind: Kustomization
 resources:
   - flais.yaml
   - sso.yaml
+commonLabels:
+  app.kubernetes.io/part-of: fint-core
+  app.kubernetes.io/version: latest
+  fintlabs.no/team: core
+  fintlabs.no/org-id: fintlabs.no
