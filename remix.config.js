@@ -2,7 +2,7 @@
 export default {
   ignoredRouteFiles: ["**/*.css"],
   // appDirectory: "app",
-  assetsBuildDirectory: "status/build",
-  publicPath: "/status/",
-  serverBuildPath: "status/index.js",
+  // assetsBuildDirectory: "public/build",
+  // publicPath: "/build/",
+  // serverBuildPath: "build/index.js",
 };
