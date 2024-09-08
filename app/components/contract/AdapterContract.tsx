@@ -7,6 +7,7 @@ import {
   PersonGroupIcon, PersonSuitIcon,
   PiggybankIcon
 } from "@navikt/aksel-icons";
+import ComponentIcons from "~/components/contract/ComponentIcons";
 
 export default function AdapterContract({adapterContract}) {
   return (
@@ -15,7 +16,7 @@ export default function AdapterContract({adapterContract}) {
         <HStack align="center" gap="4">
           <VStack>
             <p>adapter-id</p>
-            <p>username</p>
+            <p className="font-bold">username</p>
           </VStack>
           <Spacer/>
           <HeartIcon/>
@@ -23,12 +24,7 @@ export default function AdapterContract({adapterContract}) {
         <HStack gap="2">
           <p className="text-sm">Full Sync: 21:49 | 07.21</p>
           <Spacer/>
-          <HatSchoolIcon/>
-          <ArchiveIcon />
-          <PiggybankIcon />
-          <PersonGroupIcon />
-          <CogRotationIcon />
-          <Buildings2Icon />
+          <ComponentIcons />
         </HStack>
       </VStack>
     </Box>
