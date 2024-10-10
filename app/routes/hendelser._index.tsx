@@ -73,8 +73,9 @@ export default function FintEventTable() {
             const month = createdDate.getMonth() + 1;
             const hours = createdDate.getHours();
             const minutes = createdDate.getMinutes().toString().padStart(2, '0');
+            const seconds = createdDate.getSeconds();
 
-            return `${day}/${month} kl:${hours}:${minutes}`;
+            return `${day}/${month} kl:${hours}:${minutes}:${seconds}`;
         }
         return null;
     };
@@ -90,7 +91,7 @@ export default function FintEventTable() {
                        width: '300px',
                        marginBottom: '20px'
                    }}>
-                <Search label="Søk alle NAV sine sider" variant="secondary"/>
+                <Search label="Søk etter corrId" variant="secondary"/>
             </form>
         );
     };
