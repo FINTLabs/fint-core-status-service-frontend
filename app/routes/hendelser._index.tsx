@@ -1,6 +1,7 @@
-import {Table} from "@navikt/ds-react";
+import {HStack, Table} from "@navikt/ds-react";
 import React from "react";
 import {useState} from "react";
+import { Search } from "@navikt/ds-react";
 
 interface RequestEvent {}
 interface ResponseEvent {}
@@ -26,7 +27,7 @@ export default function FintEventTable() {
                 packageName: "Elev",
                 resourceName: "Elev",
                 operationType: null,
-                created: 1728481278,
+                created: 1728289424,
                 timeToLive: 3443343
 
             },
@@ -45,7 +46,7 @@ export default function FintEventTable() {
                 packageName: "Personal",
                 resourceName: "Personal",
                 operationType: null,
-                created: 1728481278,
+                created: 1728289424,
                 timeToLive: 3434008
             },
             responseEvent: null
@@ -67,22 +68,46 @@ export default function FintEventTable() {
         if (event.requestEvent != null) {
             const createdTimestamp = event.requestEvent.created;
             const createdDate = new Date(createdTimestamp * 1000);
-            const formattedDate = createdDate.toLocaleString();
-            return formattedDate;
+
+            const day = createdDate.getDate();
+            const month = createdDate.getMonth() + 1;
+            const hours = createdDate.getHours();
+            const minutes = createdDate.getMinutes().toString().padStart(2, '0');
+
+            return `${day}/${month} kl:${hours}:${minutes}`;
         }
         return null;
     };
 
+    const searchBar = () => {
+        return (
+            <form  role="search"
+                   className="search-bar"
+                   style={{
+                       display: 'flex',
+                       justifyContent: 'center',
+                       alignItems: 'center',
+                       width: '300px',
+                       marginBottom: '20px'
+                   }}>
+                <Search label="Søk alle NAV sine sider" variant="secondary"/>
+            </form>
+        );
+    };
+
     return (
-        <div style={{ marginTop: "30px", marginRight: '30px', marginLeft: '30px'}}>
-        <Table zebraStripes>
-            <Table.Header>
+        <div style={{marginTop: "30px", marginRight: '30px', marginLeft: '30px'}}>
+            <HStack justify="center">
+                {searchBar()}
+            </HStack>
+            <Table zebraStripes>
+                <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell scope="col">Corrid</Table.HeaderCell>
                     <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Har Feil</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Har response</Table.HeaderCell>
-                    <Table.HeaderCell scope="col">Domene/pakke/resurs</Table.HeaderCell>
+                    <Table.HeaderCell scope="col">Resurs</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Request time</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
@@ -92,9 +117,9 @@ export default function FintEventTable() {
                         <Table.Row onClick={() => toggleRow(i)} style={{ cursor: 'pointer' }}>
                             <Table.DataCell>{event.corrId}</Table.DataCell>
                             <Table.DataCell>{event.ordId}</Table.DataCell>
-                            <Table.DataCell>{event.hasError ? "Yes" : "No"}</Table.DataCell>
+                            <Table.DataCell>{event.hasError ? "Ja" : "Nei"}</Table.DataCell>
                             <Table.DataCell>{event.responseEvent ? "Ja" : "Nei"}</Table.DataCell>
-                            <Table.DataCell>{event.requestEvent.domainName}/{event.requestEvent.packageName}/{event.requestEvent.resourceName}</Table.DataCell>
+                            <Table.DataCell>{event.requestEvent.resourceName}</Table.DataCell>
                             <Table.DataCell>{formatTime(event)}</Table.DataCell>
                         </Table.Row>
                         {expandedRows.has(i) && (
