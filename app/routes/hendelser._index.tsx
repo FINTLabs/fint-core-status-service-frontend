@@ -13,8 +13,6 @@ interface FintEvent {
     responseEvent: ResponseEvent | null;
 }
 
-
-
 export default function FintEventTable() {
     const events: FintEvent[] = [
         {
@@ -53,8 +51,6 @@ export default function FintEventTable() {
             responseEvent: null
         },
     ];
-
-
     const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
 
     const toggleRow = (index: number) => {
@@ -65,6 +61,16 @@ export default function FintEventTable() {
             newExpandedRows.add(index);
         }
         setExpandedRows(newExpandedRows);
+    };
+
+    const formatTime = (event: FintEvent): string | null => {
+        if (event.requestEvent != null) {
+            const createdTimestamp = event.requestEvent.created;
+            const createdDate = new Date(createdTimestamp * 1000);
+            const formattedDate = createdDate.toLocaleString();
+            return formattedDate;
+        }
+        return null;
     };
 
     return (
@@ -89,7 +95,7 @@ export default function FintEventTable() {
                             <Table.DataCell>{event.hasError ? "Yes" : "No"}</Table.DataCell>
                             <Table.DataCell>{event.responseEvent ? "Ja" : "Nei"}</Table.DataCell>
                             <Table.DataCell>{event.requestEvent.domainName}/{event.requestEvent.packageName}/{event.requestEvent.resourceName}</Table.DataCell>
-                            <Table.DataCell>{event.requestEvent.created}</Table.DataCell>
+                            <Table.DataCell>{formatTime(event)}</Table.DataCell>
                         </Table.Row>
                         {expandedRows.has(i) && (
                             <Table.Row>
