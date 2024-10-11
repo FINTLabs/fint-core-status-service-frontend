@@ -1,4 +1,4 @@
-interface FintEvent {
+export interface FintEvent {
     corrId: string;
     ordId: string;
     hasError: boolean;

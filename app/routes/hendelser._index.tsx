@@ -2,56 +2,18 @@ import {HStack, Table} from "@navikt/ds-react";
 import React from "react";
 import {useState} from "react";
 import { Search } from "@navikt/ds-react";
+import {json} from "@remix-run/node";
+import {HendelserApi} from "~/api/HendelserApi";
+import {FintEvent} from "~/components/hendelser/event/FintEvent";
+import {useLoaderData} from "@remix-run/react";
 
-interface RequestEvent {}
-interface ResponseEvent {}
-
-interface FintEvent {
-    corrid: string;
-    orgId: string;
-    hassError: boolean;
-    requestEvent: RequestEvent | null;
-    responseEvent: ResponseEvent | null;
-}
+export const loader = async () => {
+    const events = await HendelserApi.getHendelser()
+    return json(events)
+};
 
 export default function FintEventTable() {
-    const events: FintEvent[] = [
-        {
-            corrId: "123344433343",
-            ordId: "679846732",
-            hasError: false,
-            requestEvent: {
-                corrId: "22204948282",
-                ordId: "679846732",
-                domainName: "Utdanning",
-                packageName: "Elev",
-                resourceName: "Elev",
-                operationType: null,
-                created: 1728289424,
-                timeToLive: 3443343
-
-            },
-            responseEvent: {
-                corrId: "22"
-            },
-        },
-        {
-            corrId: "454334453346",
-            ordId: "434362436",
-            hasError: true,
-            requestEvent: {
-                corrId: "309294950",
-                ordId: "339205054",
-                domainName: "Administrasjon",
-                packageName: "Personal",
-                resourceName: "Personal",
-                operationType: null,
-                created: 1728289424,
-                timeToLive: 3434008
-            },
-            responseEvent: null
-        },
-    ];
+    const events = useLoaderData<FintEvent[]>();
     const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
 
     const toggleRow = (index: number) => {
