@@ -1,0 +1,17 @@
+apiVersion: fintlabs.no/v1alpha1
+kind: Application
+metadata:
+  name: fint-core-status-service-frontend
+  namespace: fintlabs-no
+spec:
+  port: 8000
+  orgId: fintlabs.no
+  image: ghcr.io/fintlabs/fint-core-status-service-frontend:latest
+  env:
+    - name: API_URL
+      value: http://fint-core-status-service:8080
+  url:
+    hostname: core-status.fintlabs.no
+    basePath: /
+  ingress:
+    enabled: true
