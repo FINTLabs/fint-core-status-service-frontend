@@ -1,7 +1,7 @@
 import {request} from "~/api/shared/api";
 import {FintEvent} from "~/components/hendelser/event/FintEvent";
 
-const API_URL = "http://localhost:8081";
+const API_URL = process.env.API_URL;
 
 export class HendelserApi {
     static async getHendelser(): Promise<FintEvent[]> {
