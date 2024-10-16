@@ -1,7 +1,7 @@
 import {HStack, Table} from "@navikt/ds-react";
 import React from "react";
 import {useState} from "react";
-import { Search } from "@navikt/ds-react";
+import {Search} from "@navikt/ds-react";
 import {json} from "@remix-run/node";
 import {HendelserApi} from "~/api/HendelserApi";
 import {FintEvent} from "~/components/hendelser/event/FintEvent";
@@ -45,15 +45,15 @@ export default function FintEventTable() {
 
     const searchBar = () => {
         return (
-            <form  role="search"
-                   className="search-bar"
-                   style={{
-                       display: 'flex',
-                       justifyContent: 'center',
-                       alignItems: 'center',
-                       width: '300px',
-                       marginBottom: '20px'
-                   }}>
+            <form role="search"
+                  className="search-bar"
+                  style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '300px',
+                      marginBottom: '20px'
+                  }}>
                 <Search label="Søk etter corrId" variant="secondary"/>
             </form>
         );
@@ -62,9 +62,9 @@ export default function FintEventTable() {
     return (
         <div>
             <div>
-                <Index />
+                <Index/>
             </div>
-            <div style={{ marginTop: "30px", marginRight: "30px", marginLeft: "30px" }}>
+            <div style={{marginTop: "30px", marginRight: "30px", marginLeft: "30px"}}>
                 <HStack justify="center">{searchBar()}</HStack>
                 <Table zebraStripes>
                     <Table.Header>
@@ -82,7 +82,7 @@ export default function FintEventTable() {
                             <React.Fragment key={i}>
                                 <Table.Row
                                     onClick={() => toggleRow(i)}
-                                    style={{ cursor: "pointer" }}
+                                    style={{cursor: "pointer"}}
                                 >
                                     <Table.DataCell>{event.corrId}</Table.DataCell>
                                     <Table.DataCell>{event.ordId}</Table.DataCell>
@@ -95,7 +95,7 @@ export default function FintEventTable() {
                                 </Table.Row>
                                 {expandedRows.has(i) && (
                                     <Table.Row>
-                                        <Table.DataCell colSpan={4} style={{ paddingLeft: "40px" }}>
+                                        <Table.DataCell colSpan={4} style={{paddingLeft: "40px"}}>
                                             {event.responseEvent ? (
                                                 <div>
                                                     <strong>Response Event:</strong>{" "}
