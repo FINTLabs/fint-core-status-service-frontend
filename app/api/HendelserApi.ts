@@ -1,7 +1,7 @@
 import {request} from "~/api/shared/api";
 import {FintEvent} from "~/components/hendelser/event/FintEvent";
 
-const API_URL = process.env.API_URL;
+const API_URL = process.env.PUBLIC_API_URL;
 
 export class HendelserApi {
     static async getHendelser(): Promise<FintEvent[]> {
