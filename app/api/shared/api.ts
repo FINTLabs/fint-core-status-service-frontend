@@ -1,6 +1,3 @@
-// import { IPartialAsset } from '~/types/Asset';
-// import { IPartialAdapter } from '~/types/types';
-
 export type ReturnType = 'text' | 'json';
 
 export type IMiniAdapter = { name: string };
