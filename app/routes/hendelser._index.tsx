@@ -90,7 +90,7 @@ export default function FintEventTable() {
                                     <Table.DataCell>
                                         {event.responseEvent ? "Ja" : "Nei"}
                                     </Table.DataCell>
-                                    <Table.DataCell>{event.requestEvent.resourceName}</Table.DataCell>
+                                    <Table.DataCell>{event.requestEvent?.domainName}/{event.requestEvent?.packageName}/{event.requestEvent?.resourceName}</Table.DataCell>
                                     <Table.DataCell>{formatTime(event)}</Table.DataCell>
                                 </Table.Row>
                                 {expandedRows.has(i) && (
