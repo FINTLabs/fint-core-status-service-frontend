@@ -30,7 +30,9 @@ export default function FintEventTable() {
     const formatTime = (event: FintEvent): string | null => {
         if (event.requestEvent != null) {
             const createdTimestamp = event.requestEvent.created;
+            console.log(createdTimestamp);
             const createdDate = new Date(createdTimestamp * 1000);
+            const timeDifference = calculateTimeDifference(createdTimestamp);
 
             const day = createdDate.getDate();
             const month = createdDate.getMonth() + 1;
@@ -38,10 +40,40 @@ export default function FintEventTable() {
             const minutes = createdDate.getMinutes().toString().padStart(2, '0');
             const seconds = createdDate.getSeconds();
 
-            return `${day}/${month} kl:${hours}:${minutes}:${seconds}`;
+            return `${day}/${month} kl:${hours}:${minutes}:${seconds} (${timeDifference})`;
         }
         return null;
     };
+
+    function calculateTimeDifference(pastUnixTimeStamp: number) {
+        const now = Date.now();
+        let diff = now - pastUnixTimeStamp;
+        if (diff < 0) {
+            return "in the future";
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        diff %= (1000 * 60 * 60 * 24);
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        diff %= (1000 * 60 * 60);
+
+        const minutes = Math.floor(diff / (1000 * 60));
+        diff %= (1000 * 60);
+
+        const seconds = Math.floor(diff / 1000);
+
+        if (days > 0) {
+            return `${days} dager ${hours} timer ${minutes} minutter ${seconds} sekunder siden`;
+        } else if (hours > 0) {
+            return `${hours} hours ${minutes} minutes ${seconds} seconds ago`;
+        } else if (minutes > 0) {
+            return `${minutes} minutes ${seconds} seconds ago`;
+        } else {
+            return `${seconds} seconds ago`;
+        }
+    }
+
 
     const searchBar = () => {
         return (
