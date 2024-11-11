@@ -61,16 +61,12 @@ export default function FintEventTable() {
         const minutes = Math.floor(diff / (1000 * 60));
         diff %= (1000 * 60);
 
-        const seconds = Math.floor(diff / 1000);
-
         if (days > 0) {
-            return `${days} dager ${hours} timer ${minutes} minutter ${seconds} sekunder siden`;
+            return `${days} dager ${hours} timer`;
         } else if (hours > 0) {
-            return `${hours} hours ${minutes} minutes ${seconds} seconds ago`;
+            return `${hours} hours ${minutes}`;
         } else if (minutes > 0) {
-            return `${minutes} minutes ${seconds} seconds ago`;
-        } else {
-            return `${seconds} seconds ago`;
+            return `${minutes} minutes`;
         }
     }
 
