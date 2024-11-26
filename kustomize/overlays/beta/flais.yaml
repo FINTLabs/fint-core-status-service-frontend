@@ -14,4 +14,6 @@ spec:
     hostname: core-status.fintlabs.no
     basePath: /
   ingress:
-    enabled: true
+    routes:
+      - host: core-status.fintlabs.no
+        path: /beta
