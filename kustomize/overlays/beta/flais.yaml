@@ -13,5 +13,3 @@ spec:
   url:
     hostname: core-status.fintlabs.no
     basePath: /
-  ingress:
-    enabled: true
