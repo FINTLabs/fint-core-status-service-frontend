@@ -11,7 +11,7 @@ spec:
     - name: PUBLIC_API_URL
       value: http://fint-core-status-service:8080
   url:
-    hostname: core-status-beta.fintlabs.no
+    hostname: core-status.fintlabs.no
     basePath: /
   ingress:
     enabled: true
