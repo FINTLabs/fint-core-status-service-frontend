@@ -15,3 +15,6 @@ spec:
     basePath: /
   ingress:
     enabled: true
+    basePath: /
+    middlewares:
+      - fint-core-status-sso
