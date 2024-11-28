@@ -12,9 +12,8 @@ spec:
       value: http://fint-core-status-service:8080
   url:
     hostname: core-status.fintlabs.no
-    basePath: /
   ingress:
     enabled: true
-    basePath: /
+    basePath: /api/fint-core
     middlewares:
       - fint-core-status-sso
