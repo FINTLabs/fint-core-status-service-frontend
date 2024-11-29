@@ -9,12 +9,10 @@ spec:
   image: ghcr.io/fintlabs/fint-core-status-service-frontend:latest
   env:
     - name: PUBLIC_API_URL
-      value: http://fint-core-status-service:8080
-  url:
-    hostname: core-status.fintlabs.no
-    basePath: /
+      value: https://core-status.fintlabs.no/api
   ingress:
-    enabled: true
-    basePath: /
-    middlewares:
-      - fint-core-status-sso
+    routes:
+      - host: core-status.fintlabs.no
+        path: /
+        middlewares:
+          - fint-core-status-sso
