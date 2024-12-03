@@ -1,3 +1,0 @@
-interface OperationType {
-    name: string;
-}

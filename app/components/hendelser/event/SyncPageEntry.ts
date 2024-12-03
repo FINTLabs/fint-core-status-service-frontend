@@ -1,3 +1,0 @@
-interface SyncPageEntry {
-    name: string;
-}

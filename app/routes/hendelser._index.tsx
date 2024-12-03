@@ -1,67 +1,27 @@
-import {HStack, Pagination, SortState, Table} from "@navikt/ds-react";
-import React, {useState} from "react";
-import {json} from "@remix-run/node";
+import {HStack, Pagination, Table} from "@navikt/ds-react";
+import {useState} from "react";
+import {json, LoaderFunction} from "@remix-run/node";
 import {HendelserApi} from "~/api/HendelserApi";
+import {useLoaderData} from "@remix-run/react";
+import {FintEvent} from "~/types/Event";
 
-export const loader = async () => {
-  console.log("Loading...");
+export const loader: LoaderFunction = async () => {
   try {
-    const events = await HendelserApi.getHendelser()
-    console.log('events: ',)
-    return json(events)
+    const events = await HendelserApi.getHendelser("beta");
+    console.log("events: ", events);
+    return json(events);
   } catch (error) {
-    console.log(error)
-    return null;
+    console.error("Loader Error: ", error);
+    throw new Response("Failed to load events", {status: 500});
   }
 };
 
-interface ScopedSortState extends SortState {
-  orderBy: keyof (typeof data)[0];
-}
-
 export default function FintEventTable() {
-  const [sort, setSort] = useState<ScopedSortState | undefined>();
-
-  const handleSort = (sortKey: ScopedSortState["orderBy"]) => {
-    setSort(
-      sort && sortKey === sort.orderBy && sort.direction === "descending"
-        ? undefined
-        : {
-          orderBy: sortKey,
-          direction:
-            sort && sortKey === sort.orderBy && sort.direction === "ascending"
-              ? "descending"
-              : "ascending",
-        },
-    );
-  };
-
-  function comparator<T>(a: T, b: T, orderBy: keyof T): number {
-    if (b[orderBy] == null || b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-  }
-
-
-  const sortedData = data.slice().sort((a, b) => {
-    if (sort) {
-      return sort.direction === "ascending"
-        ? comparator(b, a, sort.orderBy)
-        : comparator(a, b, sort.orderBy);
-    }
-    return 1;
-  });
+  const fintEvents = useLoaderData<FintEvent[]>();
+  const filteredEvents = fintEvents.filter(s => s.requestEvent!= null && s.requestEvent.domainName != null)
 
   const [page, setPage] = useState(1);
   const rowsPerPage = 4;
-
-
-  let sortData = data;
-  sortData = sortData.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   return (
     <div className="flex flex-col h-full justify-between gap-4">
@@ -72,14 +32,19 @@ export default function FintEventTable() {
             <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
             <Table.HeaderCell scope="col">Ressurs</Table.HeaderCell>
             <Table.HeaderCell scope="col">Response</Table.HeaderCell>
-            <Table.HeaderCell scope="col">Feil</Table.HeaderCell>
             <Table.HeaderCell scope="col">Tid</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {sortData.map((bruh) => {
+          {filteredEvents.map((event, i) => {
             return (
-              <></>
+              <Table.Row key={i}>
+                <Table.HeaderCell>{event.corrId}</Table.HeaderCell>
+                <Table.HeaderCell>{event.orgId}</Table.HeaderCell>
+                <Table.HeaderCell>{createResourceUri(event)}</Table.HeaderCell>
+                <Table.HeaderCell>{String(event.responseEvent === null)}</Table.HeaderCell>
+                <Table.HeaderCell>{event.requestEvent ? event.requestEvent.created : "N/A"}</Table.HeaderCell>
+              </Table.Row>
             );
           })}
         </Table.Body>
@@ -88,10 +53,24 @@ export default function FintEventTable() {
         <Pagination
           page={page}
           onPageChange={setPage}
-          count={Math.ceil(data.length / rowsPerPage)}
+          count={Math.ceil(fintEvents.length / rowsPerPage)}
           size="small"
         />
       </HStack>
     </div>
   );
 }
+
+const createResourceUri = (event) => {
+  const requestEvent = event.requestEvent;
+
+  if (!requestEvent) {
+    return "N/A"; // Fallback value if requestEvent is null
+  }
+
+  const domainName = requestEvent.domainName || "unknown-domain";
+  const packageName = requestEvent.packageName || "unknown-package";
+  const resourceName = requestEvent.resourceName || "unknown-resource";
+
+  return `${domainName}/${packageName}/${resourceName}`;
+};

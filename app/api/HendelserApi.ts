@@ -1,21 +1,20 @@
-import {request} from "~/api/shared/api";
-import {FintEvent} from "~/components/hendelser/event/FintEvent";
 import * as process from "process";
+import {FintEvent} from "~/types/Event";
 
-const API_URL = process.env.PUBLIC_API_URL;
-const token = process.env.PUBLIC_TOKEN;
+const API_URL = `${process.env.PUBLIC_API_URL}/api`;
 
 export class HendelserApi {
-    private static url: string = API_URL+"/event";
-    static async getHendelser(): Promise<FintEvent[]> {
+  static async getHendelser(env: string): Promise<FintEvent[]> {
+    const requestUrl = `${API_URL}/${env}/event`
 
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        };
+    const response = await fetch(requestUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${process.env.TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
-        console.log(this.url)
-
-        return request(this.url, "getHendelser", "GET", "json", undefined, { headers });
-    }
+    return await response.json()
+  }
 }

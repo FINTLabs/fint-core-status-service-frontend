@@ -1,11 +1,12 @@
 export enum OperationType {
   CREATE = "CREATE",
   UPDATE = "UPDATE",
+  VALIDATE = "VALIDATE",
+  DELETE = "DELETE",
 }
 
 export interface SyncPageEntry {
   identifier: string;
-  resource: any;
 }
 
 export interface RequestFintEvent {
@@ -15,16 +16,15 @@ export interface RequestFintEvent {
   packageName: string;
   resourceName: string;
   operationType: OperationType;
-  created: number; // timestamp
-  timeToLive: number; // timestamp
-  value: any;
+  created: number;
+  timeToLive: number;
 }
 
 export interface ResponseFintEvent {
   corrId: string;
   orgId: string;
   adapterId: string;
-  handledAt: number; // timestamp
+  handledAt: number;
   value: SyncPageEntry;
   operationType: OperationType;
   failed: boolean;
