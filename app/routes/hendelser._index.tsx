@@ -1,145 +1,128 @@
-import {HStack, Table} from "@navikt/ds-react";
-import React from "react";
-import {useState} from "react";
-import {Search} from "@navikt/ds-react";
+import {HStack, Pagination, SortState, Table} from "@navikt/ds-react";
+import React, {useState} from "react";
 import {json} from "@remix-run/node";
 import {HendelserApi} from "~/api/HendelserApi";
-import {FintEvent} from "~/components/hendelser/event/FintEvent";
-import {useLoaderData} from "@remix-run/react";
-import Index from "~/routes/_index";
+import page from "@navikt/ds-react/src/layout/page/Page";
+import {FintEvent, OperationType} from "~/types/Event";
 
 export const loader = async () => {
-    const events = await HendelserApi.getHendelser()
-    return json(events)
+  const events = await HendelserApi.getHendelser()
+  return json(events)
 };
 
+const format = (date: Date) => {
+  const y = date.getFullYear();
+  const m = (date.getMonth() + 1).toString().padStart(2, "0");
+  const d = date.getDate().toString().padStart(2, "0");
+  return `${d}.${m}.${y}`;
+};
+
+
+const data = [
+  {
+    name: "Jakobsen, Markus",
+    fnr: "03129265463",
+    start: "2021-04-28T19:12:14.358Z",
+  },
+  {
+    name: "Halvorsen, Mari",
+    fnr: "16063634134",
+    start: "2022-01-29T09:51:19.833Z",
+  },
+  {
+    name: "Christiansen, Mathias",
+    fnr: "18124441438",
+    start: "2021-06-04T20:57:29.159Z",
+  },
+  {
+    name: "Fredriksen, Leah",
+    fnr: "24089080180",
+    start: "2021-08-31T15:47:36.293Z",
+  },
+  {
+    name: "Evensen, Jonas",
+    fnr: "18106248460",
+    start: "2021-07-17T11:13:26.116Z",
+  },
+];
+
+interface ScopedSortState extends SortState {
+  orderBy: keyof (typeof data)[0];
+}
+
 export default function FintEventTable() {
-    const events = useLoaderData<FintEvent[]>();
-    const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+  const [sort, setSort] = useState<ScopedSortState | undefined>();
 
-    const toggleRow = (index: number) => {
-        const newExpandedRows = new Set(expandedRows);
-        if (newExpandedRows.has(index)) {
-            newExpandedRows.delete(index);
-        } else {
-            newExpandedRows.add(index);
-        }
-        setExpandedRows(newExpandedRows);
-    };
-
-    const formatTime = (event: FintEvent): string | null => {
-        if (event.requestEvent != null) {
-            const createdTimestamp = event.requestEvent.created;
-            console.log(createdTimestamp);
-            const createdDate = new Date(createdTimestamp * 1000);
-            const timeDifference = calculateTimeDifference(createdTimestamp);
-
-            const day = createdDate.getDate();
-            const month = createdDate.getMonth() + 1;
-            const hours = createdDate.getHours();
-            const minutes = createdDate.getMinutes().toString().padStart(2, '0');
-            const seconds = createdDate.getSeconds();
-
-            return `${day}/${month} kl:${hours}:${minutes}:${seconds} (${timeDifference})`;
-        }
-        return null;
-    };
-
-    function calculateTimeDifference(pastUnixTimeStamp: number) {
-        const now = Date.now();
-        let diff = now - pastUnixTimeStamp;
-        if (diff < 0) {
-            return "in the future";
-        }
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        diff %= (1000 * 60 * 60 * 24);
-
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        diff %= (1000 * 60 * 60);
-
-        const minutes = Math.floor(diff / (1000 * 60));
-        diff %= (1000 * 60);
-
-        if (days > 0) {
-            return `${days} dager ${hours} timer`;
-        } else if (hours > 0) {
-            return `${hours} hours ${minutes}`;
-        } else if (minutes > 0) {
-            return `${minutes} minutes`;
-        }
-    }
-
-
-    const searchBar = () => {
-        return (
-            <form role="search"
-                  className="search-bar"
-                  style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: '300px',
-                      marginBottom: '20px'
-                  }}>
-                <Search label="Søk etter corrId" variant="secondary"/>
-            </form>
-        );
-    };
-
-    return (
-        <div>
-            <div>
-                <Index/>
-            </div>
-            <div style={{marginTop: "30px", marginRight: "30px", marginLeft: "30px"}}>
-                <HStack justify="center">{searchBar()}</HStack>
-                <Table zebraStripes>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell scope="col">Corrid</Table.HeaderCell>
-                            <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
-                            <Table.HeaderCell scope="col">Har Feil</Table.HeaderCell>
-                            <Table.HeaderCell scope="col">Har response</Table.HeaderCell>
-                            <Table.HeaderCell scope="col">Resurs</Table.HeaderCell>
-                            <Table.HeaderCell scope="col">Request time</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {events.map((event, i) => (
-                            <React.Fragment key={i}>
-                                <Table.Row
-                                    onClick={() => toggleRow(i)}
-                                    style={{cursor: "pointer"}}
-                                >
-                                    <Table.DataCell>{event.corrId}</Table.DataCell>
-                                    <Table.DataCell>{event.ordId}</Table.DataCell>
-                                    <Table.DataCell>{event.hasError ? "Ja" : "Nei"}</Table.DataCell>
-                                    <Table.DataCell>
-                                        {event.responseEvent ? "Ja" : "Nei"}
-                                    </Table.DataCell>
-                                    <Table.DataCell>{event.requestEvent?.domainName}/{event.requestEvent?.packageName}/{event.requestEvent?.resourceName}</Table.DataCell>
-                                    <Table.DataCell>{formatTime(event)}</Table.DataCell>
-                                </Table.Row>
-                                {expandedRows.has(i) && (
-                                    <Table.Row>
-                                        <Table.DataCell colSpan={4} style={{paddingLeft: "40px"}}>
-                                            {event.responseEvent ? (
-                                                <div>
-                                                    <strong>Response Event:</strong>{" "}
-                                                    {event.responseEvent.corrId}
-                                                </div>
-                                            ) : (
-                                                <div>No Response Event</div>
-                                            )}
-                                        </Table.DataCell>
-                                    </Table.Row>
-                                )}
-                            </React.Fragment>
-                        ))}
-                    </Table.Body>
-                </Table>
-            </div>
-        </div>
+  const handleSort = (sortKey: ScopedSortState["orderBy"]) => {
+    setSort(
+      sort && sortKey === sort.orderBy && sort.direction === "descending"
+        ? undefined
+        : {
+          orderBy: sortKey,
+          direction:
+            sort && sortKey === sort.orderBy && sort.direction === "ascending"
+              ? "descending"
+              : "ascending",
+        },
     );
+  };
+
+  function comparator<T>(a: T, b: T, orderBy: keyof T): number {
+    if (b[orderBy] == null || b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+
+
+  const sortedData = data.slice().sort((a, b) => {
+    if (sort) {
+      return sort.direction === "ascending"
+        ? comparator(b, a, sort.orderBy)
+        : comparator(a, b, sort.orderBy);
+    }
+    return 1;
+  });
+
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 4;
+
+
+  let sortData = data;
+  sortData = sortData.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+
+  return (
+    <div className="flex flex-col h-full justify-between gap-4">
+      <Table size="small">
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell scope="col">CorrId</Table.HeaderCell>
+            <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
+            <Table.HeaderCell scope="col">Ressurs</Table.HeaderCell>
+            <Table.HeaderCell scope="col">Response</Table.HeaderCell>
+            <Table.HeaderCell scope="col">Feil</Table.HeaderCell>
+            <Table.HeaderCell scope="col">Tid</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {sortData.map((bruh) => {
+            return (
+              <></>
+            );
+          })}
+        </Table.Body>
+      </Table>
+      <HStack justify='center'>
+        <Pagination
+          page={page}
+          onPageChange={setPage}
+          count={Math.ceil(data.length / rowsPerPage)}
+          size="small"
+        />
+      </HStack>
+    </div>
+  );
 }

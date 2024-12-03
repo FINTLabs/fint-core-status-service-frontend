@@ -1,13 +1,12 @@
 import {
   Links,
   Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
+  Outlet, Scripts, ScrollRestoration,
 } from "@remix-run/react";
 import "./tailwind.css";
 import "@navikt/ds-css"
-import {Box, Page} from "@navikt/ds-react";
+import Header from "~/components/root/Header";
+import {Box, Heading, HStack, Page, VStack} from "@navikt/ds-react";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,9 +18,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+      <HStack justify="center" className="h-screen">
+        <VStack gap='4' justify="center" className="w-3/4 h-full">
+          <Header />
+          <Box shadow='small' borderRadius='xlarge' margin='0 0 4 0' padding='4' className="flex-grow w-full px-4 py-6">
+            {children}
+            <ScrollRestoration />
+            <Scripts />
+          </Box>
+        </VStack>
+      </HStack>
       </body>
     </html>
   );
