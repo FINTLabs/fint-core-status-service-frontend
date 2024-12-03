@@ -2,12 +2,17 @@ import {HStack, Pagination, SortState, Table} from "@navikt/ds-react";
 import React, {useState} from "react";
 import {json} from "@remix-run/node";
 import {HendelserApi} from "~/api/HendelserApi";
-import page from "@navikt/ds-react/src/layout/page/Page";
-import {FintEvent, OperationType} from "~/types/Event";
 
 export const loader = async () => {
-  const events = await HendelserApi.getHendelser()
-  return json(events)
+  console.log("Loading...");
+  try {
+    const events = await HendelserApi.getHendelser()
+    console.log('events: ',)
+    return json(events)
+  } catch (error) {
+    console.log(error)
+    return null;
+  }
 };
 
 const format = (date: Date) => {
