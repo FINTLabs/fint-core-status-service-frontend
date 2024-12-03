@@ -1,5 +1,6 @@
 import {Box, HStack, LinkPanel, VStack} from "@navikt/ds-react";
 import {MENU_LINKS} from "~/constants/menu";
+import {EnvSelector} from "~/constants/envSelector";
 
 export default function Header() {
     return (
@@ -11,6 +12,7 @@ export default function Header() {
                   <LinkPanel.Title>{menuLink.name}</LinkPanel.Title>
                 </LinkPanel>
               ))}
+                <EnvSelector/>
             </HStack>
           </VStack>
         </Box>

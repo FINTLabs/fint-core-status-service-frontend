@@ -60,7 +60,7 @@ export default function FintEventTable() {
   );
 }
 
-const createResourceUri = (event:FintEvent) => {
+const createResourceUri = (event) => {
   const requestEvent = event.requestEvent;
 
   if (!requestEvent) {
