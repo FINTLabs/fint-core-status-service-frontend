@@ -15,13 +15,6 @@ export const loader = async () => {
   }
 };
 
-const format = (date: Date) => {
-  const y = date.getFullYear();
-  const m = (date.getMonth() + 1).toString().padStart(2, "0");
-  const d = date.getDate().toString().padStart(2, "0");
-  return `${d}.${m}.${y}`;
-};
-
 interface ScopedSortState extends SortState {
   orderBy: keyof (typeof data)[0];
 }
