@@ -3,12 +3,11 @@ import {useState} from "react";
 import {json, LoaderFunction} from "@remix-run/node";
 import {HendelserApi} from "~/api/HendelserApi";
 import {useLoaderData} from "@remix-run/react";
-import {FintEvent} from "~/types/Event";
+import {FintEvent, timeSince} from "~/types/Event";
 
 export const loader: LoaderFunction = async () => {
   try {
     const events = await HendelserApi.getHendelser("beta");
-    console.log("events: ", events);
     return json(events);
   } catch (error) {
     console.error("Loader Error: ", error);
@@ -32,7 +31,7 @@ export default function FintEventTable() {
             <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
             <Table.HeaderCell scope="col">Ressurs</Table.HeaderCell>
             <Table.HeaderCell scope="col">Response</Table.HeaderCell>
-            <Table.HeaderCell scope="col">Tid</Table.HeaderCell>
+            <Table.HeaderCell scope="col">Tid siden</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -43,7 +42,7 @@ export default function FintEventTable() {
                 <Table.HeaderCell>{event.orgId}</Table.HeaderCell>
                 <Table.HeaderCell>{createResourceUri(event)}</Table.HeaderCell>
                 <Table.HeaderCell>{String(event.responseEvent === null)}</Table.HeaderCell>
-                <Table.HeaderCell>{event.requestEvent ? event.requestEvent.created : "N/A"}</Table.HeaderCell>
+                <Table.HeaderCell>{timeSince(event.requestEvent?.created)}</Table.HeaderCell>
               </Table.Row>
             );
           })}
@@ -61,11 +60,11 @@ export default function FintEventTable() {
   );
 }
 
-const createResourceUri = (event) => {
+const createResourceUri = (event:FintEvent) => {
   const requestEvent = event.requestEvent;
 
   if (!requestEvent) {
-    return "N/A"; // Fallback value if requestEvent is null
+    return "N/A";
   }
 
   const domainName = requestEvent.domainName || "unknown-domain";
