@@ -41,7 +41,7 @@ export default function FintEventTable() {
                 <Table.HeaderCell>{event.corrId}</Table.HeaderCell>
                 <Table.HeaderCell>{event.orgId}</Table.HeaderCell>
                 <Table.HeaderCell>{createResourceUri(event)}</Table.HeaderCell>
-                <Table.HeaderCell>{String(event.responseEvent === null)}</Table.HeaderCell>
+                <Table.HeaderCell>{String(event.responseEvent != null)}</Table.HeaderCell>
                 <Table.HeaderCell>{timeSince(event.requestEvent?.created)}</Table.HeaderCell>
               </Table.Row>
             );
