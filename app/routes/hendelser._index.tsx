@@ -19,7 +19,7 @@ export default function FintEventTable() {
     const fintEvents = useLoaderData<FintEvent[]>();
     const filteredEvents = fintEvents.filter(s => s.requestEvent != null && s.requestEvent.domainName != null)
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 15;
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pagedEvents = filteredEvents.slice(startIndex, endIndex);
@@ -51,7 +51,7 @@ export default function FintEventTable() {
                 </Table.Body>
             </Table>
             <HStack justify='center'>
-                {filteredEvents.length > 20 && (
+                {filteredEvents.length > 15 && (
                 <Pagination
                     page={currentPage}
                     onPageChange={(page: number) => setCurrentPage(page)}
