@@ -1,13 +1,15 @@
-import {HStack, Pagination, Table} from "@navikt/ds-react";
+import {HStack, Label, Pagination, Search, Table} from "@navikt/ds-react";
 import {useState} from "react";
 import {json, LoaderFunction} from "@remix-run/node";
 import {useLoaderData} from "@remix-run/react";
 import {FintEvent, timeSince} from "~/types/Event";
 import {HendelserApi} from "~/api/HendelserApi";
+import MockFintEvents from "~/mockFintEvents";
+import {MagnifyingGlassIcon} from "@navikt/aksel-icons";
 
 export const loader: LoaderFunction = async () => {
     try {
-        const events = await HendelserApi.getHendelser("beta");
+        const events = MockFintEvents;
         return json(events);
     } catch (error) {
         console.error("Loader Error: ", error);
@@ -15,21 +17,72 @@ export const loader: LoaderFunction = async () => {
     }
 };
 
+// await HendelserApi.getHendelser("beta")
+
 export default function FintEventTable() {
     const fintEvents = useLoaderData<FintEvent[]>();
-    const filteredEvents = fintEvents.filter(s => s.requestEvent != null && s.requestEvent.domainName != null)
+
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 15;
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchVisible, setSearchVisible] = useState(false);
+
+
+    const filteredEvents = fintEvents.filter(
+        (event) =>
+            event.corrId?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+            event.requestEvent != null &&
+            event.requestEvent.domainName != null
+    );
+
+
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pagedEvents = filteredEvents.slice(startIndex, endIndex);
 
+
+    function handleSearch(value: string) {
+        setSearchQuery(value);
+        setCurrentPage(1);
+    }
+
+
     return (
         <div className="flex flex-col h-full justify-between gap-4">
+            <form>
+                <HStack gap='4' className='max-w-fit pb-4'>
+                    {
+                        searchVisible ?
+
+                    <Search
+                        label={"Søk etter CorrId"}
+                        hideLabel={false}
+                        size='small'
+                        variant={"secondary"}
+                        onChange={(value : string ) => handleSearch(value)}
+                    />
+                     : <></>
+                    }
+                </HStack>
+
             <Table size="small">
+
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell scope="col">CorrId</Table.HeaderCell>
+                        <Table.HeaderCell scope="col" className={"w-24"}>
+                            <button
+                                className={"flex-row flex"}
+                                onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setSearchVisible((prev) => !prev);
+                            }}>
+                            <Label className={"cursor-pointer"}>
+                                CorrId
+                            </Label>
+                                <MagnifyingGlassIcon  title="a11y-title" fontSize="0.7rem" />
+                            </button>
+                        </Table.HeaderCell>
                         <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
                         <Table.HeaderCell scope="col">Ressurs</Table.HeaderCell>
                         <Table.HeaderCell scope="col">Response</Table.HeaderCell>
@@ -61,6 +114,7 @@ export default function FintEventTable() {
                 />
                 )}
             </HStack>
+            </form>
         </div>
     );
 }
