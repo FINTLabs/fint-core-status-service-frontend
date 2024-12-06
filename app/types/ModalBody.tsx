@@ -25,9 +25,9 @@ export function formatResponseEvent(event: FintEvent | null): JSX.Element {
             <p>HandledAt: {new Date(String(event?.responseEvent?.handledAt)).toLocaleTimeString()}</p>
             <p>OperationType: {event?.responseEvent?.operationType}</p>
             <p>Failed: {event?.responseEvent?.failed}</p>
-            <p>ErrorMessage: {event?.responseEvent?.errorMessage} : null</p>
+            <p>ErrorMessage: {event?.responseEvent?.errorMessage} ingen</p>
             <p>recjected: {event?.responseEvent?.rejected}</p>
-            <p>OperationType: {event?.responseEvent?.rejectReason} : null</p>
+            <p>OperationType: {event?.responseEvent?.rejectReason} null</p>
 
         </code>
     </div>

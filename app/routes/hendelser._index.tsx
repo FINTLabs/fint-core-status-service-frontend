@@ -66,7 +66,6 @@ export default function FintEventTable() {
             </Modal>
             <form>
                 <HStack gap='4' className='max-w-fit pb-4'>
-                    {
                         searchVisible ?
 
                     <Search
@@ -76,8 +75,6 @@ export default function FintEventTable() {
                         variant={"secondary"}
                         onChange={(value : string ) => handleSearch(value)}
                     />
-                     : <></>
-                    }
                 </HStack>
                 </form>
             <Table size="small">
