@@ -66,8 +66,6 @@ export default function FintEventTable() {
             </Modal>
             <form>
                 <HStack gap='4' className='max-w-fit pb-4'>
-                        searchVisible ?
-
                     <Search
                         label={"Søk etter CorrId"}
                         hideLabel={false}
