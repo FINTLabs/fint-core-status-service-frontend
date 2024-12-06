@@ -1,15 +1,15 @@
-import {HStack, Label, Pagination, Search, Table} from "@navikt/ds-react";
-import {useState} from "react";
+import {BodyLong, HGrid, HStack, Label, Modal, Pagination, Search, Table, VStack} from "@navikt/ds-react";
 import {json, LoaderFunction} from "@remix-run/node";
 import {useLoaderData} from "@remix-run/react";
 import {FintEvent, timeSince} from "~/types/Event";
+import {formatRequestEvent, formatResponseEvent, ModalBody} from "~/types/ModalBody";
+import React, {useState} from "react";
 import {HendelserApi} from "~/api/HendelserApi";
-import MockFintEvents from "~/mockFintEvents";
 import {MagnifyingGlassIcon} from "@navikt/aksel-icons";
 
 export const loader: LoaderFunction = async () => {
     try {
-        const events = MockFintEvents;
+        const events = await HendelserApi.getHendelser("beta");
         return json(events);
     } catch (error) {
         console.error("Loader Error: ", error);
@@ -17,13 +17,11 @@ export const loader: LoaderFunction = async () => {
     }
 };
 
-// await HendelserApi.getHendelser("beta")
-
 export default function FintEventTable() {
     const fintEvents = useLoaderData<FintEvent[]>();
-
+    const [modal, setModal] = useState<ModalBody>(false, Event);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 15;
+    const itemsPerPage = 5;
     const [searchQuery, setSearchQuery] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
 
@@ -49,6 +47,20 @@ export default function FintEventTable() {
 
     return (
         <div className="flex flex-col h-full justify-between gap-4">
+            <Modal width={"medium"} open={modal.open} header={{ heading: String(`${modal.event?.corrId}: ${modal.event?.orgId}`) }} closeOnBackdropClick onClose={() => setModal({open: false, event: null})}>
+                <Modal.Body>
+                    <BodyLong>
+                        <HGrid columns={2}>
+                            <HStack style={{backgroundColor: 'lightgray'}} width={"50‰"}>
+                                {formatRequestEvent(modal.event)}
+                            </HStack>
+                            <HStack style={{backgroundColor: 'lightgray', marginLeft: '10px'}} width={"50‰"}>
+                                {formatResponseEvent(modal.event)}
+                            </HStack>
+                        </HGrid>
+                    </BodyLong>
+                </Modal.Body>
+            </Modal>
             <form>
                 <HStack gap='4' className='max-w-fit pb-4'>
                     {
@@ -64,9 +76,8 @@ export default function FintEventTable() {
                      : <></>
                     }
                 </HStack>
-
+                </form>
             <Table size="small">
-
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell scope="col" className={"w-24"}>
@@ -92,7 +103,7 @@ export default function FintEventTable() {
                 <Table.Body>
                     {pagedEvents.map((event, i) => {
                         return (
-                            <Table.Row key={i}>
+                            <Table.Row key={i} onClick={() => {setModal({open: true, event: event})}}>
                                 <Table.HeaderCell>{event.corrId}</Table.HeaderCell>
                                 <Table.HeaderCell>{event.orgId}</Table.HeaderCell>
                                 <Table.HeaderCell>{createResourceUri(event)}</Table.HeaderCell>
@@ -104,17 +115,16 @@ export default function FintEventTable() {
                 </Table.Body>
             </Table>
             <HStack justify='center'>
-                {filteredEvents.length > 15 && (
+                {fintEvents.length > 15 && (
                 <Pagination
                     page={currentPage}
                     onPageChange={(page: number) => setCurrentPage(page)}
-                    count={Math.ceil(filteredEvents.length / itemsPerPage)}
+                    count={Math.ceil(fintEvents.length / itemsPerPage)}
                     size="small"
                     className={'p-3'}
                 />
                 )}
             </HStack>
-            </form>
         </div>
     );
 }
