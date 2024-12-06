@@ -3,9 +3,9 @@ import {json, LoaderFunction} from "@remix-run/node";
 import {useLoaderData} from "@remix-run/react";
 import {FintEvent, timeSince} from "~/types/Event";
 import {formatRequestEvent, formatResponseEvent, ModalBody} from "~/types/ModalBody";
-import React, {useState} from "react";
 import {HendelserApi} from "~/api/HendelserApi";
 import {MagnifyingGlassIcon} from "@navikt/aksel-icons";
+import {useState} from "react";
 
 export const loader: LoaderFunction = async () => {
     try {

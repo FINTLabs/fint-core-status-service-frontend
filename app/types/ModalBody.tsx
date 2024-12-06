@@ -19,7 +19,7 @@ export function formatRequestEvent(event: FintEvent | null): JSX.Element {
 }
 
 export function formatResponseEvent(event: FintEvent | null): JSX.Element {
-    return <div>
+    return <div className={"formatResponseEvent"}>
         <code>
             <p>Adapterid: {event?.responseEvent?.adapterId}</p>
             <p>HandledAt: {new Date(String(event?.responseEvent?.handledAt)).toLocaleTimeString()}</p>
