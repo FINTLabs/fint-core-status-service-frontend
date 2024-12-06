@@ -1,4 +1,4 @@
-import {Box, HStack, Search, Select, VStack} from "@navikt/ds-react";
+import {VStack} from "@navikt/ds-react";
 import ConsumerFilter from "~/components/komponenter/ConsumerFilter";
 import {useState} from "react";
 import FilteredConsumers from "~/components/komponenter/FilteredConsumers";
