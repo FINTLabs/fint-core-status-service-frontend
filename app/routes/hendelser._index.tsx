@@ -64,33 +64,40 @@ export default function FintEventTable() {
                     {modal.event?.orgId}
                 </Modal.Footer>
             </Modal>
-            <form>
-                <HStack gap='4' className='max-w-fit pb-4'>
-                    <Search
-                        label={"Søk etter CorrId"}
-                        hideLabel={false}
-                        size='small'
-                        variant={"secondary"}
-                        onChange={(value : string ) => handleSearch(value)}
-                    />
-                </HStack>
-                </form>
+
             <Table size="small">
                 <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell scope="col" className={"w-24"}>
-                            <button
-                                className={"flex-row flex"}
-                                onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setSearchVisible((prev) => !prev);
-                            }}>
-                            <Label className={"cursor-pointer"}>
-                                CorrId
-                            </Label>
-                                <MagnifyingGlassIcon  title="a11y-title" fontSize="0.7rem" />
-                            </button>
+                    <Table.Row
+                    shadeOnHover={true}
+                    >
+                        <Table.HeaderCell scope="col">
+                            { !searchVisible ?
+                              (  <button
+                                    className={"flex-row flex"}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setSearchVisible((prev) => !prev);
+                                    }}>
+                                    <Label className={"cursor-pointer"}>
+                                        CorrId
+                                    </Label>
+                                    <MagnifyingGlassIcon title="a11y-title" fontSize="0.7rem"/>
+                                </button>)
+                                :
+                              (  <form>
+                                <HStack gap='4' className='max-w-fit pb-4'>
+                                <Search
+                                label={"Søk etter CorrId"}
+                            hideLabel={true}
+                            size='small'
+                            variant={"secondary"}
+                            onChange={(value : string ) => handleSearch(value)}
+                        />
+                    </HStack>
+                </form>)
+                            }
+
                         </Table.HeaderCell>
                         <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
                         <Table.HeaderCell scope="col">Ressurs</Table.HeaderCell>
