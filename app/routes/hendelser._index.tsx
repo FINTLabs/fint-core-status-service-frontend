@@ -47,7 +47,7 @@ export default function FintEventTable() {
 
     return (
         <div className="flex flex-col h-full justify-between gap-4">
-            <Modal width={"medium"} open={modal.open} header={{ heading: String(`${modal.event?.corrId}: ${modal.event?.orgId}`) }} closeOnBackdropClick onClose={() => setModal({open: false, event: null})}>
+            <Modal width={10000} open={modal.open} header={{ heading: String(modal.event?.corrId) }} closeOnBackdropClick onClose={() => setModal({open: false, event: null})}>
                 <Modal.Body>
                     <BodyLong>
                         <HGrid columns={2}>
@@ -60,6 +60,9 @@ export default function FintEventTable() {
                         </HGrid>
                     </BodyLong>
                 </Modal.Body>
+                <Modal.Footer>
+                    {modal.event?.orgId}
+                </Modal.Footer>
             </Modal>
             <form>
                 <HStack gap='4' className='max-w-fit pb-4'>

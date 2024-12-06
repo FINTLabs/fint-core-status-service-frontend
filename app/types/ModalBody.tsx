@@ -28,7 +28,6 @@ export function formatResponseEvent(event: FintEvent | null): JSX.Element {
             <p>ErrorMessage: {event?.responseEvent?.errorMessage} : null</p>
             <p>recjected: {event?.responseEvent?.rejected}</p>
             <p>OperationType: {event?.responseEvent?.rejectReason} : null</p>
-            <p>value: {}</p>
 
         </code>
     </div>
