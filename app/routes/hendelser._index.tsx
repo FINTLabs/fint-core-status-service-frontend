@@ -21,7 +21,7 @@ export default function FintEventTable() {
     const fintEvents = useLoaderData<FintEvent[]>();
     const [modal, setModal] = useState<ModalBody>(false, Event);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 15;
     const [searchQuery, setSearchQuery] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
 
