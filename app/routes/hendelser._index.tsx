@@ -91,7 +91,7 @@ export default function FintEventTable() {
                                 label={"Søk etter CorrId"}
                             hideLabel={true}
                             size='small'
-                            variant={"secondary"}
+                            variant={"simple"}
                             onChange={(value : string ) => handleSearch(value)}
                         />
                     </HStack>
