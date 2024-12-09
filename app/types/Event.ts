@@ -7,6 +7,7 @@ export enum OperationType {
 
 export interface SyncPageEntry {
   identifier: string;
+  resource: string
 }
 
 export interface RequestFintEvent {
