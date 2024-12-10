@@ -5,27 +5,29 @@ import {backendRoutesMap} from "~/api/backendRoutes";
 import {HeaderProperties} from "~/components/root/HeaderProperties";
 
 const PROFILE = process.env.PROFILE
+const LOCAL_URL = process.env.PUBLIC_API_URL
+console.log('PROFILE:', PROFILE);
 
 export class StatusApi {
   static async getHendelser(env: string): Promise<FintEvent[]> {
-    const requestUrl = `${backendRoutesMap[env.toLowerCase()]}/event`
-    return this.getResponse(requestUrl)
+    return this.getResponse(env, "event")
   }
 
   static async getContracts(env: string): Promise<AdapterContract[]> {
-    const requestUrl = `${backendRoutesMap[env.toLowerCase()]}/contract`
-    return this.getResponse(requestUrl)
+    return this.getResponse(env, "contract")
   }
 
-  static async getResponse(requestUrl) {
-    const response = PROFILE === 'local'
-      ? await this.performRequest(requestUrl)
-      : await this.performLocalRequest()
+  static async getResponse(env, uri) {
+    const response = (PROFILE != null && PROFILE === 'local')
+      ? await this.performLocalRequest(uri)
+      : await this.performRequest(env, uri)
 
     return await response.json()
   }
 
-  static async performRequest(requestUrl: string) {
+  static async performRequest(env, uri) {
+    const requestUrl = `${backendRoutesMap[env.toLowerCase()]}/${uri}`;
+
     return await fetch(requestUrl, {
       method: 'GET',
       headers: {
@@ -35,8 +37,8 @@ export class StatusApi {
     });
   }
 
-  static async performLocalRequest() {
-    return await fetch(process.env.PUBLIC_API_URL, {
+  static async performLocalRequest(uri) {
+    return await fetch(`${LOCAL_URL}/${uri}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${process.env.PUBLIC_TOKEN}`,

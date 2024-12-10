@@ -8,6 +8,7 @@ import {useLoaderData} from "@remix-run/react";
 export const loader: LoaderFunction = async () => {
   try {
     const events = await StatusApi.getContracts("beta");
+    console.log("Contracts data:", events); // Inspect the data
     return json(events);
   } catch (error) {
     console.error("Loader Error: ", error);
