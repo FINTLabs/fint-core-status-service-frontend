@@ -3,13 +3,13 @@ import {json, LoaderFunction} from "@remix-run/node";
 import {useLoaderData} from "@remix-run/react";
 import {FintEvent, timeSince} from "~/types/Event";
 import {formatRequestEvent, formatResponseEvent, ModalBody} from "~/types/ModalBody";
-import {HendelserApi} from "~/api/HendelserApi";
+import {StatusApi} from "~/api/StatusApi";
 import {MagnifyingGlassIcon} from "@navikt/aksel-icons";
 import {useState} from "react";
 
 export const loader: LoaderFunction = async () => {
     try {
-        const events = await HendelserApi.getHendelser("beta");
+        const events = await StatusApi.getHendelser("beta");
         return json(events);
     } catch (error) {
         console.error("Loader Error: ", error);
