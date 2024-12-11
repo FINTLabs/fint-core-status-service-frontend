@@ -2,8 +2,10 @@ import {
   BodyLong,
   Heading,
   HStack,
+  Label,
   Modal,
   Pagination,
+  Search,
   Table,
 } from "@navikt/ds-react";
 import { useEffect, useRef, useState } from "react";
@@ -11,10 +13,12 @@ import { json, LoaderFunction } from "@remix-run/node";
 import { StatusApi } from "~/api/StatusApi";
 import { AdapterContract, ContractModal } from "~/types/AdapterContract";
 import { useLoaderData } from "@remix-run/react";
+import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
 
 export const loader: LoaderFunction = async () => {
   try {
     const events = await StatusApi.getContracts("beta");
+    console.log("Contracts data:", events); // Inspect the data
     return json(events);
   } catch (error) {
     console.error("Loader Error: ", error);
@@ -30,7 +34,9 @@ export default function Kontrakter() {
   });
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(4);
+  const [searchQuery, setSearchQuery] = useState("");
   const tableContainerRef = useRef<HTMLDivElement>(null);
+  const [searchVisible, setSearchVisible] = useState(false);
 
   useEffect(() => {
     const calculateRowsPerPage = () => {
@@ -51,10 +57,21 @@ export default function Kontrakter() {
     };
   }, []);
 
-  const sortData = contracts.slice(
+  const filteredContracts = contracts.filter(
+    (contract) =>
+      searchQuery === "" ||
+      contract.adapterId?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortData = filteredContracts.slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
+
+  function handleSearch(value: string) {
+    setSearchQuery(value);
+    setPage(1);
+  }
 
   return (
     <div
@@ -83,7 +100,34 @@ export default function Kontrakter() {
       <Table size="small">
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell scope="col">AdapterId</Table.HeaderCell>
+            <Table.HeaderCell scope="col">
+              {!searchVisible ? (
+                <button
+                  className={"flex-row flex"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSearchVisible((prev) => !prev);
+                  }}
+                >
+                  <Label className={"cursor-pointer"}>AdapterId</Label>
+                  <MagnifyingGlassIcon title="a11y-title" fontSize="0.7rem" />
+                </button>
+              ) : (
+                <form>
+                  <HStack gap="4" className="max-w-fit pb-4">
+                    <Search
+                      label={"Søk etter CorrId"}
+                      hideLabel={true}
+                      size="small"
+                      variant={"simple"}
+                      onChange={(value: string) => handleSearch(value)}
+                    />
+                  </HStack>
+                </form>
+              )}
+            </Table.HeaderCell>
+
             <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
             <Table.HeaderCell scope="col">Components</Table.HeaderCell>
             <Table.HeaderCell scope="col">Healthy heartbeats</Table.HeaderCell>
