@@ -1,30 +1,36 @@
-import {BodyLong, Heading, HStack, Label, Modal, Pagination, Search, Table} from "@navikt/ds-react";
-import {useEffect, useRef, useState} from "react";
-import {json, LoaderFunction} from "@remix-run/node";
-import {StatusApi} from "~/api/StatusApi";
-import {AdapterContract, ContractModal} from "~/types/AdapterContract";
-import {useLoaderData} from "@remix-run/react";
-import {MagnifyingGlassIcon} from "@navikt/aksel-icons";
+import {
+  BodyLong,
+  Heading,
+  HStack,
+  Modal,
+  Pagination,
+  Table,
+} from "@navikt/ds-react";
+import { useEffect, useRef, useState } from "react";
+import { json, LoaderFunction } from "@remix-run/node";
+import { StatusApi } from "~/api/StatusApi";
+import { AdapterContract, ContractModal } from "~/types/AdapterContract";
+import { useLoaderData } from "@remix-run/react";
 
 export const loader: LoaderFunction = async () => {
   try {
     const events = await StatusApi.getContracts("beta");
-    console.log("Contracts data:", events); // Inspect the data
     return json(events);
   } catch (error) {
     console.error("Loader Error: ", error);
-    throw new Response("Failed to load events", {status: 500});
+    throw new Response("Failed to load events", { status: 500 });
   }
 };
 
 export default function Kontrakter() {
   const contracts = useLoaderData<AdapterContract[]>();
-  const [modal, setModal] = useState<ContractModal>({open: false, contract: null});
+  const [modal, setModal] = useState<ContractModal>({
+    open: false,
+    contract: null,
+  });
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(4);
-  const [searchQuery, setSearchQuery] = useState("");
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const [searchVisible, setSearchVisible] = useState(false);
 
   useEffect(() => {
     const calculateRowsPerPage = () => {
@@ -45,24 +51,19 @@ export default function Kontrakter() {
     };
   }, []);
 
-  const filteredContracts = contracts.filter(
-      (contract) =>
-          searchQuery === "" ||
-          contract.adapterId?.toLowerCase().includes(searchQuery.toLowerCase())
+  const sortData = contracts.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
   );
 
-  const sortData = filteredContracts.slice((page - 1) * rowsPerPage, page * rowsPerPage);
-
-  function handleSearch(value: string) {
-    setSearchQuery(value);
-    setPage(1);
-  }
-
   return (
-    <div className="flex flex-col h-full justify-between gap-4" ref={tableContainerRef}>
+    <div
+      className="flex flex-col h-full justify-between gap-4"
+      ref={tableContainerRef}
+    >
       <Modal
         open={modal.open}
-        onClose={() => setModal({open: false, contract: null})}
+        onClose={() => setModal({ open: false, contract: null })}
         aria-labelledby="modal-heading"
         closeOnBackdropClick
       >
@@ -82,36 +83,7 @@ export default function Kontrakter() {
       <Table size="small">
         <Table.Header>
           <Table.Row>
-          <Table.HeaderCell scope="col">
-            { !searchVisible ?
-                (  <button
-                    className={"flex-row flex"}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setSearchVisible((prev) => !prev);
-                    }}>
-                  <Label className={"cursor-pointer"}>
-                    AdapterId
-                  </Label>
-                  <MagnifyingGlassIcon title="a11y-title" fontSize="0.7rem"/>
-                </button>)
-                :
-                (  <form>
-                  <HStack gap='4' className='max-w-fit pb-4'>
-                    <Search
-                        label={"Søk etter CorrId"}
-                        hideLabel={true}
-                        size='small'
-                        variant={"simple"}
-                        onChange={(value: string) => handleSearch(value)}
-                    />
-                  </HStack>
-                </form>)
-            }
-          </Table.HeaderCell>
-
-
+            <Table.HeaderCell scope="col">AdapterId</Table.HeaderCell>
             <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
             <Table.HeaderCell scope="col">Components</Table.HeaderCell>
             <Table.HeaderCell scope="col">Healthy heartbeats</Table.HeaderCell>
@@ -121,7 +93,10 @@ export default function Kontrakter() {
         <Table.Body>
           {sortData.map((contract, i) => {
             return (
-              <Table.Row key={i} onClick={() => setModal({open: true, contract: contract})}>
+              <Table.Row
+                key={i}
+                onClick={() => setModal({ open: true, contract: contract })}
+              >
                 <Table.HeaderCell
                   scope="row"
                   className="max-w-[400px] overflow-hidden text-ellipsis whitespace-nowrap"
@@ -129,9 +104,13 @@ export default function Kontrakter() {
                 >
                   {contract.adapterId}
                 </Table.HeaderCell>
-                <Table.HeaderCell scope="row">{contract.orgId}</Table.HeaderCell>
+                <Table.HeaderCell scope="row">
+                  {contract.orgId}
+                </Table.HeaderCell>
                 <Table.HeaderCell scope="row">do it later</Table.HeaderCell>
-                <Table.HeaderCell scope="row">{String(contract.hasContact)}</Table.HeaderCell>
+                <Table.HeaderCell scope="row">
+                  {String(contract.hasContact)}
+                </Table.HeaderCell>
                 <Table.HeaderCell scope="row">do it later</Table.HeaderCell>
               </Table.Row>
             );

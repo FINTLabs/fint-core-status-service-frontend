@@ -1,41 +1,102 @@
-import {Links, Meta, Outlet, Scripts, ScrollRestoration,} from "@remix-run/react";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useFetcher,
+  useLoaderData,
+} from "@remix-run/react";
 import "./tailwind.css";
-import "@navikt/ds-css"
+import "@navikt/ds-css";
 import Header from "~/components/root/Header";
-import {Box, HStack, VStack} from "@navikt/ds-react";
-import {LoaderFunctionArgs} from "@remix-run/router";
-import {HeaderProperties} from "~/components/root/HeaderProperties";
+import { Box, HStack, VStack } from "@navikt/ds-react";
+import { LoaderFunctionArgs } from "@remix-run/router";
+import { HeaderProperties } from "~/components/root/HeaderProperties";
+import { envCookie } from "~/components/cookie";
+import { ActionFunction, json } from "@remix-run/node";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   HeaderProperties.setProperties(request);
-  return null
+  const cookieHeader = request.headers.get("Cookie");
+  let selectedEnv = await envCookie.parse(cookieHeader);
+  if (!selectedEnv) {
+    selectedEnv = "api";
+    const newCookieHeader = await envCookie.serialize(selectedEnv);
+    return json(
+      { selectedEnv },
+      {
+        headers: {
+          "Set-Cookie": newCookieHeader,
+        },
+      }
+    );
+  }
+  return json({ selectedEnv });
 };
 
-export function Layout({children}: { children: React.ReactNode }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-    <head>
-      <meta charSet="utf-8"/>
-      <meta name="viewport" content="width=device-width, initial-scale=1"/>
-      <Meta/>
-      <Links/>
-    </head>
-    <body>
-    <HStack justify="center" className="h-screen">
-      <VStack gap='4' justify="center" className="w-3/4 h-full">
-        <Header/>
-        <Box shadow='small' borderRadius='xlarge' margin='0 0 4 0' padding='4' className="flex-grow w-full px-4 py-6">
-          {children}
-          <ScrollRestoration/>
-          <Scripts/>
-        </Box>
-      </VStack>
-    </HStack>
-    </body>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </body>
     </html>
   );
 }
 
 export default function App() {
-  return <Outlet/>;
+  const { selectedEnv } = useLoaderData<{ selectedEnv: string }>();
+  const fetcher = useFetcher();
+
+  function setEnv(env: string) {
+    const formData = new FormData();
+    formData.append("env", env);
+    fetcher.submit(formData, { method: "POST" });
+  }
+
+  return (
+    <HStack justify="center" className="h-screen">
+      <VStack gap="4" justify="center" className="w-3/4 h-full">
+        <Box
+          shadow="small"
+          borderRadius="xlarge"
+          margin="0 0 4 0"
+          padding="4"
+          className="flex-grow w-full px-4 py-6"
+        >
+          <Header onHeaderChange={setEnv} value={selectedEnv} />
+          <p>env: {selectedEnv}</p>
+          <Outlet />
+        </Box>
+      </VStack>
+    </HStack>
+  );
 }
+
+export const action: ActionFunction = async ({ request }) => {
+  const formdata = await request.formData();
+  const environment = formdata.get("env") as string;
+
+  if (environment) {
+    console.log("environment:", environment);
+    const newCookieHeader = await envCookie.serialize(environment);
+    return json(
+      { environment },
+      {
+        headers: {
+          "Set-Cookie": newCookieHeader,
+        },
+      }
+    );
+  }
+  return json({ ok: true });
+};
