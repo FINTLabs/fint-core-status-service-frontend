@@ -66,6 +66,7 @@ export default function App() {
   return (
     <HStack justify="center" className="h-screen">
       <VStack gap="4" justify="center" className="w-3/4 h-full">
+        <Header onHeaderChange={setEnv} value={selectedEnv} />
         <Box
           shadow="small"
           borderRadius="xlarge"
@@ -73,7 +74,6 @@ export default function App() {
           padding="4"
           className="flex-grow w-full px-4 py-6"
         >
-          <Header onHeaderChange={setEnv} value={selectedEnv} />
           <Outlet />
         </Box>
       </VStack>
