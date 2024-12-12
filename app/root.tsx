@@ -74,7 +74,6 @@ export default function App() {
           className="flex-grow w-full px-4 py-6"
         >
           <Header onHeaderChange={setEnv} value={selectedEnv} />
-          <p>env: {selectedEnv}</p>
           <Outlet />
         </Box>
       </VStack>
