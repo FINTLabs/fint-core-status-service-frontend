@@ -28,15 +28,6 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 };
 
 export function Layout({children}: { children: React.ReactNode }) {
-  const {selectedEnv} = useLoaderData<{ selectedEnv: string }>();
-  const fetcher = useFetcher();
-
-  function setEnv(env: string) {
-    const formData = new FormData();
-    formData.append("env", env);
-    fetcher.submit(formData, {method: "POST"});
-  }
-
   return (
     <html lang="en">
     <head>
@@ -48,16 +39,7 @@ export function Layout({children}: { children: React.ReactNode }) {
     <body>
     <HStack justify="center" className="h-screen">
       <VStack gap="4" justify="center" className="w-3/4 h-full">
-        <Header onHeaderChange={setEnv} value={selectedEnv}/>
-        <Box
-          shadow="small"
-          borderRadius="xlarge"
-          margin="0 0 4 0"
-          padding="4"
-          className="flex-grow w-full px-4 py-6"
-        >
-          {children}
-        </Box>
+        {children}
       </VStack>
     </HStack>
     <ScrollRestoration/>
@@ -68,8 +50,28 @@ export function Layout({children}: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const {selectedEnv} = useLoaderData<{ selectedEnv: string }>();
+  const fetcher = useFetcher();
+
+  function setEnv(env: string) {
+    const formData = new FormData();
+    formData.append("env", env);
+    fetcher.submit(formData, {method: "POST"});
+  }
+
   return (
-    <Outlet/>
+    <>
+      <Header onHeaderChange={setEnv} value={selectedEnv}/>
+      <Box
+        shadow="small"
+        borderRadius="xlarge"
+        margin="0 0 4 0"
+        padding="4"
+        className="flex-grow w-full px-4 py-6"
+      >
+        <Outlet/>
+      </Box>
+    </>
   );
 }
 
