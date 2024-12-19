@@ -28,11 +28,12 @@ export class StatusApi {
 
   static async performRequest(env: string, uri: string) {
     const requestUrl = `${backendRoutesMap[env.toLowerCase()]}/${uri}`;
+    console.log("Requesting to: ", requestUrl)
 
     return await fetch(requestUrl, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${HeaderProperties.getBearerToken()}`,
+        Authorization: `${HeaderProperties.getBearerToken()}`,
         "Content-Type": "application/json",
       },
     });
