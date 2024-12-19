@@ -14,11 +14,13 @@ import { StatusApi } from "~/api/StatusApi";
 import { AdapterContract, ContractModal } from "~/types/AdapterContract";
 import { useLoaderData } from "@remix-run/react";
 import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
+import {envCookie} from "~/components/cookie";
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request }) => {
+  const cookieHeader = request.headers.get("Cookie");
+  const selectedEnv = await envCookie.parse(cookieHeader);
   try {
-    const events = await StatusApi.getContracts("beta");
-    console.log("Contracts data:", events); // Inspect the data
+    const events = await StatusApi.getContracts(selectedEnv);
     return json(events);
   } catch (error) {
     console.error("Loader Error: ", error);
