@@ -12,5 +12,5 @@ metadata:
     fintlabs.no/team: core
     fintlabs.no/org-id: fintlabs.no
 spec:
-  hostname: api.core-status.fintlabs.no
+  hostname: core-status.fintlabs.no
   loggingLevel: debug
