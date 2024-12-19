@@ -35,6 +35,7 @@ export interface ResponseFintEvent {
 }
 
 export interface FintEvent {
+  topic: string;
   corrId: string;
   orgId: string;
   hasError: boolean;
