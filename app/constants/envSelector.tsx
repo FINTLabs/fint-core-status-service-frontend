@@ -16,7 +16,7 @@ export const EnvSelector = ({
     <Select label="" defaultValue={value} onChange={handleChange}>
       <option value="Api">API</option>
       <option value="Beta">BETA</option>
-      <option value="Aplha">ALPHA</option>
+      <option value="Alpha">ALPHA</option>
     </Select>
   );
 };
