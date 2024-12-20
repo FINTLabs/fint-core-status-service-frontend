@@ -1,28 +1,14 @@
-import {
-  BodyLong,
-  HGrid,
-  HStack,
-  Label,
-  Modal,
-  Pagination,
-  Search,
-  Table,
-  VStack,
-} from "@navikt/ds-react";
-import { json, LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { FintEvent, timeSince } from "~/types/Event";
-import {
-  formatRequestEvent,
-  formatResponseEvent,
-  ModalBody,
-} from "~/types/ModalBody";
-import { StatusApi } from "~/api/StatusApi";
-import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
-import { useState } from "react";
-import { envCookie } from "~/components/cookie";
+import {BodyLong, HGrid, HStack, Label, Modal, Pagination, Search, Table,} from "@navikt/ds-react";
+import {json, LoaderFunction} from "@remix-run/node";
+import {useLoaderData} from "@remix-run/react";
+import {FintEvent, timeSince} from "~/types/Event";
+import {formatRequestEvent, formatResponseEvent, ModalBody,} from "~/types/ModalBody";
+import {StatusApi} from "~/api/StatusApi";
+import {MagnifyingGlassIcon} from "@navikt/aksel-icons";
+import {useState} from "react";
+import {envCookie} from "~/components/cookie";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({request}) => {
   const cookieHeader = request.headers.get("Cookie");
   const selectedEnv = await envCookie.parse(cookieHeader);
   try {
@@ -30,7 +16,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return json(events);
   } catch (error) {
     console.error("Loader Error: ", error);
-    throw new Response("Failed to load events", { status: 500 });
+    throw new Response("Failed to load events", {status: 500});
   }
 };
 
@@ -63,18 +49,18 @@ export default function FintEventTable() {
       <Modal
         width={10000}
         open={modal.open}
-        header={{ heading: String(modal.event?.corrId) }}
+        header={{heading: String(modal.event?.corrId)}}
         closeOnBackdropClick
-        onClose={() => setModal({ open: false, event: null })}
+        onClose={() => setModal({open: false, event: null})}
       >
         <Modal.Body>
           <BodyLong>
             <HGrid columns={2}>
-              <HStack style={{ backgroundColor: "lightgray" }} width={"50‰"}>
+              <HStack style={{backgroundColor: "lightgray"}} width={"50‰"}>
                 {formatRequestEvent(modal.event)}
               </HStack>
               <HStack
-                style={{ backgroundColor: "lightgray", marginLeft: "10px" }}
+                style={{backgroundColor: "lightgray", marginLeft: "10px"}}
                 width={"50‰"}
               >
                 {formatResponseEvent(modal.event)}
@@ -99,7 +85,7 @@ export default function FintEventTable() {
                   }}
                 >
                   <Label className={"cursor-pointer"}>CorrId</Label>
-                  <MagnifyingGlassIcon title="a11y-title" fontSize="0.7rem" />
+                  <MagnifyingGlassIcon title="a11y-title" fontSize="0.7rem"/>
                 </button>
               ) : (
                 <form>
@@ -127,7 +113,7 @@ export default function FintEventTable() {
               <Table.Row
                 key={i}
                 onClick={() => {
-                  setModal({ open: true, event: event });
+                  setModal({open: true, event: event});
                 }}
               >
                 <Table.HeaderCell>{event.corrId}</Table.HeaderCell>
