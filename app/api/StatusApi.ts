@@ -29,6 +29,7 @@ export class StatusApi {
   static async performRequest(env: string, uri: string) {
     const requestUrl = `${backendRoutesMap[env.toLowerCase()]}/${uri}`;
     console.log("Requesting to: ", requestUrl)
+    console.log("Env: ", env.toLowerCase())
 
     return await fetch(requestUrl, {
       method: "GET",
