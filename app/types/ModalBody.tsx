@@ -22,12 +22,12 @@ export function formatResponseEvent(event: FintEvent | null): JSX.Element {
     return <div>
         <code>
             <p>Adapterid: {event?.responseEvent?.adapterId}</p>
-            <p>HandledAt: {new Date(String(event?.responseEvent?.handledAt)).toLocaleTimeString()}</p>
+            <p>HandledAt: {event?.responseEvent?.handledAt ? new Date(Number(event.responseEvent.handledAt) * 1000).toLocaleTimeString() : "N/A"}</p>
             <p>OperationType: {event?.responseEvent?.operationType}</p>
-            <p>Failed: {event?.responseEvent?.failed}</p>
-            <p>ErrorMessage: {event?.responseEvent?.errorMessage} ingen</p>
-            <p>recjected: {event?.responseEvent?.rejected}</p>
-            <p>OperationType: {event?.responseEvent?.rejectReason} null</p>
+            <p>Failed: {event?.responseEvent?.failed} Not failed</p>
+            <p>ErrorMessage: {event?.responseEvent?.errorMessage} No error message</p>
+            <p>recjected: {event?.responseEvent?.rejected} Not receted</p>
+            <p>OperationType: {event?.responseEvent?.rejectReason} No reject reason</p>
 
         </code>
     </div>
