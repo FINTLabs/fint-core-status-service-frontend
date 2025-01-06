@@ -153,7 +153,9 @@ export default function Kontrakter() {
                 <Table.HeaderCell scope="row">
                   {contract.orgId}
                 </Table.HeaderCell>
-                <Table.HeaderCell scope="row">do it later</Table.HeaderCell>
+                <Table.HeaderCell scope="row">
+                  {contract.components}
+                </Table.HeaderCell>
                 <Table.HeaderCell scope="row">
                   {String(contract.hasContact)}
                 </Table.HeaderCell>
