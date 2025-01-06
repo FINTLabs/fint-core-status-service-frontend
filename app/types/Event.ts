@@ -43,20 +43,38 @@ export interface FintEvent {
   responseEvent: ResponseFintEvent | null;
 }
 
-export function timeSince(timestamp: number | undefined): string {
-  const now = new Date().getTime();
+export function timeSince(
+    timestamp: number | undefined,
+    compareTo: number = new Date().getTime()
+): string {
   const createdTimeStamp = new Date(timestamp);
 
-  const elapsedMs = now - createdTimeStamp.getTime();
-  const elapsedMinutes = Math.floor(elapsedMs / (1000 * 60));
+  const elapsedMs = compareTo - createdTimeStamp.getTime();
+  const elapsedSeconds = Math.floor(elapsedMs / 1000);
+  const elapsedMinutes = Math.floor(elapsedSeconds / 60);
   const elapsedHours = Math.floor(elapsedMinutes / 60);
   const elapsedDays = Math.floor(elapsedHours / 24);
 
-  if (elapsedDays > 0) {
+  if (timestamp && compareTo !== new Date().getTime()) {
     const remainingHours = elapsedHours % 24;
-    return `${elapsedDays} dager og ${remainingHours} timer`;
-  } else {
     const remainingMinutes = elapsedMinutes % 60;
-    return `${elapsedHours} timer og ${remainingMinutes} minutter`;
+    const remainingSeconds = elapsedSeconds % 60;
+    if (elapsedDays > 0) {
+      return `${elapsedDays} dager, ${remainingHours} timer, ${remainingMinutes} minutter og ${remainingSeconds} sekunder`;
+    } else if (elapsedHours > 0) {
+      return `${elapsedHours} timer, ${remainingMinutes} minutter og ${remainingSeconds} sekunder`;
+    } else if (elapsedMinutes > 0) {
+      return `${elapsedMinutes} minutter og ${remainingSeconds} sekunder`;
+    } else {
+      return `${elapsedSeconds} sekunder`;
+    }
+  } else {
+    const remainingHours = elapsedHours % 24;
+    if (elapsedDays > 0) {
+      return `${elapsedDays} dager og ${remainingHours} timer`;
+    } else {
+      const remainingMinutes = elapsedMinutes % 60;
+      return `${elapsedHours} timer og ${remainingMinutes} minutter`;
+    }
   }
 }
