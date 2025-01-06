@@ -13,7 +13,7 @@ import {useLoaderData} from "@remix-run/react";
 import {FintEvent, timeSince} from "~/types/Event";
 import {formatRequestEvent, formatResponseEvent, ModalBody,} from "~/types/ModalBody";
 import {StatusApi} from "~/api/StatusApi";
-import {MagnifyingGlassIcon} from "@navikt/aksel-icons";
+import {Buildings3Icon, HouseIcon, MagnifyingGlassIcon, TagIcon} from "@navikt/aksel-icons";
 import {useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {ClockIcon} from '@navikt/aksel-icons';
@@ -80,6 +80,14 @@ export default function FintEventTable() {
                       <ClockIcon/>
                       <span>{timeSince(modal.event?.requestEvent?.created, modal.event?.responseEvent?.handledAt)}</span>
                     </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                      <Buildings3Icon />
+                      <span>{modal.event?.orgId}</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                      <TagIcon />
+                      <span>{modal.event?.topic}</span>
+                    </div>
                   </BodyLong>
                 </Modal.Body>
             </Modal>
@@ -88,7 +96,7 @@ export default function FintEventTable() {
               <Table.Row shadeOnHover={true}>
                 <Table.HeaderCell scope="col">
                   {!searchVisible ? (
-                                <button
+                      <button
                                     className={"flex-row flex"}
                                     onClick={(e) => {
                                         e.preventDefault();
