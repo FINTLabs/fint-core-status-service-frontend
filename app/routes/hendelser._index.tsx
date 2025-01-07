@@ -79,15 +79,15 @@ export default function FintEventTable() {
                         </HStack>
                     </HGrid>
                       <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                          <ClockIcon/>
+                          <ClockIcon  title="Time between request and response"/>
                           <span>{timeSince(modal.event?.requestEvent?.created, modal.event?.responseEvent?.handledAt)}</span>
                     </div>
                     <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                      <Buildings3Icon />
+                      <Buildings3Icon title="Org-Id"/>
                       <span>{modal.event?.orgId}</span>
                     </div>
                     <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                      <TagIcon />
+                      <TagIcon title="Kafka Topic"/>
                       <span>{modal.event?.topic}</span>
                     </div>
                   </BodyLong>
