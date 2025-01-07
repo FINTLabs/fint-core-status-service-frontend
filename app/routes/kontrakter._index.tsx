@@ -11,7 +11,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { json, LoaderFunction } from "@remix-run/node";
 import { StatusApi } from "~/api/StatusApi";
-import { AdapterContract, ContractModal } from "~/types/AdapterContract";
+import {AdapterContract, ContractModal, convertLastActivity} from "~/types/AdapterContract";
 import { useLoaderData } from "@remix-run/react";
 import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
 import {envCookie} from "~/components/cookie";
@@ -159,7 +159,7 @@ export default function Kontrakter() {
                 <Table.HeaderCell scope="row">
                   {String(contract.hasContact)}
                 </Table.HeaderCell>
-                <Table.HeaderCell scope="row">do it later</Table.HeaderCell>
+                <Table.HeaderCell scope="row">{convertLastActivity(contract.lastActivity)}</Table.HeaderCell>
               </Table.Row>
             );
           })}
