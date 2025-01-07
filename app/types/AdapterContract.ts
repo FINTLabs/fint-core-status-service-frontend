@@ -38,3 +38,17 @@ export function convertLastActivity(timestamp: number): string {
   return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
 
 }
+
+export function formatComponents(compontents: string[]): Array<string> {
+  const resources = new Array<string>;
+  compontents.forEach((component: string) => {
+    const parts = component.split('.');
+    if (parts.length > 1) {
+        if (!resources.find(resource => resource === parts[0])) {
+            resources.push(parts[0]);
+        }
+    }
+  })
+
+  return resources;
+}
