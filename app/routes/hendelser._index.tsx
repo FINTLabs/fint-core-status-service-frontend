@@ -57,7 +57,7 @@ export default function FintEventTable() {
     return (
         <div className="flex flex-col h-full justify-between gap-4">
             <Modal
-                width={10000}
+                width={"60%"}
                 open={modal.open}
                 header={{heading: String(modal.event?.corrId)}}
                 closeOnBackdropClick
@@ -66,19 +66,21 @@ export default function FintEventTable() {
                 <Modal.Body>
                   <BodyLong>
                     <HGrid columns={2}>
-                      <HStack style={{backgroundColor: "lightgray"}} width={"50‰"}>
-                        {formatRequestEvent(modal.event)}
-                      </HStack>
-                      <HStack
-                          style={{backgroundColor: "lightgray", marginLeft: "10px"}}
-                          width={"50‰"}
-                      >
-                        {formatResponseEvent(modal.event)}
-                      </HStack>
+                        <HStack width={"50‰"}>
+                            <pre className="bg-gray-100 p-3 rounded max-w-full max-h-96 overflow-auto text-sm">
+                                {formatRequestEvent(modal.event)}
+                            </pre>
+                        </HStack>
+                        <HStack
+                            width={"50‰"}>
+                             <pre className="bg-gray-100 p-3 rounded max-w-full max-h-96 overflow-auto text-sm">
+                                {formatResponseEvent(modal.event)}
+                            </pre>
+                        </HStack>
                     </HGrid>
-                    <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                      <ClockIcon/>
-                      <span>{timeSince(modal.event?.requestEvent?.created, modal.event?.responseEvent?.handledAt)}</span>
+                      <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                          <ClockIcon/>
+                          <span>{timeSince(modal.event?.requestEvent?.created, modal.event?.responseEvent?.handledAt)}</span>
                     </div>
                     <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
                       <Buildings3Icon />

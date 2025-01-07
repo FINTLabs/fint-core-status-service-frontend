@@ -19,6 +19,7 @@ export interface RequestFintEvent {
   operationType: OperationType;
   created: number;
   timeToLive: number;
+  value: string;
 }
 
 export interface ResponseFintEvent {
