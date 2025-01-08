@@ -1,5 +1,6 @@
 import {
-  BodyLong,
+  ActionMenu,
+  BodyLong, Button,
   Heading,
   HStack,
   Label,
@@ -8,13 +9,14 @@ import {
   Search,
   Table,
 } from "@navikt/ds-react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { json, LoaderFunction } from "@remix-run/node";
 import { StatusApi } from "~/api/StatusApi";
 import {AdapterContract, ContractModal, convertLastActivity, formatComponents} from "~/types/AdapterContract";
 import { useLoaderData } from "@remix-run/react";
-import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
+import {ChevronDownIcon, MagnifyingGlassIcon} from "@navikt/aksel-icons";
 import {envCookie} from "~/components/cookie";
+import {filterByOrgId} from "~/components/komponenter/ContractFilter";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
@@ -34,13 +36,29 @@ export default function Kontrakter() {
     open: false,
     contract: null,
   });
+  const filterdByOrg = filterByOrgId("telemarkfylke.no", contracts);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(4);
   const [searchQuery, setSearchQuery] = useState("");
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [searchVisible, setSearchVisible] = useState(false);
-  const sortBasedOnLastActivity = contracts.sort((a, b) => (a.lastActivity || 0) - (b.lastActivity || 0));
+  const sortBasedOnLastActivity = filterdByOrg.sort((a, b) => (a.lastActivity || 0) - (b.lastActivity || 0));
   sortBasedOnLastActivity.reverse();
+
+  const [views, setViews] = React.useState({
+    started: true,
+    fnr: false,
+    tags: true,
+  });
+
+  const [rows, setRows] = React.useState<string>("5");
+
+  const handleCheckboxChange = (checkboxId: string) => {
+    setViews((prevState) => ({
+      ...prevState,
+      [checkboxId]: !prevState[checkboxId],
+    }));
+  };
 
   useEffect(() => {
     const calculateRowsPerPage = () => {
@@ -132,7 +150,46 @@ export default function Kontrakter() {
               )}
             </Table.HeaderCell>
 
-            <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
+            <Table.HeaderCell scope="col">
+              <ActionMenu>
+                <ActionMenu.Trigger>
+                  <Button
+                      variant="tertiary-neutral"
+                      icon={<ChevronDownIcon aria-hidden />}
+                      iconPosition="right"
+                  >
+                    OrgId
+                  </Button>
+                </ActionMenu.Trigger>
+                <ActionMenu.Content>
+                  <ActionMenu.Group label="Organisasjoner" >
+                    <ActionMenu.CheckboxItem
+                        checked={
+                          Object.values(views).every(Boolean)
+                              ? true
+                              : Object.values(views).some(Boolean)
+                                  ? "indeterminate"
+                                  : false
+                        }
+                        onCheckedChange={() => {
+                          // const allChecked = Object.values(views).every(Boolean);
+                          // setViews((prevState) =>
+                          //     Object.keys(prevState).reduce(
+                          //         (acc, key) => {
+                          //           acc[key] = !allChecked;
+                          //           return acc;
+                          //         },
+                          //         {} as typeof views,
+                          //     ),
+                          // );
+                        }}
+                    >
+                      Velg alle
+                    </ActionMenu.CheckboxItem>
+                  </ActionMenu.Group>
+                </ActionMenu.Content>
+              </ActionMenu>
+            </Table.HeaderCell>
             <Table.HeaderCell scope="col">Components</Table.HeaderCell>
             <Table.HeaderCell scope="col">Healthy heartbeats</Table.HeaderCell>
             <Table.HeaderCell scope="col">Last Activity</Table.HeaderCell>
