@@ -13,10 +13,11 @@ import {useLoaderData} from "@remix-run/react";
 import {FintEvent, timeSince} from "~/types/Event";
 import {formatRequestEvent, formatResponseEvent, ModalBody,} from "~/types/ModalBody";
 import {StatusApi} from "~/api/StatusApi";
-import {Buildings3Icon, HouseIcon, MagnifyingGlassIcon, TagIcon} from "@navikt/aksel-icons";
+import {Buildings3Icon, MagnifyingGlassIcon, TagIcon} from "@navikt/aksel-icons";
 import {useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {ClockIcon} from '@navikt/aksel-icons';
+import {filter} from "minimatch";
 
 export const loader: LoaderFunction = async ({request}) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -37,8 +38,10 @@ export default function FintEventTable() {
     const itemsPerPage = 15;
     const [searchQuery, setSearchQuery] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
+    const sortedBadedOnTimeStamp = fintEvents.sort((a, b) => (a.requestEvent?.created || 0) - (b.requestEvent?.created || 0));
+    sortedBadedOnTimeStamp.reverse();
 
-    const filteredEvents = fintEvents.filter(
+    const filteredEvents = sortedBadedOnTimeStamp.filter(
         (event) =>
             event.corrId?.toLowerCase().includes(searchQuery.toLowerCase()) &&
             event.requestEvent != null &&
@@ -71,8 +74,7 @@ export default function FintEventTable() {
                                 {formatRequestEvent(modal.event)}
                             </pre>
                         </HStack>
-                        <HStack
-                            width={"50‰"}>
+                        <HStack width={"50‰"}>
                              <pre className="bg-gray-100 p-3 rounded max-w-full max-h-96 overflow-auto text-sm">
                                 {formatResponseEvent(modal.event)}
                             </pre>
