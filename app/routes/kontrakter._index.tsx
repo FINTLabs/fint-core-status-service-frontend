@@ -39,6 +39,8 @@ export default function Kontrakter() {
   const [searchQuery, setSearchQuery] = useState("");
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [searchVisible, setSearchVisible] = useState(false);
+  const sortBasedOnLastActivity = contracts.sort((a, b) => (a.lastActivity || 0) - (b.lastActivity || 0));
+  sortBasedOnLastActivity.reverse();
 
   useEffect(() => {
     const calculateRowsPerPage = () => {
@@ -59,7 +61,7 @@ export default function Kontrakter() {
     };
   }, []);
 
-  const filteredContracts = contracts.filter(
+  const filteredContracts = sortBasedOnLastActivity.filter(
     (contract) =>
       searchQuery === "" ||
       contract.adapterId?.toLowerCase().includes(searchQuery.toLowerCase())
