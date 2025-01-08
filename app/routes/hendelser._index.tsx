@@ -17,7 +17,6 @@ import {Buildings3Icon, MagnifyingGlassIcon, TagIcon} from "@navikt/aksel-icons"
 import {useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {ClockIcon} from '@navikt/aksel-icons';
-import {filter} from "minimatch";
 
 export const loader: LoaderFunction = async ({request}) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -35,7 +34,7 @@ export default function FintEventTable() {
     const fintEvents = useLoaderData<FintEvent[]>();
     const [modal, setModal] = useState<ModalBody>(false, Event);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 15;
+    const itemsPerPage = 20;
     const [searchQuery, setSearchQuery] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
     const sortedBadedOnTimeStamp = fintEvents.sort((a, b) => (a.requestEvent?.created || 0) - (b.requestEvent?.created || 0));
