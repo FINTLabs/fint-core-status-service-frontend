@@ -16,7 +16,7 @@ import {AdapterContract, ContractModal, convertLastActivity, formatComponents} f
 import { useLoaderData } from "@remix-run/react";
 import {ChevronDownIcon, MagnifyingGlassIcon} from "@navikt/aksel-icons";
 import {envCookie} from "~/components/cookie";
-import {filterByOrgId} from "~/components/komponenter/ContractFilter";
+import {filterByOrgId, getOrgs} from "~/components/komponenter/ContractFilter";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
@@ -31,33 +31,60 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Kontrakter() {
-  const contracts = useLoaderData<AdapterContract[]>();
   const [modal, setModal] = useState<ContractModal>({
     open: false,
     contract: null,
   });
-  const filterdByOrg = filterByOrgId("telemarkfylke.no", contracts);
+
+  const contracts = useLoaderData<AdapterContract[]>();
+  const orgs = getOrgs(contracts);
+  const [selectedOrgs, setSelectedOrgs] = useState(orgs);
+  const sortBasedOnLastActivity = contracts.sort((a, b) => (a.lastActivity || 0) - (b.lastActivity || 0));
+  sortBasedOnLastActivity.reverse();
+  const filterdByOrg = filterByOrgId(selectedOrgs, sortBasedOnLastActivity);
+
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(4);
   const [searchQuery, setSearchQuery] = useState("");
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [searchVisible, setSearchVisible] = useState(false);
-  const sortBasedOnLastActivity = filterdByOrg.sort((a, b) => (a.lastActivity || 0) - (b.lastActivity || 0));
-  sortBasedOnLastActivity.reverse();
 
-  const [views, setViews] = React.useState({
-    started: true,
-    fnr: false,
-    tags: true,
-  });
+  const [checkedStates, setCheckedStates] = React.useState(
+      orgs.reduce((acc, _, index) => {
+        acc[index] = true;
+        return acc;
+      }, {} as Record<number, boolean>)
+  );
 
-  const [rows, setRows] = React.useState<string>("5");
+  const handleCheckboxChange = (value: string, index: number) => {
+    setCheckedStates((prevState) => {
+      const newState = {
+        ...prevState,
+        [index]: !prevState[index],
+      };
 
-  const handleCheckboxChange = (checkboxId: string) => {
-    setViews((prevState) => ({
-      ...prevState,
-      [checkboxId]: !prevState[checkboxId],
-    }));
+      const newSelectedOrgs = orgs.filter((_, i) => newState[i]);
+      setSelectedOrgs(newSelectedOrgs);
+
+      return newState;
+    });
+  };
+
+  const handleSelectAll = () => {
+    const allChecked = Object.values(checkedStates).every(Boolean);
+
+    const newCheckedStates = orgs.reduce((acc, _, index) => {
+      acc[index] = !allChecked;
+      return acc;
+    }, {} as Record<number, boolean>);
+
+    setCheckedStates(newCheckedStates);
+    setSelectedOrgs(!allChecked ? orgs : []);
+  };
+
+  const isIndeterminate = () => {
+    const values = Object.values(checkedStates);
+    return values.some(Boolean) && !values.every(Boolean);
   };
 
   useEffect(() => {
@@ -79,7 +106,7 @@ export default function Kontrakter() {
     };
   }, []);
 
-  const filteredContracts = sortBasedOnLastActivity.filter(
+  const filteredContracts = filterdByOrg.filter(
     (contract) =>
       searchQuery === "" ||
       contract.adapterId?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -155,37 +182,27 @@ export default function Kontrakter() {
                 <ActionMenu.Trigger>
                   <Button
                       variant="tertiary-neutral"
-                      icon={<ChevronDownIcon aria-hidden />}
-                      iconPosition="right"
                   >
                     OrgId
                   </Button>
                 </ActionMenu.Trigger>
                 <ActionMenu.Content>
-                  <ActionMenu.Group label="Organisasjoner" >
+                  <ActionMenu.Group label="Velg organisasjon">
                     <ActionMenu.CheckboxItem
-                        checked={
-                          Object.values(views).every(Boolean)
-                              ? true
-                              : Object.values(views).some(Boolean)
-                                  ? "indeterminate"
-                                  : false
-                        }
-                        onCheckedChange={() => {
-                          // const allChecked = Object.values(views).every(Boolean);
-                          // setViews((prevState) =>
-                          //     Object.keys(prevState).reduce(
-                          //         (acc, key) => {
-                          //           acc[key] = !allChecked;
-                          //           return acc;
-                          //         },
-                          //         {} as typeof views,
-                          //     ),
-                          // );
-                        }}
+                        checked={Object.values(checkedStates).every(Boolean) ? true : isIndeterminate() ? "indeterminate" : false}
+                        onCheckedChange={handleSelectAll}
                     >
                       Velg alle
                     </ActionMenu.CheckboxItem>
+                    {orgs.map((value, index) => (
+                        <ActionMenu.CheckboxItem
+                            key={index}
+                            checked={checkedStates[index]}
+                            onCheckedChange={() => handleCheckboxChange(value, index)}
+                        >
+                          {value}
+                        </ActionMenu.CheckboxItem>
+                    ))}
                   </ActionMenu.Group>
                 </ActionMenu.Content>
               </ActionMenu>

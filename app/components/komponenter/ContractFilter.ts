@@ -1,12 +1,16 @@
 import {AdapterContract} from "~/types/AdapterContract";
 
-
-export function filterByOrgId(orgId: string, contracts: Array<AdapterContract>): Array<AdapterContract> {
-    const filterdByOrgId = new Array<AdapterContract>
-    contracts.forEach(contract => {
-        if (contract.orgId === orgId) {
-            filterdByOrgId.push(contract);
+export function getOrgs(contracts: Array<AdapterContract>): Array<string> {
+    const orgs = new Array<string>();
+    contracts.forEach((contract: AdapterContract) => {
+        const orgId = contract.orgId;
+        if (!orgs.includes(orgId)){
+            orgs.push(orgId);
         }
     })
-    return filterdByOrgId
+    return orgs;
+}
+
+export function filterByOrgId(orgIds: Array<string>, contracts: Array<AdapterContract>): Array<AdapterContract> {
+    return contracts.filter(value => orgIds.includes(value.orgId))
 }
