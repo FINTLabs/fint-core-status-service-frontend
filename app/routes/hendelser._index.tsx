@@ -39,17 +39,9 @@ export default function FintEventTable() {
     const [searchVisible, setSearchVisible] = useState(false);
     const sortedBadedOnTimeStamp = fintEvents.sort((a, b) => (a.requestEvent?.created || 0) - (b.requestEvent?.created || 0));
     sortedBadedOnTimeStamp.reverse();
-
-    const filteredEvents = sortedBadedOnTimeStamp.filter(
-        (event) =>
-            event.corrId?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-            event.requestEvent != null &&
-            event.requestEvent.domainName != null
-    );
-
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const pagedEvents = filteredEvents.slice(startIndex, endIndex);
+    const pagedEvents = sortedBadedOnTimeStamp.slice(startIndex, endIndex);
 
     function handleSearch(value: string) {
         setSearchQuery(value);
