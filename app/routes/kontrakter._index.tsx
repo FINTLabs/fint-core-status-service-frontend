@@ -149,7 +149,9 @@ export default function Kontrakter() {
       <Table size="small">
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell scope="col">
+            <Table.HeaderCell
+                scope="col"
+                style={{minWidth: "300px"}}>
               {!searchVisible ? (
                 <button
                   className={"flex-row flex"}
