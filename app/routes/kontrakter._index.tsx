@@ -16,7 +16,7 @@ import {AdapterContract, ContractModal, convertLastActivity, formatComponents} f
 import { useLoaderData } from "@remix-run/react";
 import {ChevronDownIcon, MagnifyingGlassIcon} from "@navikt/aksel-icons";
 import {envCookie} from "~/components/cookie";
-import {filterByOrgId, getOrgs} from "~/components/komponenter/ContractFilter";
+import {filterByOrgId, getComponents, getOrgs} from "~/components/komponenter/ContractFilter";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
@@ -42,6 +42,9 @@ export default function Kontrakter() {
   const sortBasedOnLastActivity = contracts.sort((a, b) => (a.lastActivity || 0) - (b.lastActivity || 0));
   sortBasedOnLastActivity.reverse();
   const filterdByOrg = filterByOrgId(selectedOrgs, sortBasedOnLastActivity);
+  const components = getComponents(contracts);
+  const [selectedComponents, setSelectedComponents] = useState()
+
 
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(4);
