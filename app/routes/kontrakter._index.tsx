@@ -43,7 +43,7 @@ export default function Kontrakter() {
   sortBasedOnLastActivity.reverse();
   const filterdByOrg = filterByOrgId(selectedOrgs, sortBasedOnLastActivity);
   const components = getComponents(contracts);
-  const [selectedComponents, setSelectedComponents] = useState()
+  const [selectedComponents, setSelectedComponents] = useState();
 
 
   const [page, setPage] = useState(1);

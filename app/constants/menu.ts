@@ -5,6 +5,10 @@ type MenuLink = {
 
 export const MENU_LINKS: MenuLink[] = [
   {
+    name: "Dashboard",
+    href: "/",
+  },
+  {
     name: "Kontrakter",
     href: "/kontrakter",
   },
@@ -15,5 +19,5 @@ export const MENU_LINKS: MenuLink[] = [
   {
     name: "Konsumere",
     href: "/konsumere",
-  },
+  }
 ];
