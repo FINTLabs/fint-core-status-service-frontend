@@ -33,7 +33,7 @@ export default function Index() {
         <HGrid gap="6" columns={3}>
             <a href={"/kontrakter"} style={{textDecoration: "none", color: "inherit"}}>
                 <Box style={{
-                    backgroundColor: "lightgrey",
+                    backgroundColor: "#eeeeee",
                     height: "200px",
                     borderRadius: "25px",
                     padding: "10px",
@@ -51,7 +51,7 @@ export default function Index() {
                 </Box>
             </a>
             <a href={"/hendelser"} style={{textDecoration: "none", color: "inherit"}}>
-            <Box style={{backgroundColor: "lightgrey",
+            <Box style={{backgroundColor: "#eeeeee",
                 height: "200px",
                 borderRadius: "25px",
                 padding: "10px",
@@ -69,7 +69,10 @@ export default function Index() {
                 </HStack>
             </Box>
             </a>
-            <Box style={{backgroundColor: "lightgrey", height: "200px", borderRadius: "25px", padding: "10px"}}>
+            <Box style={{backgroundColor: "#eeeeee",
+                height: "200px",
+                borderRadius: "25px",
+                padding: "10px"}}>
                 <h1 style={{textAlign: "center"}}>
                     Konsumere
                 </h1>
