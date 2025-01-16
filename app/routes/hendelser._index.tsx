@@ -1,5 +1,6 @@
 import {
-    BodyLong,
+    ActionMenu,
+    BodyLong, Button,
     HGrid,
     HStack,
     Label,
@@ -14,10 +15,11 @@ import {convertTimeStamp, FintEvent, timeSince} from "~/types/Event";
 import {formatRequestEvent, formatResponseEvent, ModalBody,} from "~/types/ModalBody";
 import {StatusApi} from "~/api/StatusApi";
 import {Buildings3Icon, CheckmarkIcon, MagnifyingGlassIcon, TagIcon} from "@navikt/aksel-icons";
-import {useState} from "react";
+import React, {useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {ClockIcon} from '@navikt/aksel-icons';
 import { XMarkIcon } from '@navikt/aksel-icons';
+import {filterByOrgId, getOrgs} from "~/components/komponenter/EventFilter";
 
 export const loader: LoaderFunction = async ({request}) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -33,21 +35,61 @@ export const loader: LoaderFunction = async ({request}) => {
 
 export default function FintEventTable() {
     const fintEvents = useLoaderData<FintEvent[]>();
+    const orgs = getOrgs(fintEvents);
+    const [selectedOrgs, setSelectedOrgs] = useState(orgs);
     const [modal, setModal] = useState<ModalBody>(false, Event);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 20;
     const [searchQuery, setSearchQuery] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
-    const sortedBadedOnTimeStamp = fintEvents.sort((a, b) => (a.requestEvent?.created || 0) - (b.requestEvent?.created || 0));
-    sortedBadedOnTimeStamp.reverse();
+    const sortedBadedOnTimeStamp = fintEvents.sort((a, b) => (a.requestEvent?.created || 0) - (b.requestEvent?.created || 0)).reverse();
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const pagedEvents = sortedBadedOnTimeStamp.slice(startIndex, endIndex);
+    const filterdByOrg = filterByOrgId(selectedOrgs, sortedBadedOnTimeStamp)
+    const pagedEvents = filterdByOrg.slice(startIndex, endIndex);
 
     function handleSearch(value: string) {
         setSearchQuery(value);
         setCurrentPage(1);
     }
+
+    const [checkedStates, setCheckedStates] = React.useState(
+        orgs.reduce((acc, _, index) => {
+            acc[index] = true;
+            return acc;
+        }, {} as Record<number, boolean>)
+    );
+
+    const handleCheckboxChange = (value: string, index: number) => {
+        setCheckedStates((prevState) => {
+            const newState = {
+                ...prevState,
+                [index]: !prevState[index],
+            };
+
+            const newSelectedOrgs = orgs.filter((_, i) => newState[i]);
+            setSelectedOrgs(newSelectedOrgs);
+
+            return newState;
+        });
+    };
+
+    const handleSelectAll = () => {
+        const allChecked = Object.values(checkedStates).every(Boolean);
+
+        const newCheckedStates = orgs.reduce((acc, _, index) => {
+            acc[index] = !allChecked;
+            return acc;
+        }, {} as Record<number, boolean>);
+
+        setCheckedStates(newCheckedStates);
+        setSelectedOrgs(!allChecked ? orgs : []);
+    };
+
+    const isIndeterminate = () => {
+        const values = Object.values(checkedStates);
+        return values.some(Boolean) && !values.every(Boolean);
+    };
 
     return (
         <div className="flex flex-col h-full justify-between gap-4">
@@ -117,7 +159,36 @@ export default function FintEventTable() {
                                 </form>
                             )}
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col">Organisasjon</Table.HeaderCell>
+                        <Table.HeaderCell scope="col">
+                            <ActionMenu>
+                                <ActionMenu.Trigger>
+                                    <Button
+                                        variant="tertiary-neutral"
+                                    >
+                                        Organisasjon
+                                    </Button>
+                                </ActionMenu.Trigger>
+                                <ActionMenu.Content>
+                                    <ActionMenu.Group label="Velg organisasjon">
+                                        <ActionMenu.CheckboxItem
+                                            checked={Object.values(checkedStates).every(Boolean) ? true : isIndeterminate() ? "indeterminate" : false}
+                                            onCheckedChange={handleSelectAll}
+                                        >
+                                            Velg alle
+                                        </ActionMenu.CheckboxItem>
+                                        {orgs.map((value, index) => (
+                                            <ActionMenu.CheckboxItem
+                                                key={index}
+                                                checked={checkedStates[index]}
+                                                onCheckedChange={() => handleCheckboxChange(value, index)}
+                                            >
+                                                {value}
+                                            </ActionMenu.CheckboxItem>
+                                        ))}
+                                    </ActionMenu.Group>
+                                </ActionMenu.Content>
+                            </ActionMenu>
+                        </Table.HeaderCell>
                         <Table.HeaderCell scope="col">Ressurs</Table.HeaderCell>
                         <Table.HeaderCell scope="col">Response</Table.HeaderCell>
                         <Table.HeaderCell scope="col">Overført</Table.HeaderCell>

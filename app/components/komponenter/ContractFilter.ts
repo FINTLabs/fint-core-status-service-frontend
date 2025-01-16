@@ -26,8 +26,6 @@ export function getComponents(contracts: Array<AdapterContract>): Map<string, Ar
     return components;
 }
 
-
-
 export function filterByOrgId(orgIds: Array<string>, contracts: Array<AdapterContract>): Array<AdapterContract> {
     return contracts.filter(value => orgIds.includes(value.orgId))
 }
