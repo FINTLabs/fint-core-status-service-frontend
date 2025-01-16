@@ -10,13 +10,14 @@ import {
 } from "@navikt/ds-react";
 import {json, LoaderFunction} from "@remix-run/node";
 import {useLoaderData} from "@remix-run/react";
-import {FintEvent, timeSince} from "~/types/Event";
+import {convertTimeStamp, FintEvent, timeSince} from "~/types/Event";
 import {formatRequestEvent, formatResponseEvent, ModalBody,} from "~/types/ModalBody";
 import {StatusApi} from "~/api/StatusApi";
-import {Buildings3Icon, MagnifyingGlassIcon, TagIcon} from "@navikt/aksel-icons";
+import {Buildings3Icon, CheckmarkIcon, MagnifyingGlassIcon, TagIcon} from "@navikt/aksel-icons";
 import {useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {ClockIcon} from '@navikt/aksel-icons';
+import { XMarkIcon } from '@navikt/aksel-icons';
 
 export const loader: LoaderFunction = async ({request}) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -99,7 +100,7 @@ export default function FintEventTable() {
                                         setSearchVisible((prev) => !prev);
                                     }}
                                 >
-                                    <Label className={"cursor-pointer"}>CorrId</Label>
+                                    <Label className={"cursor-pointer"}>Hendelse ID</Label>
                                     <MagnifyingGlassIcon title="a11y-title" fontSize="0.7rem"/>
                                 </button>
                             ) : (
@@ -116,10 +117,10 @@ export default function FintEventTable() {
                                 </form>
                             )}
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col">OrgId</Table.HeaderCell>
+                        <Table.HeaderCell scope="col">Organisasjon</Table.HeaderCell>
                         <Table.HeaderCell scope="col">Ressurs</Table.HeaderCell>
                         <Table.HeaderCell scope="col">Response</Table.HeaderCell>
-                        <Table.HeaderCell scope="col">Tid siden</Table.HeaderCell>
+                        <Table.HeaderCell scope="col">Overført</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -131,15 +132,15 @@ export default function FintEventTable() {
                                     setModal({open: true, event: event});
                                 }}
                             >
-                                <Table.HeaderCell>{event.corrId}</Table.HeaderCell>
-                                <Table.HeaderCell>{event.orgId}</Table.HeaderCell>
-                                <Table.HeaderCell>{createResourceUri(event)}</Table.HeaderCell>
-                                <Table.HeaderCell>
-                                    {String(event.responseEvent != null)}
-                                </Table.HeaderCell>
-                                <Table.HeaderCell>
-                                    {timeSince(event.requestEvent?.created)}
-                                </Table.HeaderCell>
+                                <Table.DataCell>{event.corrId}</Table.DataCell>
+                                <Table.DataCell>{event.orgId}</Table.DataCell>
+                                <Table.DataCell>{createResourceUri(event)}</Table.DataCell>
+                                <Table.DataCell>
+                                    {event.responseEvent? (<CheckmarkIcon title="a11y-title" fontSize="1.5rem" />) : (<XMarkIcon title="a11y-title" fontSize="1.5rem" />)  }
+                                </Table.DataCell>
+                                <Table.DataCell>
+                                    {convertTimeStamp(Number(event.requestEvent?.created))}
+                                </Table.DataCell>
                             </Table.Row>
                         );
                     })}

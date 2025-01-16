@@ -14,7 +14,7 @@ import { json, LoaderFunction } from "@remix-run/node";
 import { StatusApi } from "~/api/StatusApi";
 import {AdapterContract, ContractModal, convertLastActivity, formatComponents} from "~/types/AdapterContract";
 import { useLoaderData } from "@remix-run/react";
-import {ChevronDownIcon, MagnifyingGlassIcon} from "@navikt/aksel-icons";
+import {ChevronDownIcon, HeartBrokenIcon, HeartIcon, MagnifyingGlassIcon} from "@navikt/aksel-icons";
 import {envCookie} from "~/components/cookie";
 import {filterByOrgId, getComponents, getOrgs} from "~/components/komponenter/ContractFilter";
 
@@ -39,11 +39,8 @@ export default function Kontrakter() {
   const contracts = useLoaderData<AdapterContract[]>();
   const orgs = getOrgs(contracts);
   const [selectedOrgs, setSelectedOrgs] = useState(orgs);
-  const sortBasedOnLastActivity = contracts.sort((a, b) => (a.lastActivity || 0) - (b.lastActivity || 0));
-  sortBasedOnLastActivity.reverse();
+  const sortBasedOnLastActivity = contracts.sort((a, b) => (a.lastActivity || 0) - (b.lastActivity || 0)).reverse();
   const filterdByOrg = filterByOrgId(selectedOrgs, sortBasedOnLastActivity);
-  const components = getComponents(contracts);
-  const [selectedComponents, setSelectedComponents] = useState();
 
 
   const [page, setPage] = useState(1);
@@ -164,7 +161,7 @@ export default function Kontrakter() {
                     setSearchVisible((prev) => !prev);
                   }}
                 >
-                  <Label className={"cursor-pointer"}>AdapterId</Label>
+                  <Label className={"cursor-pointer"}>Adapter</Label>
                   <MagnifyingGlassIcon title="a11y-title" fontSize="0.7rem" />
                 </button>
               ) : (
@@ -188,7 +185,7 @@ export default function Kontrakter() {
                   <Button
                       variant="tertiary-neutral"
                   >
-                    OrgId
+                    Organisasjon
                   </Button>
                 </ActionMenu.Trigger>
                 <ActionMenu.Content>
@@ -212,9 +209,9 @@ export default function Kontrakter() {
                 </ActionMenu.Content>
               </ActionMenu>
             </Table.HeaderCell>
-            <Table.HeaderCell scope="col">Components</Table.HeaderCell>
-            <Table.HeaderCell scope="col">Healthy heartbeats</Table.HeaderCell>
-            <Table.HeaderCell scope="col">Last Activity</Table.HeaderCell>
+            <Table.HeaderCell scope="col">Komponenter</Table.HeaderCell>
+            <Table.HeaderCell scope="col">Heartbeat</Table.HeaderCell>
+            <Table.HeaderCell scope="col">Siste overføring</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -224,23 +221,23 @@ export default function Kontrakter() {
                 key={i}
                 onClick={() => setModal({ open: true, contract: contract })}
               >
-                <Table.HeaderCell
+                <Table.DataCell
                   scope="row"
                   className="max-w-[400px] overflow-hidden text-ellipsis whitespace-nowrap"
                   title={contract.adapterId}
                 >
                   {contract.adapterId}
-                </Table.HeaderCell>
-                <Table.HeaderCell scope="row">
+                </Table.DataCell>
+                <Table.DataCell scope="row">
                   {contract.orgId}
-                </Table.HeaderCell>
-                <Table.HeaderCell scope="row">
+                </Table.DataCell>
+                <Table.DataCell scope="row">
                   {formatComponents(contract.components)}
-                </Table.HeaderCell>
-                <Table.HeaderCell scope="row">
-                  {String(contract.hasContact)}
-                </Table.HeaderCell>
-                <Table.HeaderCell scope="row">{convertLastActivity(contract.lastActivity)}</Table.HeaderCell>
+                </Table.DataCell>
+                <Table.DataCell scope="row" align={"center"}>
+                  {contract.hasContact? (<HeartIcon title="a11y-title" fontSize="1.5rem" />) : (<HeartBrokenIcon title="a11y-title" fontSize="1.5rem" />)}
+                </Table.DataCell>
+                <Table.DataCell scope="row">{convertLastActivity(contract.lastActivity)}</Table.DataCell>
               </Table.Row>
             );
           })}
