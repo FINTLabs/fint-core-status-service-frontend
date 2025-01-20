@@ -43,9 +43,9 @@ export default function Index() {
                         Adaptere
                     </h1>
                         <HStack gap="1">
-                            <TasklistIcon title="a11y-title" fontSize="1.5rem" style={{marginLeft: "20%"}}/>
+                            <TasklistIcon title="Total Contracts" fontSize="1.5rem" style={{marginLeft: "20%"}}/>
                             {stats.adapterContractAmount}
-                            <HeartIcon title="a11y-title" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
+                            <HeartIcon title="Healty heartbeats" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
                             {stats.hasContectAmount}
                         </HStack>
                 </Box>
@@ -60,11 +60,11 @@ export default function Index() {
                     Eventer
                 </h1>
                 <HStack gap="1">
-                    <ArrowRightLeftIcon title="a11y-title" fontSize="1.5rem" style={{marginLeft: "20%"}}/>
+                    <ArrowRightLeftIcon title="Total requests" fontSize="1.5rem" style={{marginLeft: "20%"}}/>
                     {stats.eventAmount}
-                    <ArrowsSquarepathIcon title="a11y-title" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
+                    <ArrowsSquarepathIcon title="Total responses" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
                     {stats.eventResponses}
-                    <ExclamationmarkTriangleIcon title="a11y-title" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
+                    <ExclamationmarkTriangleIcon title="Errors" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
                     {stats.eventErrors}
                 </HStack>
             </Box>

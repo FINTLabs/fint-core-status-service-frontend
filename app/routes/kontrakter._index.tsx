@@ -162,7 +162,7 @@ export default function Kontrakter() {
                   }}
                 >
                   <Label className={"cursor-pointer"}>Adapter</Label>
-                  <MagnifyingGlassIcon title="a11y-title" fontSize="0.7rem" />
+                  <MagnifyingGlassIcon title="Search" fontSize="0.7rem" />
                 </button>
               ) : (
                 <form>
@@ -235,7 +235,7 @@ export default function Kontrakter() {
                   {formatComponents(contract.components)}
                 </Table.DataCell>
                 <Table.DataCell scope="row" align={"center"}>
-                  {contract.hasContact? (<HeartIcon title="a11y-title" fontSize="1.5rem" />) : (<HeartBrokenIcon title="a11y-title" fontSize="1.5rem" />)}
+                  {contract.hasContact? (<HeartIcon title="Has a healty heartbeat kontakt" fontSize="1.5rem" />) : (<HeartBrokenIcon title="Does not have a healty heartbeat" fontSize="1.5rem" />)}
                 </Table.DataCell>
                 <Table.DataCell scope="row">{convertLastActivity(contract.lastActivity)}</Table.DataCell>
               </Table.Row>
