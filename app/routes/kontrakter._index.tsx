@@ -45,6 +45,7 @@ export default function Kontrakter() {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
     const tableContainerRef = useRef<HTMLDivElement>(null);
+    const [heartbeatSortOrder, setHeartbeatSortOrder] = useState<"none" | "healthyFirst" | "unhealthyFirst">("none");
 
     const [checkedStates, setCheckedStates] = React.useState(
         orgs.reduce((acc, _, index) => {
@@ -64,10 +65,22 @@ export default function Kontrakter() {
             );
         }
 
-        return filteredContracts
-            .slice()
-            .sort((a, b) => (b.lastActivity || 0) - (a.lastActivity || 0));
-    }, [data, selectedOrgs, searchQuery]);
+        if (heartbeatSortOrder === "healthyFirst") {
+            filteredContracts.sort((a, b) => {
+                if (a.hasContact === b.hasContact) return 0;
+                return a.hasContact ? -1 : 1;
+            });
+        } else if (heartbeatSortOrder === "unhealthyFirst") {
+            filteredContracts.sort((a, b) => {
+                if (a.hasContact === b.hasContact) return 0;
+                return a.hasContact ? 1 : -1;
+            });
+        } else {
+            filteredContracts.sort((a, b) => (b.lastActivity || 0) - (a.lastActivity || 0));
+        }
+
+        return filteredContracts;
+    }, [data, selectedOrgs, searchQuery, heartbeatSortOrder]);
 
     const paginatedContracts = React.useMemo(() => {
         return displayedContracts.slice(
@@ -220,7 +233,27 @@ export default function Kontrakter() {
                             </ActionMenu>
                         </Table.HeaderCell>
                         <Table.HeaderCell scope="col">Komponenter</Table.HeaderCell>
-                        <Table.HeaderCell>Heartbeat</Table.HeaderCell>
+                        <Table.HeaderCell
+                            scope="col"
+                            onClick={() => {
+                                setHeartbeatSortOrder((prev) => {
+                                    if (prev === "none") return "healthyFirst";
+                                    if (prev === "healthyFirst") return "unhealthyFirst";
+                                    return "none";
+                                });
+                            }}
+                            style={{ cursor: "pointer" }}
+                        >
+                            <Label className="cursor-pointer flex items-center">
+                                Heartbeat
+                                {heartbeatSortOrder === "healthyFirst" && (
+                                    <ChevronDownIcon title="Sort by healthy first" fontSize="0.7rem" />
+                                )}
+                                {heartbeatSortOrder === "unhealthyFirst" && (
+                                    <ChevronDownIcon title="Sort by unhealthy first" fontSize="0.7rem" style={{ transform: "rotate(180deg)" }} />
+                                )}
+                            </Label>
+                        </Table.HeaderCell>
                         <Table.HeaderCell scope="col">Siste overføring</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
