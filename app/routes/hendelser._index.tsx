@@ -36,17 +36,50 @@ export const loader: LoaderFunction = async ({request}) => {
 export default function FintEventTable() {
     const fintEvents = useLoaderData<FintEvent[]>();
     const orgs = getOrgs(fintEvents);
+
+    const sortedEvents = React.useMemo(() => {
+        return [...fintEvents].sort((a, b) => (b.requestEvent?.created || 0) - (a.requestEvent?.created || 0));
+    }, [fintEvents]);
+
     const [selectedOrgs, setSelectedOrgs] = useState(orgs);
     const [modal, setModal] = useState<ModalBody>(false, Event);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 20;
     const [searchQuery, setSearchQuery] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
-    const sortedBadedOnTimeStamp = fintEvents.sort((a, b) => (a.requestEvent?.created || 0) - (b.requestEvent?.created || 0)).reverse();
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const filterdByOrg = filterByOrgId(selectedOrgs, sortedBadedOnTimeStamp)
-    const pagedEvents = filterdByOrg.slice(startIndex, endIndex);
+    const [responseSortOrder, setResponseSortOrder] = useState<"default" | "hasResponse" | "noResponse">("default");
+
+    const sortedByResponse = React.useMemo(() => {
+        if (responseSortOrder === "hasResponse") {
+            return sortedEvents.filter((event) => event.responseEvent);
+        }
+        if (responseSortOrder === "noResponse") {
+            return sortedEvents.filter((event) => !event.responseEvent);
+        }
+        return sortedEvents;
+    }, [responseSortOrder, sortedEvents]);
+
+
+
+
+    const filteredByOrg = React.useMemo(() => {
+        return filterByOrgId(selectedOrgs, sortedByResponse);
+    }, [selectedOrgs, sortedByResponse]);
+
+    const filteredBySearch = React.useMemo(() => {
+        if (!searchQuery.trim()) return filteredByOrg;
+
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        return filteredByOrg.filter((event) =>
+            event.corrId.toLowerCase().includes(lowerCaseQuery)
+        );
+    }, [searchQuery, filteredByOrg]);
+
+    const pagedEvents = React.useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return filteredBySearch.slice(startIndex, endIndex);
+    }, [filteredBySearch, currentPage, itemsPerPage]);
 
     function handleSearch(value: string) {
         setSearchQuery(value);
@@ -91,14 +124,23 @@ export default function FintEventTable() {
         return values.some(Boolean) && !values.every(Boolean);
     };
 
+    function toggleResponseSort() {
+        setResponseSortOrder((prev) => {
+            if (prev === "default") return "hasResponse";
+            if (prev === "hasResponse") return "noResponse";
+            return "default";
+        });
+        setCurrentPage(1);
+    }
+
     return (
         <div className="flex flex-col h-full justify-between gap-4">
             <Modal
                 width={"60%"}
                 open={modal.open}
-                header={{heading: String(modal.event?.corrId)}}
+                header={{ heading: String(modal.event?.corrId) }}
                 closeOnBackdropClick
-                onClose={() => setModal({open: false, event: null})}
+                onClose={() => setModal({ open: false, event: null })}
             >
                 <Modal.Body>
                   <BodyLong>
@@ -135,15 +177,14 @@ export default function FintEventTable() {
                 <Table.HeaderCell scope="col">
                   {!searchVisible ? (
                       <button
-                                    className={"flex-row flex"}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setSearchVisible((prev) => !prev);
-                                    }}
-                                >
+                            className={"flex-row flex"}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setSearchVisible((prev) => !prev);
+                            }}>
                                     <Label className={"cursor-pointer"}>Hendelse ID</Label>
-                                    <MagnifyingGlassIcon title="a11y-title" fontSize="0.7rem"/>
+                                    <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
                                 </button>
                             ) : (
                                 <form>
@@ -190,7 +231,9 @@ export default function FintEventTable() {
                             </ActionMenu>
                         </Table.HeaderCell>
                         <Table.HeaderCell scope="col">Ressurs</Table.HeaderCell>
-                        <Table.HeaderCell scope="col">Response</Table.HeaderCell>
+                        <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{ cursor: "pointer" }}>
+                            Response {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "noResponse" ? "↓" : ""}
+                        </Table.HeaderCell>
                         <Table.HeaderCell scope="col">Overført</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
@@ -207,7 +250,7 @@ export default function FintEventTable() {
                                 <Table.DataCell>{event.orgId}</Table.DataCell>
                                 <Table.DataCell>{createResourceUri(event)}</Table.DataCell>
                                 <Table.DataCell>
-                                    {event.responseEvent? (<CheckmarkIcon title="a11y-title" fontSize="1.5rem" />) : (<XMarkIcon title="a11y-title" fontSize="1.5rem" />)  }
+                                    {event.responseEvent? (<CheckmarkIcon title="Has response" fontSize="1.5rem" />) : (<XMarkIcon title="No response" fontSize="1.5rem" />)  }
                                 </Table.DataCell>
                                 <Table.DataCell>
                                     {convertTimeStamp(Number(event.requestEvent?.created))}
