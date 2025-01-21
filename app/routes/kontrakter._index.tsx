@@ -7,7 +7,7 @@ import {
     Modal,
     Pagination,
     Search,
-    Table,
+    Table, Tooltip,
 } from "@navikt/ds-react";
 import React, {useEffect, useRef, useState} from "react";
 import {json, LoaderFunction} from "@remix-run/node";
@@ -17,6 +17,7 @@ import {useLoaderData} from "@remix-run/react";
 import {ChevronDownIcon, HeartBrokenIcon, HeartIcon, MagnifyingGlassIcon} from "@navikt/aksel-icons";
 import {envCookie} from "~/components/cookie";
 import {filterByOrgId, getComponents, getOrgs} from "~/components/komponenter/ContractFilter";
+import {timeSince} from "~/types/Event";
 
 export const loader: LoaderFunction = async ({request}) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -282,8 +283,10 @@ export default function Kontrakter() {
                                         <HeartIcon title="Has a healty heartbeat kontakt" fontSize="1.5rem"/>) : (
                                         <HeartBrokenIcon title="Does not have a healty heartbeat" fontSize="1.5rem"/>)}
                                 </Table.DataCell>
+                                <Tooltip content={timeSince(contract.lastActivity)}>
                                 <Table.DataCell
                                     scope="row">{convertLastActivity(contract.lastActivity)}</Table.DataCell>
+                                </Tooltip>
                             </Table.Row>
                         );
                     })}

@@ -7,7 +7,7 @@ import {
     Modal,
     Pagination,
     Search,
-    Table,
+    Table, Tooltip,
 } from "@navikt/ds-react";
 import {json, LoaderFunction} from "@remix-run/node";
 import {useLoaderData} from "@remix-run/react";
@@ -245,6 +245,7 @@ export default function FintEventTable() {
                                 onClick={() => {
                                     setModal({open: true, event: event});
                                 }}
+                                style={{ cursor: "pointer" }}
                             >
                                 <Table.DataCell>{event.corrId}</Table.DataCell>
                                 <Table.DataCell>{event.orgId}</Table.DataCell>
@@ -252,9 +253,11 @@ export default function FintEventTable() {
                                 <Table.DataCell>
                                     {event.responseEvent? (<CheckmarkIcon title="Has response" fontSize="1.5rem" />) : (<XMarkIcon title="No response" fontSize="1.5rem" />)  }
                                 </Table.DataCell>
-                                <Table.DataCell>
-                                    {convertTimeStamp(Number(event.requestEvent?.created))}
-                                </Table.DataCell>
+                                <Tooltip content={timeSince(event.requestEvent?.created)}>
+                                    <Table.DataCell>
+                                            {convertTimeStamp(Number(event.requestEvent?.created))}
+                                    </Table.DataCell>
+                                </Tooltip>
                             </Table.Row>
                         );
                     })}
