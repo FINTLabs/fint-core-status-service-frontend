@@ -46,7 +46,8 @@ export default function FintEventTable() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 20;
     const [searchQuery, setSearchQuery] = useState("");
-    const [searchVisible, setSearchVisible] = useState(false);
+    const [searchVisibleId, setsearchVisibleId] = useState(false);
+    const [searchVisibleResource, setsearchVisibleResource] = useState(false);
     const [responseSortOrder, setResponseSortOrder] = useState<"default" | "hasResponse" | "noResponse">("default");
 
     const sortedByResponse = React.useMemo(() => {
@@ -59,9 +60,6 @@ export default function FintEventTable() {
         return sortedEvents;
     }, [responseSortOrder, sortedEvents]);
 
-
-
-
     const filteredByOrg = React.useMemo(() => {
         return filterByOrgId(selectedOrgs, sortedByResponse);
     }, [selectedOrgs, sortedByResponse]);
@@ -70,8 +68,8 @@ export default function FintEventTable() {
         if (!searchQuery.trim()) return filteredByOrg;
 
         const lowerCaseQuery = searchQuery.toLowerCase();
-        return filteredByOrg.filter((event) =>
-            event.corrId.toLowerCase().includes(lowerCaseQuery)
+        return filteredByOrg.filter((event: FintEvent) =>
+            event.corrId.toLowerCase().includes(lowerCaseQuery) || event.requestEvent?.resourceName.toLowerCase().includes(lowerCaseQuery)
         );
     }, [searchQuery, filteredByOrg]);
 
@@ -174,14 +172,14 @@ export default function FintEventTable() {
           <Table size="small">
             <Table.Header>
               <Table.Row shadeOnHover={true}>
-                <Table.HeaderCell scope="col">
-                  {!searchVisible ? (
+                <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleId((prev) => !prev)}>
+                  {!searchVisibleId ? (
                       <button
                             className={"flex-row flex"}
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                setSearchVisible((prev) => !prev);
+                                setsearchVisibleId((prev) => !prev);
                             }}>
                                     <Label className={"cursor-pointer"}>Hendelse ID</Label>
                                     <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
@@ -230,7 +228,32 @@ export default function FintEventTable() {
                                 </ActionMenu.Content>
                             </ActionMenu>
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col">Ressurs</Table.HeaderCell>
+                  <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleResource((prev) => !prev)}>
+                      {!searchVisibleResource ? (
+                          <button
+                              className={"flex-row flex"}
+                              onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setsearchVisibleResource((prev) => !prev);
+                              }}>
+                              <Label className={"cursor-pointer"}>Resurser</Label>
+                              <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
+                          </button>
+                      ) : (
+                          <form>
+                              <HStack gap="4" className="max-w-fit pb-4">
+                                  <Search
+                                      label={"Søk etter CorrId"}
+                                      hideLabel={true}
+                                      size="small"
+                                      variant={"simple"}
+                                      onChange={(value: string) => handleSearch(value)}
+                                  />
+                              </HStack>
+                          </form>
+                      )}
+                  </Table.HeaderCell>
                         <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{ cursor: "pointer" }}>
                             Response {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "noResponse" ? "↓" : ""}
                         </Table.HeaderCell>
