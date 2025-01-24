@@ -175,7 +175,9 @@ export default function Kontrakter() {
                     <Table.Row>
                         <Table.HeaderCell
                             scope="col"
-                            style={{minWidth: "300px"}}>
+                            style={{minWidth: "300px"}}
+                            onBlur={() => setSearchVisible(prev => !prev)}
+                        >
                             {!searchVisible ? (
                                 <button
                                     className={"flex-row flex"}
