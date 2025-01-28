@@ -1,24 +1,12 @@
-import {
-    ActionMenu,
-    BodyLong, Button,
-    HGrid,
-    HStack,
-    Label,
-    Modal,
-    Pagination,
-    Search,
-    Table, Tooltip,
-} from "@navikt/ds-react";
+import {ActionMenu, Button, HStack, Label, Modal, Pagination, Search, Table, Tooltip,} from "@navikt/ds-react";
 import {json, LoaderFunction} from "@remix-run/node";
 import {useLoaderData} from "@remix-run/react";
 import {convertTimeStamp, FintEvent, timeSince} from "~/types/Event";
-import {formatRequestEvent, formatResponseEvent, ModalBody,} from "~/types/ModalBody";
+import {formatModalBody, ModalBody,} from "~/types/ModalBody";
 import {StatusApi} from "~/api/StatusApi";
-import {Buildings3Icon, CheckmarkIcon, MagnifyingGlassIcon, TagIcon} from "@navikt/aksel-icons";
+import {CheckmarkIcon, MagnifyingGlassIcon, XMarkIcon} from "@navikt/aksel-icons";
 import React, {useState} from "react";
 import {envCookie} from "~/components/cookie";
-import {ClockIcon} from '@navikt/aksel-icons';
-import { XMarkIcon } from '@navikt/aksel-icons';
 import {filterByOrgId, getOrgs} from "~/components/komponenter/EventFilter";
 
 export const loader: LoaderFunction = async ({request}) => {
@@ -69,7 +57,8 @@ export default function FintEventTable() {
 
         const lowerCaseQuery = searchQuery.toLowerCase();
         return filteredByOrg.filter((event: FintEvent) =>
-            event.corrId.toLowerCase().includes(lowerCaseQuery) || event.requestEvent?.resourceName.toLowerCase().includes(lowerCaseQuery)
+            event.corrId.toLowerCase().includes(lowerCaseQuery) ||
+            event.requestEvent?.resourceName.toLowerCase().includes(lowerCaseQuery)
         );
     }, [searchQuery, filteredByOrg]);
 
@@ -134,53 +123,26 @@ export default function FintEventTable() {
     return (
         <div className="flex flex-col h-full justify-between gap-4">
             <Modal
-                width={"60%"}
+                width={'60%'}
                 open={modal.open}
-                header={{ heading: String(modal.event?.corrId) }}
+                header={{heading: String(modal.event?.corrId)}}
                 closeOnBackdropClick
-                onClose={() => setModal({ open: false, event: null })}
+                onClose={() => setModal({open: false, event: null})}
             >
-                <Modal.Body>
-                  <BodyLong>
-                    <HGrid columns={2}>
-                        <HStack width={"50‰"}>
-                            <pre className="bg-gray-100 p-3 rounded max-w-full max-h-96 overflow-auto text-sm">
-                                {formatRequestEvent(modal.event)}
-                            </pre>
-                        </HStack>
-                        <HStack width={"50‰"}>
-                             <pre className="bg-gray-100 p-3 rounded max-w-full max-h-96 overflow-auto text-sm">
-                                {formatResponseEvent(modal.event)}
-                            </pre>
-                        </HStack>
-                    </HGrid>
-                      <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                          <ClockIcon  title="Time between request and response"/>
-                          <span>{timeSince(modal.event?.requestEvent?.created, modal.event?.responseEvent?.handledAt)}</span>
-                    </div>
-                    <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                      <Buildings3Icon title="Org-Id"/>
-                      <span>{modal.event?.orgId}</span>
-                    </div>
-                    <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                      <TagIcon title="Kafka Topic"/>
-                      <span>{modal.event?.topic}</span>
-                    </div>
-                  </BodyLong>
-                </Modal.Body>
+                {modal.event && formatModalBody(modal.event)}
             </Modal>
-          <Table size="small">
-            <Table.Header>
-              <Table.Row shadeOnHover={true}>
-                <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleId((prev) => !prev)}>
-                  {!searchVisibleId ? (
-                      <button
-                            className={"flex-row flex"}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setsearchVisibleId((prev) => !prev);
-                            }}>
+            <Table size="small">
+                <Table.Header>
+                    <Table.Row shadeOnHover={true}>
+                        <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleId((prev) => !prev)}>
+                            {!searchVisibleId ? (
+                                <button
+                                    className={"flex-row flex"}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setsearchVisibleId((prev) => !prev);
+                                    }}>
                                     <Label className={"cursor-pointer"}>Hendelse ID</Label>
                                     <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
                                 </button>
@@ -228,33 +190,33 @@ export default function FintEventTable() {
                                 </ActionMenu.Content>
                             </ActionMenu>
                         </Table.HeaderCell>
-                  <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleResource((prev) => !prev)}>
-                      {!searchVisibleResource ? (
-                          <button
-                              className={"flex-row flex"}
-                              onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  setsearchVisibleResource((prev) => !prev);
-                              }}>
-                              <Label className={"cursor-pointer"}>Resurser</Label>
-                              <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
-                          </button>
-                      ) : (
-                          <form>
-                              <HStack gap="4" className="max-w-fit pb-4">
-                                  <Search
-                                      label={"Søk etter CorrId"}
-                                      hideLabel={true}
-                                      size="small"
-                                      variant={"simple"}
-                                      onChange={(value: string) => handleSearch(value)}
-                                  />
-                              </HStack>
-                          </form>
-                      )}
-                  </Table.HeaderCell>
-                        <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{ cursor: "pointer" }}>
+                        <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleResource((prev) => !prev)}>
+                            {!searchVisibleResource ? (
+                                <button
+                                    className={"flex-row flex"}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setsearchVisibleResource((prev) => !prev);
+                                    }}>
+                                    <Label className={"cursor-pointer"}>Resurser</Label>
+                                    <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
+                                </button>
+                            ) : (
+                                <form>
+                                    <HStack gap="4" className="max-w-fit pb-4">
+                                        <Search
+                                            label={"Søk etter CorrId"}
+                                            hideLabel={true}
+                                            size="small"
+                                            variant={"simple"}
+                                            onChange={(value: string) => handleSearch(value)}
+                                        />
+                                    </HStack>
+                                </form>
+                            )}
+                        </Table.HeaderCell>
+                        <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{cursor: "pointer"}}>
                             Response {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "noResponse" ? "↓" : ""}
                         </Table.HeaderCell>
                         <Table.HeaderCell scope="col">Overført</Table.HeaderCell>
@@ -268,17 +230,18 @@ export default function FintEventTable() {
                                 onClick={() => {
                                     setModal({open: true, event: event});
                                 }}
-                                style={{ cursor: "pointer" }}
+                                style={{cursor: "pointer"}}
                             >
                                 <Table.DataCell>{event.corrId}</Table.DataCell>
                                 <Table.DataCell>{event.orgId}</Table.DataCell>
                                 <Table.DataCell>{createResourceUri(event)}</Table.DataCell>
                                 <Table.DataCell>
-                                    {event.responseEvent? (<CheckmarkIcon title="Has response" fontSize="1.5rem" />) : (<XMarkIcon title="No response" fontSize="1.5rem" />)  }
+                                    {event.responseEvent ? (<CheckmarkIcon title="Has response" fontSize="1.5rem"/>) : (
+                                        <XMarkIcon title="No response" fontSize="1.5rem"/>)}
                                 </Table.DataCell>
                                 <Tooltip content={timeSince(event.requestEvent?.created)}>
                                     <Table.DataCell>
-                                            {convertTimeStamp(Number(event.requestEvent?.created))}
+                                        {convertTimeStamp(Number(event.requestEvent?.created))}
                                     </Table.DataCell>
                                 </Tooltip>
                             </Table.Row>
@@ -301,7 +264,7 @@ export default function FintEventTable() {
     );
 }
 
-const createResourceUri = (event) => {
+const createResourceUri = (event: any) => {
     const requestEvent = event.requestEvent;
 
     if (!requestEvent) {

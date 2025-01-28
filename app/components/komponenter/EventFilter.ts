@@ -12,6 +12,6 @@ export function getOrgs(events: Array<FintEvent>): Array<string> {
     return orgs;
 }
 
-export function filterByOrgId(orgIds: Array<string>, contracts: Array<FintEvent>): Array<AdapterContract> {
+export function filterByOrgId(orgIds: Array<string>, contracts: Array<FintEvent>): Array<FintEvent> {
     return contracts.filter(value => orgIds.includes(value.orgId))
 }

@@ -71,11 +71,14 @@ export function timeSince(
     }
   } else {
     const remainingHours = elapsedHours % 24;
+    const remainingMinutes = elapsedMinutes % 60;
+
     if (elapsedDays > 0) {
       return `${elapsedDays} dager og ${remainingHours} timer`;
+    } else if (elapsedHours > 0) {
+      return `${remainingHours} timer og ${remainingMinutes} minutter`;
     } else {
-      const remainingMinutes = elapsedMinutes % 60;
-      return `${elapsedHours} timer og ${remainingMinutes} minutter`;
+      return `${remainingMinutes} minutter`;
     }
   }
 }
