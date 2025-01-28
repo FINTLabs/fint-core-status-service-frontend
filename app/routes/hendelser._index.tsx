@@ -32,7 +32,7 @@ export default function FintEventTable() {
     const [selectedOrgs, setSelectedOrgs] = useState(orgs);
     const [modal, setModal] = useState<ModalBody>(false, Event);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 18;
     const [searchQuery, setSearchQuery] = useState("");
     const [searchVisibleId, setsearchVisibleId] = useState(false);
     const [searchVisibleResource, setsearchVisibleResource] = useState(false);
@@ -131,10 +131,11 @@ export default function FintEventTable() {
             >
                 {modal.event && formatModalBody(modal.event)}
             </Modal>
-            <Table size="small">
+            <Table size="small" style={{tableLayout: 'fixed'}}>
                 <Table.Header>
                     <Table.Row shadeOnHover={true}>
-                        <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleId((prev) => !prev)}>
+                        <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleId((prev) => !prev)}
+                          style={{ width: "320px" }}>
                             {!searchVisibleId ? (
                                 <button
                                     className={"flex-row flex"}
@@ -160,7 +161,7 @@ export default function FintEventTable() {
                                 </form>
                             )}
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col">
+                        <Table.HeaderCell scope="col" style={{ width: "150px" }}>
                             <ActionMenu>
                                 <ActionMenu.Trigger>
                                     <Button
@@ -190,7 +191,7 @@ export default function FintEventTable() {
                                 </ActionMenu.Content>
                             </ActionMenu>
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleResource((prev) => !prev)}>
+                        <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleResource((prev) => !prev)} style={{ width: "280px" }}>
                             {!searchVisibleResource ? (
                                 <button
                                     className={"flex-row flex"}
@@ -216,10 +217,10 @@ export default function FintEventTable() {
                                 </form>
                             )}
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{cursor: "pointer"}}>
+                        <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{width: "100px", cursor: "pointer"}}>
                             Response {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "noResponse" ? "↓" : ""}
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col">Overført</Table.HeaderCell>
+                        <Table.HeaderCell scope="col" style={{ width: "160px" }}>Overført</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>

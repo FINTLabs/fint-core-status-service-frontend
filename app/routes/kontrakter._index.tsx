@@ -169,13 +169,13 @@ export default function Kontrakter() {
                     </BodyLong>
                 </Modal.Body>
             </Modal>
-            <Table
+            <Table style={{tableLayout: 'fixed'}}
                 size="small">
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell
                             scope="col"
-                            style={{minWidth: "300px"}}
+                            style={{width: "400px"}}
                             onBlur={() => setSearchVisible(prev => !prev)}
                         >
                             {!searchVisible ? (
