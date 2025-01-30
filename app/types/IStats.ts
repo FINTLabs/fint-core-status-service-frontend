@@ -1,4 +1,4 @@
-export interface Stats {
+export interface IStats {
     adapterContractAmount: number,
     hasContectAmount: number,
     eventAmount: number,

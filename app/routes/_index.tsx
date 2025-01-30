@@ -1,25 +1,29 @@
-import {Box, HGrid, HStack, VStack} from "@navikt/ds-react";
-import {useHref, useNavigate} from "react-router";
-import React from "react";
+import {useNavigate} from "react-router";
 import {json, LoaderFunction} from "@remix-run/node";
-import {envCookie} from "~/components/cookie";
 import {StatusApi} from "~/api/StatusApi";
 import {useLoaderData} from "@remix-run/react";
-import {Stats} from "~/types/Stats";
-import {
-    ArrowRightLeftIcon,
-    ArrowsSquarepathIcon,
-    ExclamationmarkTriangleIcon,
-    HeartIcon,
-    TasklistIcon
-} from "@navikt/aksel-icons";
+import {IStats} from "~/types/IStats";
+import {formatStats} from "~/components/komponenter/Stats";
+import {Box, Heading} from "@navikt/ds-react";
+
+export interface IEnvStats {
+    api: IStats,
+    beta: IStats,
+    alpha: IStats
+}
 
 export const loader: LoaderFunction = async ({request}) => {
     const cookieHeader = request.headers.get("Cookie");
-    const selectedEnv = await envCookie.parse(cookieHeader);
     try {
-        const events = await StatusApi.getStats(selectedEnv);
-        return json(events);
+        const alpha: IStats = await StatusApi.getStats("alpha");
+        const beta: IStats = await StatusApi.getStats("beta");
+        const api: IStats = await StatusApi.getStats("api");
+
+        return json({
+            alpha: alpha,
+            beta: beta,
+            api: api
+        })
     } catch (error) {
         console.error("Loader Error: ", error);
         throw new Response("Failed to load events", {status: 500});
@@ -27,57 +31,30 @@ export const loader: LoaderFunction = async ({request}) => {
 };
 
 export default function Index() {
-    const stats = useLoaderData<Stats>();
+    const stats = useLoaderData<IEnvStats>();
+    console.log(stats)
     useNavigate();
     return (
-        <HGrid gap="6" columns={3}>
-            <a href={"/kontrakter"} style={{textDecoration: "none", color: "inherit"}}>
-                <Box style={{
-                    backgroundColor: "#eeeeee",
-                    height: "200px",
-                    borderRadius: "25px",
-                    padding: "10px",
-                    cursor: "pointer"
-                }}>
-                    <h1 style={{textAlign: "center"}}>
-                        Adaptere
-                    </h1>
-                        <HStack gap="1">
-                            <TasklistIcon title="Total Contracts" fontSize="1.5rem" style={{marginLeft: "20%"}}/>
-                            {stats.adapterContractAmount}
-                            <HeartIcon title="Healty heartbeats" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
-                            {stats.hasContectAmount}
-                        </HStack>
-                </Box>
-            </a>
-            <a href={"/hendelser"} style={{textDecoration: "none", color: "inherit"}}>
-            <Box style={{backgroundColor: "#eeeeee",
-                height: "200px",
-                borderRadius: "25px",
-                padding: "10px",
-                cursor: "pointer"}}>
-                <h1 style={{textAlign: "center"}}>
-                    Eventer
-                </h1>
-                <HStack gap="1">
-                    <ArrowRightLeftIcon title="Total requests" fontSize="1.5rem" style={{marginLeft: "20%"}}/>
-                    {stats.eventAmount}
-                    <ArrowsSquarepathIcon title="Total responses" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
-                    {stats.eventResponses}
-                    <ExclamationmarkTriangleIcon title="Errors" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
-                    {stats.eventErrors}
-                </HStack>
+        <div>
+            <Box className='p-5'>
+                <Heading size={"medium"}>
+                    Api
+                </Heading>
+                {formatStats(stats.api)}
             </Box>
-            </a>
-            <Box style={{backgroundColor: "#eeeeee",
-                height: "200px",
-                borderRadius: "25px",
-                padding: "10px"}}>
-                <h1 style={{textAlign: "center"}}>
-                    Konsumere
-                </h1>
-                <p style={{marginLeft: "30%"}}>Will be added later</p>
+            <Box className='p-3'>
+                <Heading size={"medium"}>
+                    Beta
+                </Heading>
+                {formatStats(stats.beta)}
             </Box>
-        </HGrid>
+            <Box className='p-3'>
+                <Heading size={"medium"}>
+                    Alpha
+                </Heading>
+                {formatStats(stats.alpha)}
+            </Box>
+        </div>
+
     );
 }

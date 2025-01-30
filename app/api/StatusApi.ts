@@ -1,9 +1,9 @@
 import * as process from "process";
-import { FintEvent } from "~/types/Event";
-import { AdapterContract } from "~/types/AdapterContract";
-import { backendRoutesMap } from "~/api/backendRoutes";
-import { HeaderProperties } from "~/components/root/HeaderProperties";
-import {Stats} from "~/types/Stats";
+import {FintEvent} from "~/types/Event";
+import {AdapterContract} from "~/types/AdapterContract";
+import {backendRoutesMap} from "~/api/backendRoutes";
+import {HeaderProperties} from "~/components/root/HeaderProperties";
+import {IStats} from "~/types/IStats";
 
 const PROFILE = process.env.PROFILE;
 const LOCAL_URL = process.env.PUBLIC_API_URL;
@@ -18,7 +18,7 @@ export class StatusApi {
     return this.getResponse(env, "contract");
   }
 
-  static async getStats(env: string): Promise<Stats> {
+  static async getStats(env: string): Promise<IStats> {
     return this.getResponse(env, "stats");
   }
 
