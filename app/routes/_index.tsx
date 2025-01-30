@@ -5,6 +5,7 @@ import {useLoaderData} from "@remix-run/react";
 import {IStats} from "~/types/IStats";
 import {formatStats} from "~/components/komponenter/Stats";
 import {Box, Heading} from "@navikt/ds-react";
+import {envCookie} from "~/components/cookie";
 
 export interface IEnvStats {
     api: IStats,
@@ -12,8 +13,11 @@ export interface IEnvStats {
     alpha: IStats
 }
 
+let currentCookie: string;
+
 export const loader: LoaderFunction = async ({request}) => {
     const cookieHeader = request.headers.get("Cookie");
+    currentCookie = await envCookie.parse(cookieHeader);
     try {
         const alpha: IStats = await StatusApi.getStats("alpha");
         const beta: IStats = await StatusApi.getStats("beta");
@@ -30,25 +34,30 @@ export const loader: LoaderFunction = async ({request}) => {
     }
 };
 
+function updateCookie(enviroment: string){
+    currentCookie = enviroment;
+}
+
 export default function Index() {
     const stats = useLoaderData<IEnvStats>();
-    console.log(stats)
+    console.log(currentCookie)
     useNavigate();
     return (
         <div>
-            <Box className='p-5'>
+            <Box className='p-5' onClick={() => updateCookie("api")}>
                 <Heading size={"medium"}>
                     Api
                 </Heading>
+
                 {formatStats(stats.api)}
             </Box>
-            <Box className='p-3'>
+            <Box className='p-3' onClick={() => updateCookie("beta")}>
                 <Heading size={"medium"}>
                     Beta
                 </Heading>
                 {formatStats(stats.beta)}
             </Box>
-            <Box className='p-3'>
+            <Box className='p-3'onClick={() => updateCookie("alpha")}>
                 <Heading size={"medium"}>
                     Alpha
                 </Heading>

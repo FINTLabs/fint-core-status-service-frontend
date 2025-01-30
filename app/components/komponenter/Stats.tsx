@@ -11,7 +11,6 @@ import React from "react";
 
 
 export function formatStats(stats: IStats) {
-    console.log(stats)
     return (
         <HGrid gap="6" columns={3}>
             <a href={"/kontrakter"} style={{textDecoration: "none", color: "inherit"}}>
