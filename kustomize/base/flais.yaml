@@ -24,3 +24,10 @@ spec:
         path: /
         middlewares:
           - fint-core-status-sso
+  resources:
+    limits:
+      memory: "1024Mi"
+      cpu: "100m"
+    requests:
+      memory: "128Mi"
+      cpu: "100m"

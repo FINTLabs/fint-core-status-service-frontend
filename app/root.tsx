@@ -7,6 +7,7 @@ import {LoaderFunctionArgs} from "@remix-run/router";
 import {HeaderProperties} from "~/components/root/HeaderProperties";
 import {envCookie} from "~/components/cookie";
 import {ActionFunction, json} from "@remix-run/node";
+import {EnvProvider, useEnv} from "~/constants/envContext";
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   HeaderProperties.setProperties(request);
@@ -50,28 +51,25 @@ export function Layout({children}: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const {selectedEnv} = useLoaderData<{ selectedEnv: string }>();
-  const fetcher = useFetcher();
-
-  function setEnv(env: string) {
-    const formData = new FormData();
-    formData.append("env", env);
-    fetcher.submit(formData, {method: "POST"});
-  }
+  const { selectedEnv } = useLoaderData<{ selectedEnv: string }>();
 
   return (
-    <>
-      <Header onHeaderChange={setEnv} value={selectedEnv}/>
-      <Box
-        shadow="small"
-        borderRadius="xlarge"
-        margin="0 0 4 0"
-        padding="4"
-        className="flex-grow w-full px-4 py-6"
-      >
-        <Outlet/>
-      </Box>
-    </>
+      <EnvProvider initialEnv={selectedEnv}>
+        <MainApp />
+      </EnvProvider>
+  );
+}
+
+function MainApp() {
+  const { selectedEnv, setEnv } = useEnv();
+
+  return (
+      <>
+        <Header onHeaderChange={setEnv} value={selectedEnv} />
+        <Box shadow="small" borderRadius="xlarge" margin="0 0 4 0" padding="4" className="flex-grow w-full px-4 py-6">
+          <Outlet />
+        </Box>
+      </>
   );
 }
 
