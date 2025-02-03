@@ -1,8 +1,8 @@
-import {Links, Meta, Outlet, Scripts, ScrollRestoration, useFetcher, useLoaderData,} from "@remix-run/react";
+import {Links, Meta, MetaFunction, Outlet, Scripts, ScrollRestoration, useLoaderData,} from "@remix-run/react";
 import "./tailwind.css";
 import "@navikt/ds-css";
 import Header from "~/components/root/Header";
-import {Box, HStack, VStack} from "@navikt/ds-react";
+import {HStack, Page, VStack} from "@navikt/ds-react";
 import {LoaderFunctionArgs} from "@remix-run/router";
 import {HeaderProperties} from "~/components/root/HeaderProperties";
 import {envCookie} from "~/components/cookie";
@@ -27,6 +27,12 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   }
   return json({selectedEnv});
 };
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Core Status' }
+  ]
+}
 
 export function Layout({children}: { children: React.ReactNode }) {
   return (
@@ -64,12 +70,12 @@ function MainApp() {
   const { selectedEnv, setEnv } = useEnv();
 
   return (
-      <>
-        <Header onHeaderChange={setEnv} value={selectedEnv} />
-        <Box shadow="small" borderRadius="xlarge" margin="0 0 4 0" padding="4" className="flex-grow w-full px-4 py-6">
-          <Outlet />
-        </Box>
-      </>
+        <Page >
+          <Header onHeaderChange={setEnv} value={selectedEnv} />
+          <Page.Block as={"main"} className="flex flex-col px-4 pb-6">
+            <Outlet />
+          </Page.Block>
+        </Page>
   );
 }
 
