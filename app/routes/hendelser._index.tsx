@@ -4,7 +4,7 @@ import {useLoaderData} from "@remix-run/react";
 import {convertTimeStamp, FintEvent, timeSince} from "~/types/Event";
 import {formatModalBody, ModalBody,} from "~/types/ModalBody";
 import {StatusApi} from "~/api/StatusApi";
-import {CheckmarkIcon, MagnifyingGlassIcon, XMarkIcon} from "@navikt/aksel-icons";
+import {CheckmarkIcon, ExclamationmarkTriangleIcon, MagnifyingGlassIcon, XMarkIcon} from "@navikt/aksel-icons";
 import React, {useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {filterByOrgId, getOrgs} from "~/components/komponenter/EventFilter";
@@ -32,20 +32,29 @@ export default function FintEventTable() {
     const [selectedOrgs, setSelectedOrgs] = useState(orgs);
     const [modal, setModal] = useState<ModalBody>(false, Event);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 18;
+    const itemsPerPage = 20;
     const [searchQuery, setSearchQuery] = useState("");
     const [searchVisibleId, setsearchVisibleId] = useState(false);
     const [searchVisibleResource, setsearchVisibleResource] = useState(false);
-    const [responseSortOrder, setResponseSortOrder] = useState<"default" | "hasResponse" | "noResponse">("default");
+    const [responseSortOrder, setResponseSortOrder] = useState<"default" | "hasResponse" | "failed">("default");
 
     const sortedByResponse = React.useMemo(() => {
+        if (responseSortOrder === "failed") {
+            return sortedEvents.filter((event) =>
+                !event.responseEvent ||
+                event.responseEvent?.failed ||
+                event.responseEvent?.rejected ||
+                event.responseEvent?.conflicted
+            );
+        }
+
         if (responseSortOrder === "hasResponse") {
-            return sortedEvents.filter((event) => event.responseEvent);
+            return sortedEvents.filter((event) =>
+                event.responseEvent || event.responseEvent
+            );
         }
-        if (responseSortOrder === "noResponse") {
-            return sortedEvents.filter((event) => !event.responseEvent);
-        }
-        return sortedEvents;
+
+        return sortedEvents; // Default if no specific sorting is needed
     }, [responseSortOrder, sortedEvents]);
 
     const filteredByOrg = React.useMemo(() => {
@@ -114,11 +123,19 @@ export default function FintEventTable() {
     function toggleResponseSort() {
         setResponseSortOrder((prev) => {
             if (prev === "default") return "hasResponse";
-            if (prev === "hasResponse") return "noResponse";
+            if (prev === "hasResponse") return "failed";
             return "default";
         });
         setCurrentPage(1);
     }
+
+    const failedEventTag = (event: { responseEvent?: { failed?: boolean; rejected?: boolean; conflicted?: boolean } }) => {
+        if (!event.responseEvent) return undefined;
+        if (event.responseEvent.failed) return "Event Failed";
+        if (event.responseEvent.rejected) return "Event Rejected";
+        if (event.responseEvent.conflicted) return "Event Conflicted";
+        return undefined;
+    };
 
     return (
         <div className="flex flex-col h-full justify-between gap-4">
@@ -218,7 +235,7 @@ export default function FintEventTable() {
                             )}
                         </Table.HeaderCell>
                         <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{width: "100px", cursor: "pointer"}}>
-                            Response {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "noResponse" ? "↓" : ""}
+                            Response {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "failed" ? "↓" : ""}
                         </Table.HeaderCell>
                         <Table.HeaderCell scope="col" style={{ width: "160px" }}>Overført</Table.HeaderCell>
                     </Table.Row>
@@ -237,8 +254,15 @@ export default function FintEventTable() {
                                 <Table.DataCell>{event.orgId}</Table.DataCell>
                                 <Table.DataCell>{createResourceUri(event)}</Table.DataCell>
                                 <Table.DataCell>
-                                    {event.responseEvent ? (<CheckmarkIcon title="Has response" fontSize="1.5rem"/>) : (
-                                        <XMarkIcon title="No response" fontSize="1.5rem"/>)}
+                                    {event.responseEvent ? (
+                                        event.responseEvent.failed || event.responseEvent.rejected || event.responseEvent.conflicted ? (
+                                            <ExclamationmarkTriangleIcon title={failedEventTag(event)} />
+                                        ) : failedEventTag(event) === undefined ? (
+                                            <CheckmarkIcon title="Has response" fontSize="1.5rem" />
+                                        ) : null
+                                    ) : (
+                                        <XMarkIcon title="No Response" fontSize="1.5rem" />
+                                    )}
                                 </Table.DataCell>
                                 <Tooltip content={timeSince(event.requestEvent?.created)}>
                                     <Table.DataCell>
