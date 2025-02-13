@@ -131,9 +131,9 @@ export default function FintEventTable() {
 
     const failedEventTag = (event: { responseEvent?: { failed?: boolean; rejected?: boolean; conflicted?: boolean } }) => {
         if (!event.responseEvent) return undefined;
-        if (event.responseEvent.failed) return "Event Failed";
-        if (event.responseEvent.rejected) return "Event Rejected";
-        if (event.responseEvent.conflicted) return "Event Conflicted";
+        if (event.responseEvent.failed) return "Event Failed; " + event.responseEvent.errorMessage;
+        if (event.responseEvent.rejected) return "Event Rejected; " + event.responseEvent.rejectReason;
+        if (event.responseEvent.conflicted) return "Event Conflicted; " + event.responseEvent.conflictReason;
         return undefined;
     };
 
@@ -256,12 +256,12 @@ export default function FintEventTable() {
                                 <Table.DataCell>
                                     {event.responseEvent ? (
                                         event.responseEvent.failed || event.responseEvent.rejected || event.responseEvent.conflicted ? (
-                                            <ExclamationmarkTriangleIcon title={failedEventTag(event) + "; " + event.responseEvent.errorMessage} />
+                                            <ExclamationmarkTriangleIcon className={"w-full text-center"} fontSize="1.5rem" title={failedEventTag(event)} />
                                         ) : failedEventTag(event) === undefined ? (
-                                            <CheckmarkIcon title="Has response" fontSize="1.5rem" />
+                                            <CheckmarkIcon title="Has response" className={"w-full text-center"} fontSize="1.5rem" />
                                         ) : null
                                     ) : (
-                                        <XMarkIcon title="No Response" fontSize="1.5rem" />
+                                        <XMarkIcon title="No Response" className={"w-full text-center"} fontSize="1.5rem" />
                                     )}
                                 </Table.DataCell>
                                 <Tooltip content={timeSince(event.requestEvent?.created)}>
