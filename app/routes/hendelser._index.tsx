@@ -256,7 +256,7 @@ export default function FintEventTable() {
                                 <Table.DataCell>
                                     {event.responseEvent ? (
                                         event.responseEvent.failed || event.responseEvent.rejected || event.responseEvent.conflicted ? (
-                                            <ExclamationmarkTriangleIcon title={failedEventTag(event)} />
+                                            <ExclamationmarkTriangleIcon title={failedEventTag(event) + "; " + event.responseEvent.errorMessage} />
                                         ) : failedEventTag(event) === undefined ? (
                                             <CheckmarkIcon title="Has response" fontSize="1.5rem" />
                                         ) : null
