@@ -217,7 +217,7 @@ export default function FintEventTable() {
                                         e.stopPropagation();
                                         setsearchVisibleResource((prev) => !prev);
                                     }}>
-                                    <Label className={"cursor-pointer"}>Resurser</Label>
+                                    <Label className={"cursor-pointer"}>Ressurser</Label>
                                     <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
                                 </button>
                             ) : (
