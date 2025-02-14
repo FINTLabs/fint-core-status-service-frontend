@@ -235,7 +235,7 @@ export default function FintEventTable() {
                             )}
                         </Table.HeaderCell>
                         <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{width: "100px", cursor: "pointer"}}>
-                            Response {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "failed" ? "↓" : ""}
+                            Status {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "failed" ? "↓" : ""}
                         </Table.HeaderCell>
                         <Table.HeaderCell scope="col" style={{ width: "160px" }}>Overført</Table.HeaderCell>
                     </Table.Row>
