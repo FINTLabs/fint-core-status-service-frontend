@@ -10,8 +10,19 @@ const LOCAL_URL = process.env.PUBLIC_API_URL;
 console.log("PROFILE:", PROFILE);
 
 export class StatusApi {
-  static async getHendelser(env: string): Promise<FintEvent[]> {
-    return this.getResponse(env, "event");
+  static async getHendelser(env: string, from: number | null, to: number | null): Promise<FintEvent[]> {
+    const params: string[] = [];
+    if (from != null && !isNaN(from)) {
+      params.push(`from=${from}`);
+    }
+    if (to != null && !isNaN(to)) {
+      params.push(`to=${to}`);
+    }
+    const queryString = params.length ? `?${params.join('&')}` : '';
+    const url = `event${queryString}`;
+
+    console.log("url: ", url);
+    return this.getResponse(env, url);
   }
 
   static async getContracts(env: string): Promise<AdapterContract[]> {
