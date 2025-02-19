@@ -26,8 +26,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     const url = new URL(request.url);
     const fromParam = url.searchParams.get("from");
     const toParam = url.searchParams.get("to");
-    const fromTimestamp = fromParam ? parseInt(fromParam, 10) : null;
-    const toTimestamp = toParam ? parseInt(toParam, 10) : null;
+    const fromTimestamp = fromParam ? parseInt(fromParam, 10) : parseInt(new Date().setDate(new Date().getDate() - 1).toString());
+    const toTimestamp = toParam ? parseInt(toParam, 10) : parseInt(new Date().getTime().toString());
 
     const cookieHeader = request.headers.get("Cookie");
     const selectedEnv = await envCookie.parse(cookieHeader);
