@@ -13,7 +13,6 @@ const DatePickerEvents: React.FC<DatePickerProps> = ({ onSelectedDates }) => {
     });
 
     function convertToUnixTimeStamp(date: Date | null): number | null {
-        console.log("picked time: ",date?.getTime())
         return date ? date.getTime() : null;
     }
 

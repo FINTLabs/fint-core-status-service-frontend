@@ -21,7 +21,6 @@ export class StatusApi {
     const queryString = params.length ? `?${params.join('&')}` : '';
     const url = `event${queryString}`;
 
-    console.log("url: ", url);
     return this.getResponse(env, url);
   }
 
