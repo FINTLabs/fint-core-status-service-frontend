@@ -49,6 +49,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function FintEventTable() {
     const fintEvents = useLoaderData<FintEvent[]>();
     const orgs = getOrgs(fintEvents);
+    console.log(orgs);
 
     const sortedEvents = React.useMemo(() => {
         return [...fintEvents].sort((a, b) => (b.requestEvent?.created || 0) - (a.requestEvent?.created || 0));
