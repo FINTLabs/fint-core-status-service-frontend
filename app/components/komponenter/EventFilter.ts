@@ -1,9 +1,12 @@
 import {FintEvent} from "~/types/Event";
-import {AdapterContract} from "~/types/AdapterContract";
 
 export function getOrgs(events: Array<FintEvent>): Array<string> {
+    if (!Array.isArray(events)) {
+        console.error("Expected events to be an array, but got:", events);
+        return [];
+    }
     const orgs = new Array<string>();
-    events.forEach((event: FintEvent ) => {
+    events.forEach((event: FintEvent) => {
         const orgId = event.orgId;
         if (!orgs.includes(orgId)) {
             orgs.push(orgId);

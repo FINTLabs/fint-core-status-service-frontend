@@ -47,7 +47,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 export const meta: MetaFunction = () => {
     return [
-        {title: 'FINT Status'}
+        {title: 'FINT Api Status'}
     ]
 }
 

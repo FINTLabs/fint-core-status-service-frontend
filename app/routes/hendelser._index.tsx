@@ -1,6 +1,16 @@
-import {ActionMenu, Button, HStack, Label, Modal, Pagination, Search, Table, Tooltip,} from "@navikt/ds-react";
+import {
+    ActionMenu,
+    Button,
+    HStack,
+    Label,
+    Modal,
+    Pagination,
+    Search,
+    Table,
+    Tooltip,
+} from "@navikt/ds-react";
 import {json, LoaderFunction} from "@remix-run/node";
-import {useLoaderData} from "@remix-run/react";
+import {useLoaderData, useSearchParams} from "@remix-run/react";
 import {convertTimeStamp, FintEvent, timeSince} from "~/types/Event";
 import {formatModalBody, ModalBody,} from "~/types/ModalBody";
 import {StatusApi} from "~/api/StatusApi";
@@ -8,21 +18,38 @@ import {CheckmarkIcon, ExclamationmarkTriangleIcon, MagnifyingGlassIcon, XMarkIc
 import React, {useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {filterByOrgId, getOrgs} from "~/components/komponenter/EventFilter";
+import DatePickerEvents from "~/components/komponenter/DatePicker";
 
-export const loader: LoaderFunction = async ({request}) => {
+let fromTimestamp: number;
+let toTimestamp: number;
+
+interface loaderProps {
+    fintEvents: FintEvent[];
+    toTimestamp: number;
+    fromTimestamp: number;
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+    const url = new URL(request.url);
+    const fromParam = url.searchParams.get("from");
+    const toParam = url.searchParams.get("to");
+    fromTimestamp = fromParam ? parseInt(fromParam, 10) : parseInt(new Date().setDate(new Date().getDate() - 1).toString());
+    toTimestamp = toParam ? parseInt(toParam, 10) : parseInt(new Date().getTime().toString());
+
     const cookieHeader = request.headers.get("Cookie");
     const selectedEnv = await envCookie.parse(cookieHeader);
+
     try {
-        const events = await StatusApi.getHendelser(selectedEnv);
-        return json(events);
+        const fintEvents = await StatusApi.getHendelser(selectedEnv, fromTimestamp, toTimestamp);
+        return json({fintEvents, toTimestamp, fromTimestamp});
     } catch (error) {
         console.error("Loader Error: ", error);
-        throw new Response("Failed to load events", {status: 500});
+        throw new Response("Failed to load events", { status: 500 });
     }
 };
 
 export default function FintEventTable() {
-    const fintEvents = useLoaderData<FintEvent[]>();
+    const {fintEvents, toTimestamp, fromTimestamp} = useLoaderData<loaderProps>();
     const orgs = getOrgs(fintEvents);
 
     const sortedEvents = React.useMemo(() => {
@@ -37,6 +64,7 @@ export default function FintEventTable() {
     const [searchVisibleId, setsearchVisibleId] = useState(false);
     const [searchVisibleResource, setsearchVisibleResource] = useState(false);
     const [responseSortOrder, setResponseSortOrder] = useState<"default" | "hasResponse" | "failed">("default");
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const sortedByResponse = React.useMemo(() => {
         if (responseSortOrder === "failed") {
@@ -137,6 +165,17 @@ export default function FintEventTable() {
         return undefined;
     };
 
+    const handleDateScope = ({ from, to }: { from: number | null; to: number | null }) => {
+        const params: Record<string, string> = {};
+        if (from !== null) {
+            params.from = from.toString();
+        }
+        if (to !== null) {
+            params.to = to.toString();
+        }
+        setSearchParams(params);
+    };
+
     return (
         <div className="flex flex-col h-full justify-between gap-4">
             <Modal
@@ -152,7 +191,7 @@ export default function FintEventTable() {
                 <Table.Header>
                     <Table.Row shadeOnHover={true}>
                         <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleId((prev) => !prev)}
-                          style={{ width: "320px" }}>
+                                          style={{width: "320px"}}>
                             {!searchVisibleId ? (
                                 <button
                                     className={"flex-row flex"}
@@ -178,7 +217,7 @@ export default function FintEventTable() {
                                 </form>
                             )}
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col" style={{ width: "150px" }}>
+                        <Table.HeaderCell scope="col" style={{width: "150px"}}>
                             <ActionMenu>
                                 <ActionMenu.Trigger>
                                     <Button
@@ -208,7 +247,8 @@ export default function FintEventTable() {
                                 </ActionMenu.Content>
                             </ActionMenu>
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleResource((prev) => !prev)} style={{ width: "280px" }}>
+                        <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleResource((prev) => !prev)}
+                                          style={{width: "280px"}}>
                             {!searchVisibleResource ? (
                                 <button
                                     className={"flex-row flex"}
@@ -237,7 +277,22 @@ export default function FintEventTable() {
                         <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{width: "100px", cursor: "pointer"}}>
                             Status {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "failed" ? "↓" : ""}
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col" style={{ width: "160px" }}>Overført</Table.HeaderCell>
+                        <Table.HeaderCell scope="col" style={{width: "160px"}}>
+                            <ActionMenu>
+                                <ActionMenu.Trigger>
+                                    <Button
+                                        variant="tertiary-neutral">
+                                        Overført
+                                    </Button>
+                                </ActionMenu.Trigger>
+                                <ActionMenu.Content>
+                                    <DatePickerEvents
+                                        placeholderFrom = {fromTimestamp}
+                                        placeholderTo={toTimestamp}
+                                        onSelectedDates={handleDateScope}/>
+                                </ActionMenu.Content>
+                            </ActionMenu>
+                        </Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -256,12 +311,16 @@ export default function FintEventTable() {
                                 <Table.DataCell>
                                     {event.responseEvent ? (
                                         event.responseEvent.failed || event.responseEvent.rejected || event.responseEvent.conflicted ? (
-                                            <ExclamationmarkTriangleIcon className={"w-full text-center"} fontSize="1.5rem" title={failedEventTag(event)} />
+                                            <ExclamationmarkTriangleIcon className={"w-full text-center"}
+                                                                         fontSize="1.5rem"
+                                                                         title={failedEventTag(event)}/>
                                         ) : failedEventTag(event) === undefined ? (
-                                            <CheckmarkIcon title="Has response" className={"w-full text-center"} fontSize="1.5rem" />
+                                            <CheckmarkIcon title="Has response" className={"w-full text-center"}
+                                                           fontSize="1.5rem"/>
                                         ) : null
                                     ) : (
-                                        <XMarkIcon title="No Response" className={"w-full text-center"} fontSize="1.5rem" />
+                                        <XMarkIcon title="No Response" className={"w-full text-center"}
+                                                   fontSize="1.5rem"/>
                                     )}
                                 </Table.DataCell>
                                 <Tooltip content={timeSince(event.requestEvent?.created)}>
