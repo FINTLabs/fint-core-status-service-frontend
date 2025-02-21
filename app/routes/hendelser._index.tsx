@@ -19,27 +19,29 @@ import React, {useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {filterByOrgId, getOrgs} from "~/components/komponenter/EventFilter";
 import DatePickerEvents from "~/components/komponenter/DatePicker";
-import datePicker from "~/components/komponenter/DatePicker";
-import {number} from "prop-types";
+
+let fromTimestamp: number;
+let toTimestamp: number;
+
+interface loaderProps {
+    fintEvents: FintEvent[];
+    toTimestamp: number;
+    fromTimestamp: number;
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
     const url = new URL(request.url);
     const fromParam = url.searchParams.get("from");
     const toParam = url.searchParams.get("to");
-    const fromTimestamp = fromParam ? parseInt(fromParam, 10) : parseInt(new Date().setDate(new Date().getDate() - 1).toString());
-    const toTimestamp = toParam ? parseInt(toParam, 10) : parseInt(new Date().getTime().toString());
+    fromTimestamp = fromParam ? parseInt(fromParam, 10) : parseInt(new Date().setDate(new Date().getDate() - 1).toString());
+    toTimestamp = toParam ? parseInt(toParam, 10) : parseInt(new Date().getTime().toString());
 
     const cookieHeader = request.headers.get("Cookie");
     const selectedEnv = await envCookie.parse(cookieHeader);
 
     try {
-        let events;
-        if (fromTimestamp || toTimestamp) {
-            events = await StatusApi.getHendelser(selectedEnv, fromTimestamp, toTimestamp);
-        } else {
-            events = await StatusApi.getHendelser(selectedEnv);
-        }
-        return json(events);
+        const fintEvents = await StatusApi.getHendelser(selectedEnv, fromTimestamp, toTimestamp);
+        return json({fintEvents, toTimestamp, fromTimestamp});
     } catch (error) {
         console.error("Loader Error: ", error);
         throw new Response("Failed to load events", { status: 500 });
@@ -47,7 +49,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function FintEventTable() {
-    const fintEvents = useLoaderData<FintEvent[]>();
+    const {fintEvents, toTimestamp, fromTimestamp} = useLoaderData<loaderProps>();
     const orgs = getOrgs(fintEvents);
 
     const sortedEvents = React.useMemo(() => {
@@ -285,7 +287,10 @@ export default function FintEventTable() {
                                     </Button>
                                 </ActionMenu.Trigger>
                                 <ActionMenu.Content>
-                                    <DatePickerEvents onSelectedDates={handleDateScope} />
+                                    <DatePickerEvents
+                                        placeholderFrom = {fromTimestamp}
+                                        placeholderTo={toTimestamp}
+                                        onSelectedDates={handleDateScope}/>
                                 </ActionMenu.Content>
                             </ActionMenu>
                         </Table.HeaderCell>
