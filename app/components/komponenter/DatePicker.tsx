@@ -68,6 +68,10 @@ const DatePickerEvents: React.FC<DatePickerProps> = ({ onSelectedDates, placehol
                 <option value="20">20 min</option>
                 <option value="30">30 min</option>
                 <option value="60">60 min</option>
+                <option value="120">2 timer</option>
+                <option value="240">4 timer</option>
+                <option value="360">6 timer</option>
+                <option value="720">12 timer</option>
             </select>
             <DatePicker
                 {...datepickerProps}
