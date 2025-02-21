@@ -257,7 +257,7 @@ export default function FintEventTable() {
                                         e.stopPropagation();
                                         setsearchVisibleResource((prev) => !prev);
                                     }}>
-                                    <Label className={"cursor-pointer"}>Resurser</Label>
+                                    <Label className={"cursor-pointer"}>Ressurser</Label>
                                     <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
                                 </button>
                             ) : (
@@ -274,9 +274,8 @@ export default function FintEventTable() {
                                 </form>
                             )}
                         </Table.HeaderCell>
-                        <Table.HeaderCell scope="col" onClick={toggleResponseSort}
-                                          style={{width: "100px", cursor: "pointer"}}>
-                            Response {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "failed" ? "↓" : ""}
+                        <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{width: "100px", cursor: "pointer"}}>
+                            Status {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "failed" ? "↓" : ""}
                         </Table.HeaderCell>
                         <Table.HeaderCell scope="col" style={{width: "160px"}}>
                             <ActionMenu>
