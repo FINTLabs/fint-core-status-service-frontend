@@ -14,7 +14,13 @@ import {useLoaderData, useSearchParams} from "@remix-run/react";
 import {convertTimeStamp, FintEvent, timeSince} from "~/types/Event";
 import {formatModalBody, ModalBody,} from "~/types/ModalBody";
 import {StatusApi} from "~/api/StatusApi";
-import {CheckmarkIcon, ExclamationmarkTriangleIcon, MagnifyingGlassIcon, XMarkIcon} from "@navikt/aksel-icons";
+import {
+    CheckmarkIcon,
+    ExclamationmarkTriangleIcon,
+    FunnelIcon,
+    MagnifyingGlassIcon,
+    XMarkIcon
+} from "@navikt/aksel-icons";
 import React, {useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {filterByOrgId, getOrgs} from "~/components/komponenter/EventFilter";
@@ -281,6 +287,7 @@ export default function FintEventTable() {
                             <ActionMenu>
                                 <ActionMenu.Trigger>
                                     <Button
+                                        icon={<FunnelIcon title="a11y-title" fontSize="1rem" />}
                                         variant="tertiary-neutral">
                                         Overført
                                     </Button>
