@@ -43,7 +43,7 @@ export default function Kontrakter() {
   const data = useLoaderData<AdapterContract[]>();
   const orgs = getOrgs(data);
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(4);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
   const [selectedOrgs, setSelectedOrgs] = useState(orgs);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchVisible, setSearchVisible] = useState(false);
