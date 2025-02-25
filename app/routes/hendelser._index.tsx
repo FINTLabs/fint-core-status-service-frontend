@@ -194,7 +194,7 @@ export default function FintEventTable() {
         <Table.Header>
           <Table.Row shadeOnHover={true}>
             <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleId((prev) => !prev)}
-                              style={{width: "320px"}}>
+                              style={{width: "140px"}}>
               {!searchVisibleId ? (
                 <button
                   className={"flex-row flex"}
@@ -220,6 +220,7 @@ export default function FintEventTable() {
                 </form>
               )}
             </Table.HeaderCell>
+            <Table.HeaderCell scope="col" style={{ width: "100px" }}>Operasjon</Table.HeaderCell>
             <Table.HeaderCell scope="col" style={{width: "150px"}}>
               <ActionMenu>
                 <ActionMenu.Trigger>
@@ -313,7 +314,8 @@ export default function FintEventTable() {
                 onClick={() => setModal({open: true, event})}
                 style={{cursor: "pointer"}}
               >
-                <Table.DataCell>{event.corrId}</Table.DataCell>
+                  <Table.DataCell className={"w-full text-center"}>{event.corrId.slice(0, 5)}...{event.corrId.slice(-5)}</Table.DataCell>
+                  <Table.DataCell>{event.requestEvent.operationType}</Table.DataCell>
                 <Table.DataCell>{event.orgId}</Table.DataCell>
                 <Table.DataCell>{createResourceUri(event)}</Table.DataCell>
                 <Table.DataCell>
