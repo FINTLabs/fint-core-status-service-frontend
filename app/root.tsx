@@ -89,7 +89,7 @@ function MainApp() {
     return (
         <Page>
             <Header onHeaderChange={setEnv} value={selectedEnv}/>
-            <Page.Block as={"main"} className="flex flex-col px-4 pb-6">
+            <Page.Block as={"main"} className="flex flex-col p-4">
                 <Outlet/>
             </Page.Block>
         </Page>
