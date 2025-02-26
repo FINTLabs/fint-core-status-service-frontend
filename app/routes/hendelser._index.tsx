@@ -180,7 +180,7 @@ export default function FintEventTable() {
   };
 
   return (
-    <div className="flex flex-col h-full justify-between gap-4">
+    <div className="flex flex-col h-full justify-between gap-4 min-h-[76vh]">
       <Modal
         width={'60%'}
         open={modal.open}
