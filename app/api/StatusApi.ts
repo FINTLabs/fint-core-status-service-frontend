@@ -4,12 +4,27 @@ import {AdapterContract} from "~/types/AdapterContract";
 import {backendRoutesMap} from "~/api/backendRoutes";
 import {HeaderProperties} from "~/components/root/HeaderProperties";
 import {IStats} from "~/types/IStats";
+import {IKonsumerTab} from "~/types/IKonsumerTab";
 
 const PROFILE = process.env.PROFILE;
 const LOCAL_URL = process.env.PUBLIC_API_URL;
 console.log("PROFILE:", PROFILE);
 
 export class StatusApi {
+
+  static async getResponse(env: string, uri: string) {
+    const response =
+      PROFILE != null && PROFILE === "local"
+        ? await this.performLocalRequest(uri)
+        : await this.performRequest(env, uri);
+
+    return await response.json();
+  }
+
+  static async getKonsumerTabs(env: string): Promise<IKonsumerTab[]> {
+    // TODO: Setup backend
+  }
+
   static async getHendelser(env: string, from: number | null, to: number | null): Promise<FintEvent[]> {
     const params: string[] = [];
     if (from != null && !isNaN(from)) {
@@ -30,15 +45,6 @@ export class StatusApi {
 
   static async getStats(env: string): Promise<IStats> {
     return this.getResponse(env, "stats");
-  }
-
-  static async getResponse(env: string, uri: string) {
-    const response =
-      PROFILE != null && PROFILE === "local"
-        ? await this.performLocalRequest(uri)
-        : await this.performRequest(env, uri);
-
-    return await response.json();
   }
 
   static async performRequest(env: string, uri: string) {
