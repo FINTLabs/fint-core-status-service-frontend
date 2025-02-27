@@ -6,13 +6,11 @@ export default function KonsumerActionBar({setQuery}) {
   return (
     <HStack justify="space-between">
       <HStack gap="2">
-        <form role="search">
-          <Search
-            onChange={(org) => setQuery(org)}
-            label="Søk igjennom konsumere"
-            variant="primary"
-          />
-        </form>
+        <Search
+          onChange={(org) => setQuery(org)}
+          label="Søk igjennom konsumere"
+          variant="primary"
+        />
       </HStack>
       <HStack gap="2">
         <Button iconPosition="right" icon={<ArrowsUpDownIcon aria-hidden/>}>
