@@ -4,20 +4,23 @@ import React from "react";
 
 export default function KonsumerTab() {
   return (
-    <VStack>
+    <Box
+      borderRadius="large"
+      shadow="large"
+      width="200px"
+      className="flex flex-col bg-[rgb(152,177,201)]"
+    >
       <Box
-        className="text-center bg-[rgb(31,61,89)] text-white"
+        className="text-center bg-header text-body"
         padding="4"
-        borderRadius="large large 0 0"
-        shadow="large"
+        borderRadius="large"
         width="200px"
       >
         Oslo
       </Box>
       <Box
-        className="bg-[rgb(152,177,201)]"
+        className="bg-"
         borderRadius="0 0 large large"
-        shadow="large"
         padding="1"
       >
         <VStack gap="1">
@@ -35,6 +38,6 @@ export default function KonsumerTab() {
           </HStack>
         </VStack>
       </Box>
-    </VStack>
+    </Box>
   )
 }
