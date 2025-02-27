@@ -2,12 +2,16 @@ import {Button, HStack, Search} from "@navikt/ds-react";
 import {ArrowsUpDownIcon, PlusIcon} from "@navikt/aksel-icons";
 import React from "react";
 
-export default function KonsumerActionBar() {
+export default function KonsumerActionBar({setQuery}) {
   return (
     <HStack justify="space-between">
       <HStack gap="2">
         <form role="search">
-          <Search label="Søk alle Nav sine sider" variant="primary"/>
+          <Search
+            onChange={(org) => setQuery(org)}
+            label="Søk igjennom konsumere"
+            variant="primary"
+          />
         </form>
       </HStack>
       <HStack gap="2">
