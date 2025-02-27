@@ -1,8 +1,9 @@
 import {Box, HStack, VStack} from "@navikt/ds-react";
 import {ArrowsCirclepathIcon, CaretRightCircleIcon, XMarkOctagonIcon} from "@navikt/aksel-icons";
 import React from "react";
+import {IKonsumerTab} from "~/types/IKonsumerTab";
 
-export default function KonsumerTab() {
+export default function KonsumerTab({ org, applications, errors, restarts }: IKonsumerTab) {
   return (
     <Box
       borderRadius="large"
@@ -16,7 +17,7 @@ export default function KonsumerTab() {
         borderRadius="large"
         width="200px"
       >
-        Oslo
+        {org}
       </Box>
       <Box
         className="bg-"
@@ -26,15 +27,15 @@ export default function KonsumerTab() {
         <VStack gap="1">
           <HStack gap="2" align="center">
             <CaretRightCircleIcon aria-hidden/>
-            123
+            {applications}
           </HStack>
           <HStack gap="2" align="center">
             <XMarkOctagonIcon aria-hidden/>
-            123
+            {errors}
           </HStack>
           <HStack gap="2" align="center">
             <ArrowsCirclepathIcon aria-hidden/>
-            123
+            {restarts}
           </HStack>
         </VStack>
       </Box>
