@@ -14,7 +14,6 @@ interface AdjustConsumerModalProps {
 
 export default function AdjustConsumerModal({open, setOpen, consumerMetadata, consumer = null}: AdjustConsumerModalProps) {
   const [activeStep, setActiveStep] = useState(1);
-  const [consumer, setConsumer]: IConsumer = useState(emptyConsumer)
 
   useEffect(() => {
     console.log("Updated consumer: ", consumer)

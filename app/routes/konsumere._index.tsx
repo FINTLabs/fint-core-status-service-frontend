@@ -14,7 +14,6 @@ export default function Konsumere() {
   const [searchQuery, setSearchQuery] = useState("");
   const [openConsumerEditModal, setOpenConsumerEditModal] = useState(false)
   const [consumer, setConsumer]: IConsumer = useState(null)
-  const [consumerMetadata, consumerMetadata]: IConsumerMetadata = useState(MockConsumerMetadata)
 
   const filteredTabs = tabs.filter(tab =>
     tab.org.toLowerCase().includes(searchQuery.toLowerCase())
