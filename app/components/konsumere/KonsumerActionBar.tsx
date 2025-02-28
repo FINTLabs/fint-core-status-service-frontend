@@ -2,7 +2,7 @@ import {Button, HStack, Search} from "@navikt/ds-react";
 import {ArrowsUpDownIcon, PlusIcon} from "@navikt/aksel-icons";
 import React from "react";
 
-export default function KonsumerActionBar({setQuery}) {
+export default function KonsumerActionBar({setQuery, setOpenAddConsumer}) {
   return (
     <HStack justify="space-between">
       <HStack gap="2">
@@ -16,7 +16,11 @@ export default function KonsumerActionBar({setQuery}) {
         <Button iconPosition="right" icon={<ArrowsUpDownIcon aria-hidden/>}>
           Oppdater Versjon
         </Button>
-        <Button iconPosition="right" icon={<PlusIcon aria-hidden/>}>
+        <Button
+          iconPosition="right"
+          icon={<PlusIcon aria-hidden/>}
+          onClick={() => setOpenAddConsumer(true)}
+        >
           Ny Consumer
         </Button>
       </HStack>
