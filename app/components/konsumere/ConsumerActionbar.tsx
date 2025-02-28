@@ -1,8 +1,13 @@
 import {Button, HStack, Search} from "@navikt/ds-react";
 import {ArrowsUpDownIcon, PlusIcon} from "@navikt/aksel-icons";
-import React from "react";
+import React, {LegacyRef} from "react";
 
-export default function KonsumerActionBar({setQuery, setOpenAddConsumer}) {
+interface ConsumerActionbarProps {
+  setQuery: React.Dispatch<React.SetStateAction<string>>
+  ref: LegacyRef<HTMLDialogElement>
+}
+
+export default function ConsumerActionbar({setQuery, ref}: ConsumerActionbarProps) {
   return (
     <HStack justify="space-between">
       <HStack gap="2">
@@ -19,7 +24,7 @@ export default function KonsumerActionBar({setQuery, setOpenAddConsumer}) {
         <Button
           iconPosition="right"
           icon={<PlusIcon aria-hidden/>}
-          onClick={() => setOpenAddConsumer(true)}
+          onClick={() => ref.current?.showModal()}
         >
           Ny Consumer
         </Button>
