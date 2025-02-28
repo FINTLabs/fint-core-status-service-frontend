@@ -9,7 +9,7 @@ import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
 import {emptyConsumer} from "~/types/IConsumer";
 
 export default function Konsumere() {
-  const ref = useRef<HTMLDialogElement>(null);
+  const [openModal, setOpenModal] = useState(false)
   const [consumerTabs] = useState(MockConsumerTabs)
   const [consumer, setConsumer] = useState(emptyConsumer)
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,7 +25,7 @@ export default function Konsumere() {
         <Title/>
         <ConsumerActionbar
           setQuery={setSearchQuery}
-          ref={ref}
+          setOpenModal={setOpenModal}
         />
         <HStack gap="4">
           {filteredTabs.map((tab) => (
@@ -40,7 +40,8 @@ export default function Konsumere() {
         </HStack>
 
         <AdjustConsumerModal
-          ref={ref}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
           consumerMetadata={consumerMetadata}
           consumer={consumer}
           setConsumer={setConsumer}

@@ -1,12 +1,13 @@
 import {HStack, Modal, Stepper, VStack} from "@navikt/ds-react";
 import {PlusIcon} from "@navikt/aksel-icons";
-import React, {LegacyRef, useState} from "react";
+import React, {useState} from "react";
 import SetupFields from "~/components/konsumere/add_konsumer/SetupFields";
 import {IConsumer} from "~/types/IConsumer";
 import {IConsumerMetadata} from "~/types/IConsumerMetadata";
 
 interface AdjustConsumerModalProps {
-  ref: LegacyRef<HTMLDialogElement>
+  openModal: boolean
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
   consumer: IConsumer
   setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>
   consumerMetadata: IConsumerMetadata
@@ -14,7 +15,8 @@ interface AdjustConsumerModalProps {
 }
 
 export default function AdjustConsumerModal({
-                                              ref,
+                                              openModal,
+                                              setOpenModal,
                                               consumer,
                                               setConsumer,
                                               consumerMetadata,
@@ -23,7 +25,7 @@ export default function AdjustConsumerModal({
   const [activeStep, setActiveStep] = useState(1);
 
   const requiredFieldsIsSet = () => {
-    return !(consumer) || consumer.org && consumer.domain && consumer.package && consumer.version
+    return consumer.org && consumer.domain && consumer.package && consumer.version
   }
 
   const changeStep = (step) => {
@@ -39,7 +41,8 @@ export default function AdjustConsumerModal({
     <form>
       <Modal
         width="700px"
-        ref={ref}
+        open={openModal}
+        onClose={() => setOpenModal(false)}
         header={{
           heading: "Ny Konsumer",
           icon: <PlusIcon/>
