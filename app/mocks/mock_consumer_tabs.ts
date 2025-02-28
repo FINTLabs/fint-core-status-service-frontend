@@ -1,6 +1,6 @@
-import {IKonsumerTab} from "~/types/IKonsumerTab";
+import {IConsumerTab} from "~/types/IConsumerTab";
 
-export const konsumerTabs: IKonsumerTab[] = [
+export const MockConsumerTabs: IConsumerTab[] = [
   {org: "Oslo", applications: 25, errors: 0, restarts: 0},
   {org: "Viken", applications: 30, errors: 2, restarts: 0},
   {org: "Innlandet", applications: 18, errors: 0, restarts: 0},
