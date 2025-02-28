@@ -1,26 +1,29 @@
-import {HStack, Modal, Stepper, UNSAFE_Combobox, VStack} from "@navikt/ds-react";
+import {HStack, Modal, Stepper, VStack} from "@navikt/ds-react";
 import {PlusIcon} from "@navikt/aksel-icons";
-import React, {useEffect, useState} from "react";
+import React, {LegacyRef, useState} from "react";
 import SetupFields from "~/components/konsumere/add_konsumer/SetupFields";
-import {emptyConsumer, IConsumer} from "~/types/IConsumer";
+import {IConsumer} from "~/types/IConsumer";
 import {IConsumerMetadata} from "~/types/IConsumerMetadata";
 
 interface AdjustConsumerModalProps {
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  ref: LegacyRef<HTMLDialogElement>
+  consumer: IConsumer
+  setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>
   consumerMetadata: IConsumerMetadata
-  consumer: IConsumer | null
+  existingConsumer: boolean
 }
 
-export default function AdjustConsumerModal({open, setOpen, consumerMetadata, consumer = null}: AdjustConsumerModalProps) {
+export default function AdjustConsumerModal({
+                                              ref,
+                                              consumer,
+                                              setConsumer,
+                                              consumerMetadata,
+                                              existingConsumer
+                                            }: AdjustConsumerModalProps) {
   const [activeStep, setActiveStep] = useState(1);
 
-  useEffect(() => {
-    console.log("Updated consumer: ", consumer)
-  }, [consumer])
-
   const requiredFieldsIsSet = () => {
-    return consumer.org && consumer.domain && consumer.package && consumer.version
+    return !(consumer) || consumer.org && consumer.domain && consumer.package && consumer.version
   }
 
   const changeStep = (step) => {
@@ -36,8 +39,7 @@ export default function AdjustConsumerModal({open, setOpen, consumerMetadata, co
     <form>
       <Modal
         width="700px"
-        open={open}
-        onClose={() => setOpen(false)}
+        ref={ref}
         header={{
           heading: "Ny Konsumer",
           icon: <PlusIcon/>
@@ -46,7 +48,7 @@ export default function AdjustConsumerModal({open, setOpen, consumerMetadata, co
         <Modal.Body>
           <VStack padding="2" justify="center" gap="4">
             <HStack justify="center" gap="2">
-              {activeStep === 1 && <SetupFields setConsumer={setConsumer} />}
+              {activeStep === 1 && <SetupFields consumerMetadata={consumerMetadata} setConsumer={setConsumer}/>}
             </HStack>
             <HStack justify="space-between">
             </HStack>
