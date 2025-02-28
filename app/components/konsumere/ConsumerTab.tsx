@@ -1,15 +1,20 @@
 import {Box, HStack, VStack} from "@navikt/ds-react";
 import {ArrowsCirclepathIcon, CaretRightCircleIcon, XMarkOctagonIcon} from "@navikt/aksel-icons";
 import React from "react";
-import {IKonsumerTab} from "~/types/IKonsumerTab";
+import {IConsumerTab} from "~/types/IConsumerTab";
 
-export default function KonsumerTab({ org, applications, errors, restarts }: IKonsumerTab) {
+interface onClickProp {
+  onClick?: () => void;
+}
+
+export default function ConsumerTab({org, applications, errors, restarts, onClick}: IConsumerTab & onClickProp) {
   return (
     <Box
       borderRadius="large"
       shadow="large"
       width="200px"
       className="flex flex-col bg-[rgb(152,177,201)]"
+      onClick={onClick}
     >
       <Box
         className="text-center bg-header text-body"
