@@ -1,17 +1,27 @@
-import {FintEvent, timeSince} from "~/types/Event";
-import {BodyLong, HGrid, Modal} from "@navikt/ds-react";
-import {Buildings3Icon, ClockIcon, TagIcon} from "@navikt/aksel-icons";
+import {convertTimeStamp, FintEvent, RequestFintEvent, timeSince} from "~/types/Event";
+import {BodyLong, HGrid, HStack, Modal} from "@navikt/ds-react";
+import {
+    ArrowsSquarepathIcon,
+    Buildings3Icon,
+    ClockIcon,
+    HourglassIcon,
+    PaperplaneIcon,
+    TagIcon
+} from "@navikt/aksel-icons";
+import ArrowsSquarepath from "@navikt/aksel-icons/src/ArrowsSquarepath";
 
 export interface ModalBody {
     open: boolean;
     event: FintEvent | null;
 }
 
-export function formatJson(event: any): JSX.Element {
-    if (event?.event) {
-        delete event.event.value;
-    } else if (event?.value) {
-        delete event.value;
+export function formatJson(event: FintEvent): JSX.Element {
+    if (event.requestFintEvent?.value) {
+        event.requestFintEvent.value = formatJson(event);
+        delete event.requestFintEvent.value;
+    }
+    else if (event.responseFintEvent?.value) {
+        delete event.responseFintEvent.value;
     }
 
     return (
@@ -34,18 +44,22 @@ export function formatModalBody(event: FintEvent) {
                         {event?.responseEvent && formatJson(event?.responseEvent)}
                     </div>
                 </HGrid>
-                <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                    <ClockIcon title="Time between request and response"/>
-                    <span>{timeSince(event?.requestEvent?.created, event?.responseEvent?.handledAt)}</span>
-                </div>
-                <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                <HStack style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                    <HourglassIcon title="Time between request and response"/>
+                    {timeSince(event?.requestEvent?.created, event?.responseEvent?.handledAt)}
+                    <PaperplaneIcon title="Created"/>
+                    {convertTimeStamp(event?.requestEvent?.created)}
+                    <ArrowsSquarepathIcon title="handledAt"/>
+                    {convertTimeStamp(event?.responseEvent?.handledAt)}
+                </HStack>
+                <HStack style={{display: "flex", alignItems: "center", gap: "8px"}}>
                     <Buildings3Icon title="Org-Id"/>
-                    <span>{event?.orgId}</span>
-                </div>
-                <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                    {event?.orgId}
+                </HStack>
+                <HStack style={{display: "flex", alignItems: "center", gap: "8px"}}>
                     <TagIcon title="Kafka Topic"/>
-                    <span>{event?.topic}</span>
-                </div>
+                    {event?.topic}
+                </HStack>
             </BodyLong>
         </Modal.Body>
     )
