@@ -1,10 +1,10 @@
 import {HStack, VStack} from "@navikt/ds-react";
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
-import ConsumerTab from "~/components/konsumere/ConsumerTab";
+import OrganisationTab from "~/components/konsumere/OrganisationTab";
 import Title from "~/components/header/Title";
 import {MockOrganisationTabs} from "~/mocks/mock_organisation_tabs";
-import AdjustConsumerModal from "~/components/konsumere/konsumer_modal/AdjustConsumerModal";
+import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
 import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
 import {emptyConsumer} from "~/types/IConsumer";
 
@@ -29,7 +29,7 @@ export default function Konsumere() {
         />
         <HStack gap="4">
           {filteredTabs.map((tab) => (
-            <ConsumerTab
+            <OrganisationTab
               key={tab.org}
               org={tab.org}
               applications={tab.applications}
@@ -39,7 +39,7 @@ export default function Konsumere() {
           ))}
         </HStack>
 
-        <AdjustConsumerModal
+        <ConsumerModal
           openModal={openModal}
           setOpenModal={setOpenModal}
           consumerMetadata={consumerMetadata}

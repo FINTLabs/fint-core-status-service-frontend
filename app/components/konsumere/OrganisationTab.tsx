@@ -1,13 +1,19 @@
 import {Box, HStack, VStack} from "@navikt/ds-react";
 import {ArrowsCirclepathIcon, CaretRightCircleIcon, XMarkOctagonIcon} from "@navikt/aksel-icons";
 import React from "react";
-import {IConsumerTab} from "~/types/IConsumerTab";
+import {IOrganisationTab} from "~/types/IOrganisationTab";
 
 interface onClickProp {
   onClick?: () => void;
 }
 
-export default function ConsumerTab({org, applications, errors, restarts, onClick}: IConsumerTab & onClickProp) {
+export default function OrganisationTab({
+                                          org,
+                                          applications,
+                                          errors,
+                                          restarts,
+                                          onClick
+                                        }: IOrganisationTab & onClickProp) {
   return (
     <Box
       borderRadius="large"
