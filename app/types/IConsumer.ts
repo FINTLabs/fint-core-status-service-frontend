@@ -1,8 +1,7 @@
 export interface IConsumer {
-  domain: string;
-  package: string;
+  components: string[]
+  organisations: string[];
   version: string;
-  org: string;
   shared: boolean;
   limitsCpu: string;
   limitsMemory: string;
@@ -14,10 +13,9 @@ export interface IConsumer {
 }
 
 export const emptyConsumer: IConsumer = {
-  domain: "",
-  package: "",
+  components: [],
+  organisations: [],
   version: "",
-  org: "",
   shared: false,
   limitsCpu: "",
   limitsMemory: "",
