@@ -5,12 +5,13 @@ import ConsumerTab from "~/components/konsumere/ConsumerTab";
 import Title from "~/components/header/Title";
 import {MockConsumerTabs} from "~/mocks/mock_consumer_tabs";
 import AdjustConsumerModal from "~/components/konsumere/add_konsumer/AdjustConsumerModal";
+import {MockOrganisationTabs} from "~/mocks/mock_organisation_tabs";
 import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
 import {emptyConsumer} from "~/types/IConsumer";
 
 export default function Konsumere() {
   const [openModal, setOpenModal] = useState(false)
-  const [consumerTabs] = useState(MockConsumerTabs)
+  const [consumerTabs] = useState(MockOrganisationTabs)
   const [consumer, setConsumer] = useState(emptyConsumer)
   const [searchQuery, setSearchQuery] = useState("");
   const [consumerMetadata, setConsumerMetadata] = useState(MockConsumerMetadata)
