@@ -1,7 +1,7 @@
-import {HStack, Modal, Stepper, VStack} from "@navikt/ds-react";
+import {Modal, Stepper, VStack} from "@navikt/ds-react";
 import {PlusIcon} from "@navikt/aksel-icons";
 import React, {useState} from "react";
-import SetupFields from "~/components/konsumere/add_konsumer/SetupFields";
+import SetupFields from "~/components/konsumere/konsumer_modal/SetupFields";
 import {IConsumer} from "~/types/IConsumer";
 import {IConsumerMetadata} from "~/types/IConsumerMetadata";
 
@@ -14,14 +14,14 @@ interface AdjustConsumerModalProps {
   existingConsumer: boolean
 }
 
-export default function AdjustConsumerModal({
-                                              openModal,
-                                              setOpenModal,
-                                              consumer,
-                                              setConsumer,
-                                              consumerMetadata,
-                                              existingConsumer
-                                            }: AdjustConsumerModalProps) {
+export default function ConsumerModal({
+                                        openModal,
+                                        setOpenModal,
+                                        consumer,
+                                        setConsumer,
+                                        consumerMetadata,
+                                        existingConsumer
+                                      }: AdjustConsumerModalProps) {
   const [activeStep, setActiveStep] = useState(1);
 
   const requiredFieldsIsSet = () => {
@@ -49,12 +49,8 @@ export default function AdjustConsumerModal({
         }}
       >
         <Modal.Body>
-          <VStack padding="2" justify="center" gap="4">
-            <HStack justify="center" gap="2">
-              {activeStep === 1 && <SetupFields consumerMetadata={consumerMetadata} setConsumer={setConsumer}/>}
-            </HStack>
-            <HStack justify="space-between">
-            </HStack>
+          <VStack padding="2" justify="center" gap="6">
+            {activeStep === 1 && <SetupFields consumerMetadata={consumerMetadata} setConsumer={setConsumer}/>}
           </VStack>
         </Modal.Body>
         <Modal.Footer className="flex justify-center">
