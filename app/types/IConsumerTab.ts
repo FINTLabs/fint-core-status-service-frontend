@@ -1,6 +1,7 @@
 export interface IConsumerTab {
-  org: string,
-  applications: number,
-  errors: number,
-  restarts: number,
+  component: string
+  memoryUsage: string
+  memoryLimit: string
+  errors: number
+  restarts: number
 }

@@ -3,9 +3,8 @@ import React, {useRef, useState} from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
 import ConsumerTab from "~/components/konsumere/ConsumerTab";
 import Title from "~/components/header/Title";
-import {MockConsumerTabs} from "~/mocks/mock_consumer_tabs";
-import AdjustConsumerModal from "~/components/konsumere/add_konsumer/AdjustConsumerModal";
 import {MockOrganisationTabs} from "~/mocks/mock_organisation_tabs";
+import AdjustConsumerModal from "~/components/konsumere/konsumer_modal/AdjustConsumerModal";
 import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
 import {emptyConsumer} from "~/types/IConsumer";
 
