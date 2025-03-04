@@ -79,12 +79,12 @@ function MainApp() {
   const {selectedEnv, setEnv} = useEnv();
 
   return (
-    <VStack as="root" className="min-h-screen max-h-screen bg-header">
+      <Page>
       <Header onHeaderChange={setEnv} value={selectedEnv}/>
-      <Page.Block as={"main"} className="flex-grow bg-body">
+        <Page.Block as={"main"} gutters width={"lg"} className="bg-body">
         <Outlet/>
       </Page.Block>
-    </VStack>
+      </Page>
   );
 }
 
