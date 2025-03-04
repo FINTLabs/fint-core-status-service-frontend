@@ -1,4 +1,4 @@
-export interface IKonsumerTab {
+export interface IConsumerTab {
   org: string,
   applications: number,
   errors: number,

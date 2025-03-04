@@ -4,7 +4,7 @@ import {AdapterContract} from "~/types/AdapterContract";
 import {backendRoutesMap} from "~/api/backendRoutes";
 import {HeaderProperties} from "~/components/root/HeaderProperties";
 import {IStats} from "~/types/IStats";
-import {IKonsumerTab} from "~/types/IKonsumerTab";
+import {IConsumerTab} from "~/types/IConsumerTab";
 
 const PROFILE = process.env.PROFILE;
 const LOCAL_URL = process.env.PUBLIC_API_URL;
@@ -21,7 +21,7 @@ export class StatusApi {
     return await response.json();
   }
 
-  static async getKonsumerTabs(env: string): Promise<IKonsumerTab[]> {
+  static async getKonsumerTabs(env: string): Promise<IConsumerTab[]> {
     // TODO: Setup backend
   }
 
