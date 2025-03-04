@@ -361,15 +361,16 @@ export default function FintEventTable() {
           )}
         </Table.Body>
       </Table>
-      <Select label={"sidestørrelse"} size={"small"} className={"w-36"}
-               onChange={itemsPerPageChange}
-      >
-        <option value={20}>20</option>
-        <option value={50}>50</option>
-        <option value={100}>100</option>
-        <option value={10000000}>Alle</option>
-      </Select>
-      <HStack justify="center" className="relative bottom-16">
+
+      <HStack justify="center" padding={"5"} className="">
+        <Select label={"sidestørrelse"} size={"small"} className={"w-36 relative bottom-4"}
+                onChange={itemsPerPageChange}
+        >
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={10000000}>Alle</option>
+        </Select>
         {fintEvents.length > 15 && (
           <Pagination
             page={currentPage}
