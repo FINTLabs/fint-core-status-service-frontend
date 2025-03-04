@@ -12,7 +12,7 @@ export default function Header({onHeaderChange, value}: headerProps) {
   return (
     <Box
       as="header"
-      className="flex justify-center h-16 w-full bg-header"
+      className="flex justify-center h-16 w-full "
     >
       <HStack className="w-2/3 h-full flex justify-between">
         <HeaderElement>

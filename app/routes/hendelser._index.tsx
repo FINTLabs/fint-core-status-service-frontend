@@ -1,4 +1,4 @@
-import {ActionMenu, Button, HStack, Label, Modal, Pagination, Search, Table, Tooltip,} from "@navikt/ds-react";
+import {ActionMenu, Button, HStack, Label, Modal, Pagination, Search, Select, Table, Tooltip,} from "@navikt/ds-react";
 import {json, LoaderFunction} from "@remix-run/node";
 import {useLoaderData, useSearchParams} from "@remix-run/react";
 import {convertTimeStamp, FintEvent, timeSince} from "~/types/Event";
@@ -11,7 +11,7 @@ import {
   MagnifyingGlassIcon,
   XMarkIcon
 } from "@navikt/aksel-icons";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {envCookie} from "~/components/cookie";
 import {filterByOrgId, getOrgs} from "~/components/komponenter/EventFilter";
 import DatePickerEvents from "~/components/komponenter/DatePicker";
@@ -60,12 +60,20 @@ export default function FintEventTable() {
   const [selectedOrgs, setSelectedOrgs] = useState(orgs);
   const [modal, setModal] = useState<ModalBody>(false, Event);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 20;
+  const [itemsPerPage, setItemsPerPage] = useState<number>(20);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchVisibleId, setsearchVisibleId] = useState(false);
   const [searchVisibleResource, setsearchVisibleResource] = useState(false);
   const [responseSortOrder, setResponseSortOrder] = useState<"default" | "hasResponse" | "failed">("default");
   const [searchParams, setSearchParams] = useSearchParams();
+
+
+
+  const itemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = Number(event.target.value);
+    setItemsPerPage(selectedValue);
+    console.log(selectedValue);
+  };
 
   const sortedByResponse = React.useMemo(() => {
     if (responseSortOrder === "failed") {
@@ -180,7 +188,7 @@ export default function FintEventTable() {
   };
 
   return (
-    <div className="flex flex-col h-full justify-between gap-4">
+    <div className="flex flex-col h-full justify-between gap-4 min-h-[76vh]">
       <Modal
         width={'60%'}
         open={modal.open}
@@ -353,7 +361,16 @@ export default function FintEventTable() {
           )}
         </Table.Body>
       </Table>
-      <HStack justify="center">
+
+      <HStack justify="center" padding={"5"} className="">
+        <Select label={"sidestørrelse"} size={"small"} className={"w-36 relative bottom-4"}
+                onChange={itemsPerPageChange}
+        >
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={10000000}>Alle</option>
+        </Select>
         {fintEvents.length > 15 && (
           <Pagination
             page={currentPage}
