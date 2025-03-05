@@ -1,13 +1,13 @@
 import {Button, HStack, Search} from "@navikt/ds-react";
 import {ArrowsUpDownIcon, PlusIcon} from "@navikt/aksel-icons";
-import React, {LegacyRef, MutableRefObject} from "react";
+import React, {LegacyRef, MutableRefObject, useState} from "react";
 
 interface ConsumerActionbarProps {
   setQuery: React.Dispatch<React.SetStateAction<string>>
-  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
+  openModalSetter: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function ConsumerActionbar({setQuery, setOpenModal}: ConsumerActionbarProps) {
+export default function ConsumerActionbar({setQuery, openModalSetter}: ConsumerActionbarProps) {
   return (
     <HStack justify="space-between">
       <HStack gap="2">
@@ -24,7 +24,7 @@ export default function ConsumerActionbar({setQuery, setOpenModal}: ConsumerActi
         <Button
           iconPosition="right"
           icon={<PlusIcon aria-hidden/>}
-          onClick={() => setOpenModal(true)}
+          onClick={() => openModalSetter(true)}
         >
           Ny Consumer
         </Button>
