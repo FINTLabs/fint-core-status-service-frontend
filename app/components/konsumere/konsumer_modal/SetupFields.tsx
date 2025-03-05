@@ -31,6 +31,16 @@ export default function SetupFields({consumer, setConsumer, consumerMetadata}: S
 
   return (
     <>
+      <Select
+        className="w-44"
+        label="Velg Versjon"
+        onChange={(e) => handleChange("version", e.target.value)}
+
+      >
+        {consumerMetadata.versions.map((version) => (
+          <option value={version}>{version}</option>
+        ))}
+      </Select>
       <HStack justify="space-between" gap="2" wrap={false}>
         <UNSAFE_Combobox
           className="w-full"
@@ -43,11 +53,27 @@ export default function SetupFields({consumer, setConsumer, consumerMetadata}: S
           disabled={consumer.shared}
         />
         <VStack justify="center">
-          <HStack gap="2" className="pt-8">
+          <Box gap="2" className="pt-8">
+            <Tooltip content="Alle organisasjoner får sin egen consumer">
+              <Switch
+                onChange={e => {
+                  e.target.checked
+                    ? handleChange("organisations", consumerMetadata.orgs)
+                    : handleChange("organisations", [])
+                }}
+                disabled={consumer.shared}
+              >
+                Alle
+              </Switch>
+            </Tooltip>
+          </Box>
+        </VStack>
+        <VStack justify="center">
+          <Box gap="2" className="pt-8">
             <Tooltip content="Alle organisasjoner deler samme consumer">
               <Switch onChange={e => handleChange("shared", e.target.checked)}>Felles</Switch>
             </Tooltip>
-          </HStack>
+          </Box>
         </VStack>
       </HStack>
       <HStack gap="2" wrap={false}>
@@ -60,18 +86,22 @@ export default function SetupFields({consumer, setConsumer, consumerMetadata}: S
           selectedOptions={consumer.components}
           onToggleSelected={(option, isSelected) => updateListField("components", option, isSelected)}
         />
+        <VStack justify="center">
+          <Box gap="2" className="pt-8">
+            <Tooltip content="Alle organisasjoner deler samme consumer">
+              <Switch
+                onChange={e => {
+                  e.target.checked
+                    ? handleChange("components", consumerMetadata.components)
+                    : handleChange("components", [])
+                }}
+              >
+                Alle
+              </Switch>
+            </Tooltip>
+          </Box>
+        </VStack>
       </HStack>
-      <Select
-        className="w-44"
-        hideLabel
-        label="Velg Versjon"
-        onChange={(e) => handleChange("version", e.target.value)}
-      >
-        <option value="">- Velg Versjon -</option>
-        {consumerMetadata.versions.map((version) => (
-          <option value={version}>{version}</option>
-        ))}
-      </Select>
     </>
   )
 }
