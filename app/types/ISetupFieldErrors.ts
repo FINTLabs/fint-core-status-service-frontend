@@ -3,3 +3,9 @@ export interface ISetupFieldErrors {
   organisations: boolean
   components: boolean
 }
+
+export const initialSetupFieldErrors = {
+  version: false,
+  organisations: false,
+  components: false
+}
