@@ -1,32 +1,34 @@
-import {Modal, Stepper, VStack} from "@navikt/ds-react";
+import {HStack, Modal, Stepper, VStack} from "@navikt/ds-react";
 import {PlusIcon} from "@navikt/aksel-icons";
 import React, {useState} from "react";
 import SetupFields from "~/components/konsumere/konsumer_modal/SetupFields";
-import {IConsumer} from "~/types/IConsumer";
+import {emptyConsumer, IConsumer} from "~/types/IConsumer";
 import {IConsumerMetadata} from "~/types/IConsumerMetadata";
 
 interface AdjustConsumerModalProps {
   openModal: boolean
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
-  consumer: IConsumer
-  setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>
+  initialConsumer: IConsumer
   consumerMetadata: IConsumerMetadata
-  existingConsumer: boolean
 }
 
 export default function ConsumerModal({
                                         openModal,
                                         setOpenModal,
-                                        consumer,
-                                        setConsumer,
-                                        consumerMetadata,
-                                        existingConsumer
+                                        initialConsumer = emptyConsumer,
+                                        consumerMetadata
                                       }: AdjustConsumerModalProps) {
   const [activeStep, setActiveStep] = useState(1);
+  const [consumer, setConsumer] = useState(initialConsumer)
 
   const requiredFieldsIsSet = () => {
-    return consumer.org && consumer.domain && consumer.package && consumer.version
+    return requiredOrganisationSelectionIsSet() && consumer.components.length != 0 && consumer.version
   }
+
+  const requiredOrganisationSelectionIsSet = () => {
+    return consumer.shared || consumer.organisations.length !== 0;
+  }
+
 
   const changeStep = (step) => {
     if (activeStep === 1 && !requiredFieldsIsSet()) {
@@ -50,21 +52,26 @@ export default function ConsumerModal({
       >
         <Modal.Body>
           <VStack padding="2" justify="center" gap="6">
-            {activeStep === 1 && <SetupFields consumerMetadata={consumerMetadata} setConsumer={setConsumer}/>}
+            {activeStep === 1 &&
+                <SetupFields consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer}/>}
           </VStack>
         </Modal.Body>
         <Modal.Footer className="flex justify-center">
-          <Stepper
-            aria-labelledby="stepper-heading"
-            activeStep={activeStep}
-            onStepChange={changeStep}
-            orientation="horizontal"
-          >
-            <Stepper.Step href="#">Oppsett</Stepper.Step>
-            <Stepper.Step href="#">Ressurser</Stepper.Step>
-            <Stepper.Step href="#">Alokering</Stepper.Step>
-            <Stepper.Step href="#">Bekreftelse</Stepper.Step>
-          </Stepper>
+          <HStack>
+            <div>1</div>
+            <Stepper
+              aria-labelledby="stepper-heading"
+              activeStep={activeStep}
+              onStepChange={changeStep}
+              orientation="horizontal"
+            >
+              <Stepper.Step href="#">Oppsett</Stepper.Step>
+              <Stepper.Step href="#">Ressurser</Stepper.Step>
+              <Stepper.Step href="#">Alokering</Stepper.Step>
+              <Stepper.Step href="#">Bekreftelse</Stepper.Step>
+            </Stepper>
+            <div>1</div>
+          </HStack>
         </Modal.Footer>
       </Modal>
     </form>
