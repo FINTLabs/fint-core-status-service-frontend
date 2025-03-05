@@ -15,7 +15,7 @@ export default function Konsumere() {
         <Title/>
         <ConsumerActionbar
           setQuery={setSearchQuery}
-          setOpenModal={setOpenModal}
+          openModalSetter={setOpenModal}
         />
 
       </VStack>
