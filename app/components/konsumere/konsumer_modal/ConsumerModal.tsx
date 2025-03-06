@@ -6,6 +6,7 @@ import {IConsumer} from "~/types/IConsumer";
 import {IConsumerMetadata} from "~/types/IConsumerMetadata";
 import ResourceFields from "~/components/konsumere/konsumer_modal/ResourceFields";
 import {mockConsumer} from "~/mocks/mock_consumer";
+import AllocationFields from "~/components/konsumere/konsumer_modal/AllocationFields";
 
 interface AdjustConsumerModalProps {
   openModal: boolean
@@ -54,7 +55,7 @@ export default function ConsumerModal({
             {activeStep === 2 &&
                 <ResourceFields consumer={consumer} setConsumer={setConsumer}/>}
             {activeStep === 3 &&
-                <ResourceFields consumer={consumer} setConsumer={setConsumer}/>}
+                <AllocationFields consumer={consumer} setConsumer={setConsumer}/>}
           </VStack>
         </Modal.Body>
         <Modal.Footer className="flex justify-center">
