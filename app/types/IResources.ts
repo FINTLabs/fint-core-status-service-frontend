@@ -1,6 +1,6 @@
 export interface IResources {
   component: string
-  resources: IResources[]
+  resources: IResource[]
 }
 
 interface IResource {
