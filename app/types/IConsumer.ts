@@ -1,5 +1,7 @@
+import {IResource} from "~/types/IComponent";
+
 export interface IConsumer {
-  components: string[]
+  components: Record<string, IResource[]>
   organisations: string[];
   version: string;
   shared: boolean;
@@ -7,13 +9,12 @@ export interface IConsumer {
   limitsMemory: string;
   requestsCpu: string;
   requestsMemory: string;
-  resources: string[];
   writeableResources: string[];
   cacheDisabledResources: string[];
 }
 
 export const emptyConsumer: IConsumer = {
-  components: [],
+  components: {},
   organisations: [],
   version: "",
   shared: false,
@@ -21,7 +22,6 @@ export const emptyConsumer: IConsumer = {
   limitsMemory: "",
   requestsCpu: "",
   requestsMemory: "",
-  resources: [],
   writeableResources: [],
   cacheDisabledResources: []
 };
