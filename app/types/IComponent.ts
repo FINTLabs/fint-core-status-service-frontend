@@ -3,7 +3,7 @@ export interface IComponent {
   resources: IResource[]
 }
 
-interface IResource {
+export interface IResource {
   name: string
   enabled: boolean
   writeable: boolean
