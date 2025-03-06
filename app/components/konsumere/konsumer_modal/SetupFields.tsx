@@ -35,8 +35,8 @@ export default function SetupFields({consumer, setConsumer, consumerMetadata}: S
         className="w-44"
         label="Velg Versjon"
         onChange={(e) => handleChange("version", e.target.value)}
-
       >
+        <option value=""></option>
         {consumerMetadata.versions.map((version) => (
           <option value={version}>{version}</option>
         ))}
@@ -88,7 +88,7 @@ export default function SetupFields({consumer, setConsumer, consumerMetadata}: S
         />
         <VStack justify="center">
           <Box gap="2" className="pt-8">
-            <Tooltip content="Alle organisasjoner deler samme consumer">
+            <Tooltip content="Alle komponenter">
               <Switch
                 onChange={e => {
                   e.target.checked

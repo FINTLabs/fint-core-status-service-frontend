@@ -21,23 +21,18 @@ export default function ConsumerModal({
   const [activeStep, setActiveStep] = useState(1);
   const [consumer, setConsumer] = useState(initialConsumer)
 
-  const requiredFieldsIsSet = () => {
-    return requiredOrganisationSelectionIsSet() && consumer.components.length != 0 && consumer.version
-  }
+  const requiredFieldsIsSet = () =>
+    requiredOrganisationSelectionIsSet() && consumer.components.length && consumer.version || false;
+
 
   const requiredOrganisationSelectionIsSet = () => {
     return consumer.shared || consumer.organisations.length !== 0;
   }
 
-
-  const changeStep = (step) => {
-    if (activeStep === 1 && !requiredFieldsIsSet()) {
-      console.log("Required fields are not set!")
-      console.log(consumer)
-      return
-    }
-    setActiveStep(step)
-  }
+  const changeStep = step =>
+    activeStep === 1 && !requiredFieldsIsSet()
+      ? console.log("Required fields are not set!")
+      : setActiveStep(step)
 
   return (
     <form>
@@ -53,7 +48,7 @@ export default function ConsumerModal({
         <Modal.Body>
           <VStack padding="2" justify="center" gap="6">
             {activeStep === 1 &&
-                <SetupFields consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer}/>}
+                <SetupFields consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer} />}
           </VStack>
         </Modal.Body>
         <Modal.Footer className="flex justify-center">
