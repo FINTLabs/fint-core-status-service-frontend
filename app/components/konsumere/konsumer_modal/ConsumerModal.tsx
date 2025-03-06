@@ -51,7 +51,7 @@ export default function ConsumerModal({
             {activeStep === 1 &&
                 <SetupFields consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer} />}
             {activeStep === 2 &&
-                <ResourceFields consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer} />}
+                <ResourceFields consumer={consumer} setConsumer={setConsumer} />}
           </VStack>
         </Modal.Body>
         <Modal.Footer className="flex justify-center">
