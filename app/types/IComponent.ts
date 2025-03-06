@@ -1,5 +1,5 @@
-export interface IResources {
-  component: string
+export interface IComponent {
+  name: string
   resources: IResource[]
 }
 
