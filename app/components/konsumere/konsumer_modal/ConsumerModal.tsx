@@ -2,9 +2,10 @@ import {HStack, Modal, Stepper, VStack} from "@navikt/ds-react";
 import {PlusIcon} from "@navikt/aksel-icons";
 import React, {useState} from "react";
 import SetupFields from "~/components/konsumere/konsumer_modal/SetupFields";
-import {emptyConsumer, IConsumer} from "~/types/IConsumer";
+import {IConsumer} from "~/types/IConsumer";
 import {IConsumerMetadata} from "~/types/IConsumerMetadata";
 import ResourceFields from "~/components/konsumere/konsumer_modal/ResourceFields";
+import {mockConsumer} from "~/mocks/mock_consumer";
 
 interface AdjustConsumerModalProps {
   openModal: boolean
@@ -16,7 +17,7 @@ interface AdjustConsumerModalProps {
 export default function ConsumerModal({
                                         openModal,
                                         setOpenModal,
-                                        initialConsumer = emptyConsumer,
+                                        initialConsumer = mockConsumer,
                                         consumerMetadata
                                       }: AdjustConsumerModalProps) {
   const [activeStep, setActiveStep] = useState(2);
@@ -49,9 +50,9 @@ export default function ConsumerModal({
         <Modal.Body>
           <VStack padding="2" justify="center" gap="6">
             {activeStep === 1 &&
-                <SetupFields consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer} />}
+                <SetupFields consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer}/>}
             {activeStep === 2 &&
-                <ResourceFields consumer={consumer} setConsumer={setConsumer} />}
+                <ResourceFields consumer={consumer} setConsumer={setConsumer}/>}
           </VStack>
         </Modal.Body>
         <Modal.Footer className="flex justify-center">
