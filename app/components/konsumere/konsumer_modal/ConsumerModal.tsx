@@ -19,7 +19,7 @@ export default function ConsumerModal({
                                         initialConsumer = emptyConsumer,
                                         consumerMetadata
                                       }: AdjustConsumerModalProps) {
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(2);
   const [consumer, setConsumer] = useState(initialConsumer)
 
   const requiredFieldsIsSet = () =>
