@@ -7,7 +7,7 @@ interface AllocationFieldsProps {
   setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>;
 }
 
-export default function AllocationFields({consumer, setConsumer}: AllocationFieldsProps) {
+export default function AllocationPage({consumer, setConsumer}: AllocationFieldsProps) {
   const memoryTypes: MemoryUnit[] = ["Mi", "Gi"];
   const cpuTypes: CpuUnit[] = ["mm", "core"];
 

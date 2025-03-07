@@ -8,7 +8,7 @@ interface SetupFieldsProps {
   consumerMetadata: IConsumerMetadata
 }
 
-export default function SetupFields({consumer, setConsumer, consumerMetadata}: SetupFieldsProps) {
+export default function SetupPage({consumer, setConsumer, consumerMetadata}: SetupFieldsProps) {
   const handleChange = (field: keyof IConsumer, value: string | boolean | string[]) => {
     setConsumer((prev) => ({
       ...prev,

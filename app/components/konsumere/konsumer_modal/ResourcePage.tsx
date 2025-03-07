@@ -9,7 +9,7 @@ interface ResourceFieldsProps {
   setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>
 }
 
-export default function ResourceFields({consumer, setConsumer}: ResourceFieldsProps) {
+export default function ResourcePage({consumer, setConsumer}: ResourceFieldsProps) {
   const staticWriteableResources = useMemo(
     () => new Set(
       Object.values(consumer.components).flatMap(resources =>
