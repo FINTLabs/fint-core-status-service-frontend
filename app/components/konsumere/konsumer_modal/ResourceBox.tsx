@@ -8,7 +8,8 @@ interface ResourceBoxProps {
   onWriteableSwitch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onCacheSwitch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
-  staticWriteableResources: Set<string>;
+  size?: "medium" | "small" | undefined
+  staticWriteableResources?: Set<string>;
 }
 
 export default function ResourceBox({
@@ -16,38 +17,45 @@ export default function ResourceBox({
                                       onResourceSwitch,
                                       onWriteableSwitch,
                                       onCacheSwitch,
+                                      size = "normal",
                                       readOnly = false,
-                                      staticWriteableResources,
+                                      staticWriteableResources = new Set(),
                                     }: ResourceBoxProps) {
+  const gapValue = size === "small" ? "2" : "4";
+  const boxHeight = size === "small" ? "h-6" : "h-8"
+
   return (
-    <Box key={resource.name} className="w-full h-12 flex-col flex justify-center p-2">
+    <Box key={resource.name} className={`w-full ${boxHeight} flex-col flex justify-center p-2`}>
       <HStack justify="space-between">
         <Switch
+          size={size}
           readOnly={readOnly}
           value={resource.name}
-          checked={resource.enabled}
+          chegacked={resource.enabled}
           onChange={onResourceSwitch}
         >
           {resource.name}
         </Switch>
-        <HStack gap="4">
+        <HStack gap={gapValue}>
           <Tooltip content="Skrivbar">
             <Switch
+              size={size}
               readOnly={readOnly}
               disabled={staticWriteableResources.has(resource.name)}
               checked={resource.writeable}
               onChange={onWriteableSwitch}
             >
-              <PencilLineIcon aria-hidden />
+              <PencilLineIcon aria-hidden/>
             </Switch>
           </Tooltip>
           <Tooltip content="Slå av cache">
             <Switch
+              size={size}
               readOnly={readOnly}
               checked={resource.cacheDisabled}
               onChange={onCacheSwitch}
             >
-              <CloudSlashIcon aria-hidden />
+              <CloudSlashIcon aria-hidden/>
             </Switch>
           </Tooltip>
         </HStack>
