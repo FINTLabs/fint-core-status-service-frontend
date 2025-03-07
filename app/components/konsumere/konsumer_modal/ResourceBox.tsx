@@ -1,12 +1,13 @@
 import {Box, HStack, Switch, Tooltip} from "@navikt/ds-react";
 import {CloudSlashIcon, PencilLineIcon} from "@navikt/aksel-icons";
 import {IResource} from "~/types/IComponent";
+import React from "react";
 
 interface ResourceBoxProps {
   resource: IResource;
-  onResourceSwitch: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onWriteableSwitch: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onCacheSwitch: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onResourceSwitch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onWriteableSwitch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onCacheSwitch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
   size?: "medium" | "small" | undefined
   staticWriteableResources?: Set<string>;
