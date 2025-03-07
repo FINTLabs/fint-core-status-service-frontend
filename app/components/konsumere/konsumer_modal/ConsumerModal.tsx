@@ -69,7 +69,7 @@ export default function ConsumerModal({
             >
               <Stepper.Step href="#">Oppsett</Stepper.Step>
               <Stepper.Step href="#">Ressurser</Stepper.Step>
-              <Stepper.Step href="#">Alokering</Stepper.Step>
+              <Stepper.Step href="#">Ytelse</Stepper.Step>
               <Stepper.Step href="#">Bekreftelse</Stepper.Step>
             </Stepper>
             <div>1</div>
