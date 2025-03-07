@@ -7,6 +7,7 @@ import {IConsumerMetadata} from "~/types/IConsumerMetadata";
 import ResourcePage from "~/components/konsumere/konsumer_modal/ResourcePage";
 import {mockConsumer} from "~/mocks/mock_consumer";
 import AllocationPage from "~/components/konsumere/konsumer_modal/AllocationPage";
+import ConfirmationPage from "~/components/konsumere/konsumer_modal/ConfirmationPage";
 
 interface AdjustConsumerModalProps {
   openModal: boolean
@@ -54,7 +55,7 @@ export default function ConsumerModal({
                 <SetupPage consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer}/>}
             {activeStep === 2 && <ResourcePage consumer={consumer} setConsumer={setConsumer}/>}
             {activeStep === 3 && <AllocationPage consumer={consumer} setConsumer={setConsumer}/>}
-            {activeStep === 4 && <AllocationPage consumer={consumer} setConsumer={setConsumer}/>}
+            {activeStep === 4 && <ConfirmationPage/>}
           </VStack>
         </Modal.Body>
         <Modal.Footer className="flex justify-center">
