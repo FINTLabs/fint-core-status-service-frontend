@@ -21,10 +21,20 @@ export const mockConsumer: IConsumer = {
   organisations: [],
   version: "",
   shared: false,
-  limitsCpu: "",
-  limitsMemory: "",
-  requestsCpu: "",
-  requestsMemory: "",
+  allocations: {
+    memory: {
+      request: "256",
+      requestType: "Mi",
+      limit: "512",
+      limitType: "Mi"
+    },
+    cpu: {
+      request: "100",
+      requestType: "mm",
+      limit: "500",
+      limitType: "mm"
+    }
+  },
   writeableResources: [],
   cacheDisabledResources: []
 };
