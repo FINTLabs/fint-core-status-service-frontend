@@ -14,12 +14,14 @@ interface AdjustConsumerModalProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
   initialConsumer: IConsumer
   consumerMetadata: IConsumerMetadata
+  editing: boolean
 }
 
 export default function ConsumerModal({
                                         openModal,
                                         setOpenModal,
                                         initialConsumer = mockConsumer,
+                                        editing = false,
                                         consumerMetadata
                                       }: AdjustConsumerModalProps) {
   const [activeStep, setActiveStep] = useState(4);
@@ -52,7 +54,7 @@ export default function ConsumerModal({
         <Modal.Body>
           <VStack padding="2" justify="center" gap="6">
             {activeStep === 1 &&
-                <SetupPage consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer}/>}
+                <SetupPage editing={editing} consumerMetadata={consumerMetadata} consumer={consumer} setConsumer={setConsumer}/>}
             {activeStep === 2 && <ResourcePage consumer={consumer} setConsumer={setConsumer}/>}
             {activeStep === 3 && <AllocationPage consumer={consumer} setConsumer={setConsumer}/>}
             {activeStep === 4 && <ConfirmationPage/>}

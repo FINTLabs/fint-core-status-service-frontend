@@ -3,12 +3,13 @@ import {IConsumer} from "~/types/IConsumer";
 import {IConsumerMetadata} from "~/types/IConsumerMetadata";
 
 interface SetupFieldsProps {
+  editing: boolean
   consumer: IConsumer
   setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>
   consumerMetadata: IConsumerMetadata
 }
 
-export default function SetupPage({consumer, setConsumer, consumerMetadata}: SetupFieldsProps) {
+export default function SetupPage({editing, consumer, setConsumer, consumerMetadata}: SetupFieldsProps) {
   const handleChange = (field: keyof IConsumer, value: string | boolean | string[]) => {
     setConsumer((prev) => ({
       ...prev,
@@ -50,7 +51,7 @@ export default function SetupPage({consumer, setConsumer, consumerMetadata}: Set
           options={consumerMetadata.orgs}
           selectedOptions={consumer.organisations}
           onToggleSelected={(option, isSelected) => updateListField("organisations", option, isSelected)}
-          disabled={consumer.shared}
+          disabled={editing || consumer.shared}
         />
         <VStack justify="center">
           <Box gap="2" className="pt-8">
@@ -61,7 +62,7 @@ export default function SetupPage({consumer, setConsumer, consumerMetadata}: Set
                     ? handleChange("organisations", consumerMetadata.orgs)
                     : handleChange("organisations", [])
                 }}
-                disabled={consumer.shared}
+                disabled={editing || consumer.shared}
               >
                 Alle
               </Switch>
@@ -71,7 +72,12 @@ export default function SetupPage({consumer, setConsumer, consumerMetadata}: Set
         <VStack justify="center">
           <Box gap="2" className="pt-8">
             <Tooltip content="Alle organisasjoner deler samme consumer">
-              <Switch onChange={e => handleChange("shared", e.target.checked)}>Felles</Switch>
+              <Switch
+                onChange={e => handleChange("shared", e.target.checked)}
+                disabled={editing}
+              >
+                Felles
+              </Switch>
             </Tooltip>
           </Box>
         </VStack>
@@ -85,6 +91,7 @@ export default function SetupPage({consumer, setConsumer, consumerMetadata}: Set
           options={consumerMetadata.components}
           selectedOptions={consumer.components}
           onToggleSelected={(option, isSelected) => updateListField("components", option, isSelected)}
+          disabled={editing}
         />
         <VStack justify="center">
           <Box gap="2" className="pt-8">
@@ -95,6 +102,7 @@ export default function SetupPage({consumer, setConsumer, consumerMetadata}: Set
                     ? handleChange("components", consumerMetadata.components)
                     : handleChange("components", [])
                 }}
+                disabled={editing}
               >
                 Alle
               </Switch>
