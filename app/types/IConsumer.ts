@@ -18,10 +18,10 @@ export const emptyConsumer: IConsumer = {
   organisations: [],
   version: "",
   shared: false,
-  limitsCpu: "",
-  limitsMemory: "",
-  requestsCpu: "",
-  requestsMemory: "",
+  limitsCpu: "500m",
+  limitsMemory: "512Mi",
+  requestsCpu: "100m",
+  requestsMemory: "256Mi",
   writeableResources: [],
   cacheDisabledResources: []
 };
