@@ -91,7 +91,7 @@ export default function FintEventTable() {
       );
     }
 
-    return sortedEvents; // Default if no specific sorting is needed
+    return sortedEvents;
   }, [responseSortOrder, sortedEvents]);
 
   const filteredByOrg = React.useMemo(() => {
@@ -375,7 +375,7 @@ export default function FintEventTable() {
           <Pagination
             page={currentPage}
             onPageChange={(page: number) => setCurrentPage(page)}
-            count={Math.ceil(fintEvents.length / itemsPerPage)}
+            count={Math.ceil(filteredBySearch.length / itemsPerPage)}
             size="small"
             className={"p-3"}
           />
