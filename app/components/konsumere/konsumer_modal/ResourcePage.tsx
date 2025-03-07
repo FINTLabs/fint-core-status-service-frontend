@@ -1,12 +1,12 @@
 import {IConsumer} from "~/types/IConsumer";
-import {useMemo} from "react";
-import {Accordion, Box, Heading, HStack, Switch, Tooltip, VStack} from "@navikt/ds-react";
-import {CloudSlashIcon, PencilLineIcon} from "@navikt/aksel-icons";
+import {ChangeEvent, useMemo} from "react";
+import {Accordion, Heading, VStack} from "@navikt/ds-react";
+import ResourceBox from "./ResourceBox"; // adjust the import path as needed
 import {IResource} from "~/types/IComponent";
 
 interface ResourceFieldsProps {
-  consumer: IConsumer
-  setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>
+  consumer: IConsumer;
+  setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>;
 }
 
 export default function ResourcePage({consumer, setConsumer}: ResourceFieldsProps) {
@@ -36,60 +36,35 @@ export default function ResourcePage({consumer, setConsumer}: ResourceFieldsProp
   };
 
   return (
-    <>
-      <Accordion>
-        {Object.entries(consumer.components).map(([componentName, resources], i) => (
-          <Accordion.Item key={componentName + i}>
-            <Accordion.Header className="pl-2">
-              <Heading size="medium">
-                {componentName}
-              </Heading>
-            </Accordion.Header>
-            <Accordion.Content>
-              <VStack gap="2">
-                {resources.map((resource, i) => (
-                  <Box key={resource + i} className="w-full h-12 flex-col flex justify-center p-2">
-                    <HStack justify="space-between">
-                      <Switch
-                        value={resource.name}
-                        checked={resource.enabled}
-                        onChange={e => {
-                          updateResource(componentName, resource.name, {enabled: e.target.checked})
-                        }}
-                      >
-                        {resource.name}
-                      </Switch>
-                      <HStack gap="4">
-                        <Tooltip content="Skrivbar">
-                          <Switch
-                            disabled={staticWriteableResources.has(resource.name)}
-                            checked={resource.writeable}
-                            onChange={e => {
-                              updateResource(componentName, resource.name, {writeable: e.target.checked})
-                            }}
-                          >
-                            <PencilLineIcon aria-hidden/>
-                          </Switch>
-                        </Tooltip>
-                        <Tooltip content="Slå av cache">
-                          <Switch
-                            checked={resource.cacheDisabled}
-                            onChange={e => {
-                              updateResource(componentName, resource.name, {cacheDisabled: e.target.checked})
-                            }}
-                          >
-                            <CloudSlashIcon aria-hidden/>
-                          </Switch>
-                        </Tooltip>
-                      </HStack>
-                    </HStack>
-                  </Box>
-                ))}
-              </VStack>
-            </Accordion.Content>
-          </Accordion.Item>
-        ))}
-      </Accordion>
-    </>
-  )
+    <Accordion>
+      {Object.entries(consumer.components).map(([componentName, resources]) => (
+        <Accordion.Item key={componentName}>
+          <Accordion.Header className="pl-2">
+            <Heading size="medium">{componentName}</Heading>
+          </Accordion.Header>
+          <Accordion.Content>
+            <VStack gap="2">
+              {resources.map((resource, i) => (
+                <ResourceBox
+                  readOnly={false}
+                  key={resource.name + i}
+                  resource={resource}
+                  staticWriteableResources={staticWriteableResources}
+                  onResourceSwitch={(e: ChangeEvent<HTMLInputElement>) =>
+                    updateResource(componentName, resource.name, {enabled: e.target.checked})
+                  }
+                  onWriteableSwitch={(e: ChangeEvent<HTMLInputElement>) =>
+                    updateResource(componentName, resource.name, {writeable: e.target.checked})
+                  }
+                  onCacheSwitch={(e: ChangeEvent<HTMLInputElement>) =>
+                    updateResource(componentName, resource.name, {cacheDisabled: e.target.checked})
+                  }
+                />
+              ))}
+            </VStack>
+          </Accordion.Content>
+        </Accordion.Item>
+      ))}
+    </Accordion>
+  );
 }
