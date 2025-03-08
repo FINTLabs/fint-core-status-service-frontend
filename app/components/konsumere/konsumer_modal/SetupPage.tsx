@@ -1,45 +1,33 @@
-import {Box, HStack, Select, Switch, Tooltip, UNSAFE_Combobox, VStack} from "@navikt/ds-react";
-import {IConsumer} from "~/types/IConsumer";
-import {IConsumerMetadata} from "~/types/IConsumerMetadata";
+import {HStack, Select, Switch, Tooltip, UNSAFE_Combobox, VStack} from "@navikt/ds-react";
+import {IConsumer} from "~/types/consumer/IConsumer";
+import {IConsumerMetadata} from "~/types/consumer/IConsumerMetadata";
 
 interface SetupFieldsProps {
-  editing: boolean
-  consumer: IConsumer
-  setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>
-  consumerMetadata: IConsumerMetadata
+  editing: boolean;
+  consumerMetadata: IConsumerMetadata;
+  consumer: IConsumer;
+  setConsumer: React.Dispatch<React.SetStateAction<IConsumer>>;
 }
 
-export default function SetupPage({editing, consumer, setConsumer, consumerMetadata}: SetupFieldsProps) {
-  const handleChange = (field: keyof IConsumer, value: string | boolean | string[]) => {
-    setConsumer((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const updateListField = (
-    field: keyof Pick<IConsumer, "organisations" | "components">,
-    option: string,
-    isSelected: boolean
-  ) => {
-    setConsumer((prev) => ({
-      ...prev,
-      [field]: isSelected
-        ? [...prev[field], option]
-        : prev[field].filter((o: string) => o !== option),
-    }));
-  }
-
+export default function SetupPage({
+                                    editing,
+                                    consumerMetadata,
+                                    consumer,
+                                    setConsumer,
+                                  }: SetupFieldsProps) {
   return (
-    <>
+    <VStack gap="2">
       <Select
         className="w-44"
         label="Velg Versjon"
-        onChange={(e) => handleChange("version", e.target.value)}
+        value={consumer.version}
+        onChange={e =>
+          setConsumer(prev => ({...prev, version: e.target.value}))
+        }
       >
         <option value=""></option>
         {consumerMetadata.versions.map((version) => (
-          <option value={version}>{version}</option>
+          <option key={version} value={version}>{version}</option>
         ))}
       </Select>
       <HStack justify="space-between" gap="2" wrap={false}>
@@ -48,38 +36,41 @@ export default function SetupPage({editing, consumer, setConsumer, consumerMetad
           isMultiSelect
           selected
           label="Velg organisasjoner"
-          options={consumerMetadata.orgs}
-          selectedOptions={consumer.organisations}
-          onToggleSelected={(option, isSelected) => updateListField("organisations", option, isSelected)}
           disabled={editing || consumer.shared}
+          options={consumerMetadata.organisations}
+          selectedOptions={consumer.organisations}
+          onToggleSelected={(option, isSelected) =>
+            setConsumer(prev => ({
+              ...prev,
+              organisations: isSelected
+                ? [...prev.organisations, option]
+                : prev.organisations.filter(o => o != option)
+            }))
+          }
         />
-        <VStack justify="center">
-          <Box gap="2" className="pt-8">
-            <Tooltip content="Alle organisasjoner får sin egen consumer">
-              <Switch
-                onChange={e => {
-                  e.target.checked
-                    ? handleChange("organisations", consumerMetadata.orgs)
-                    : handleChange("organisations", [])
-                }}
-                disabled={editing || consumer.shared}
-              >
-                Alle
-              </Switch>
-            </Tooltip>
-          </Box>
+        <VStack justify="center" className="pt-8">
+          <Tooltip content="Velg alle organisasjoner">
+            <Switch
+              disabled={editing || consumer.shared}
+              onChange={e =>
+                e.target.checked
+                  ? setConsumer(prev => ({...prev, organisations: consumerMetadata.organisations}))
+                  : setConsumer(prev => ({...prev, organisations: []}))
+              }
+            >
+              Alle
+            </Switch>
+          </Tooltip>
         </VStack>
-        <VStack justify="center">
-          <Box gap="2" className="pt-8">
-            <Tooltip content="Alle organisasjoner deler samme consumer">
-              <Switch
-                onChange={e => handleChange("shared", e.target.checked)}
-                disabled={editing}
-              >
-                Felles
-              </Switch>
-            </Tooltip>
-          </Box>
+        <VStack justify="center" className="pt-8">
+          <Tooltip content="Alle organisasjoner deler samme consumer">
+            <Switch
+              disabled={editing}
+              onChange={e => setConsumer(prev => ({...prev, shared: e.target.checked}))}
+            >
+              Felles
+            </Switch>
+          </Tooltip>
         </VStack>
       </HStack>
       <HStack gap="2" wrap={false}>
@@ -87,29 +78,37 @@ export default function SetupPage({editing, consumer, setConsumer, consumerMetad
           className="w-full"
           isMultiSelect
           selected
-          label="Velg Komponent"
+          label="Velg komponenter"
           options={consumerMetadata.components}
-          selectedOptions={consumer.components}
-          onToggleSelected={(option, isSelected) => updateListField("components", option, isSelected)}
           disabled={editing}
+          selectedOptions={Object.keys(consumer.components)}
+          onToggleSelected={(option, isSelected) =>
+            setConsumer(prev => ({
+              ...prev,
+              components: isSelected
+                ? {...prev.components, [option]: []}
+                : (({[option]: _, ...newComponents}) => newComponents)(prev.components)
+            }))
+          }
         />
-        <VStack justify="center">
-          <Box gap="2" className="pt-8">
-            <Tooltip content="Alle komponenter">
-              <Switch
-                onChange={e => {
-                  e.target.checked
-                    ? handleChange("components", consumerMetadata.components)
-                    : handleChange("components", [])
-                }}
-                disabled={editing}
-              >
-                Alle
-              </Switch>
-            </Tooltip>
-          </Box>
+        <VStack justify="center" className="pt-8">
+          <Tooltip content="Alle komponenter">
+            <Switch
+              disabled={editing}
+              onChange={e =>
+                setConsumer(prev => ({
+                  ...prev,
+                  components: e.target.checked
+                    ? Object.fromEntries(consumerMetadata.components.map(comp => [comp, []]))
+                    : {}
+                }))
+              }
+            >
+              Alle
+            </Switch>
+          </Tooltip>
         </VStack>
       </HStack>
-    </>
-  )
+    </VStack>
+  );
 }
