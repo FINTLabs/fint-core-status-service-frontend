@@ -1,4 +1,4 @@
-import {HStack, Modal, Stepper, VStack} from "@navikt/ds-react";
+import {HStack, Modal, Stepper} from "@navikt/ds-react";
 import {PlusIcon} from "@navikt/aksel-icons";
 import React, {useState} from "react";
 import SetupPage from "~/components/konsumere/konsumer_modal/SetupPage";
@@ -30,6 +30,19 @@ export default function ConsumerModal({
       ? consumerFromRequest(initialConsumer)
       : newConsumer()
   )
+
+  const moveStep = (step) => {
+    if (
+      !consumerFields.version ||
+      (consumerFields.organisations.length === 0 && !consumerFields.shared) ||
+      Object.keys(consumerFields.components).length === 0
+    ) {
+      alert("Required fields are not set");
+      return;
+    }
+    setActiveStep(step);
+  };
+
 
   const steps = [
     <SetupPage
@@ -76,7 +89,7 @@ export default function ConsumerModal({
             <Stepper
               aria-labelledby="stepper-heading"
               activeStep={activeStep}
-              onStepChange={step => setActiveStep(step)}
+              onStepChange={moveStep}
               orientation="horizontal"
             >
               <Stepper.Step href="#">Oppsett</Stepper.Step>
