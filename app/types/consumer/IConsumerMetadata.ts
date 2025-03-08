@@ -1,5 +1,5 @@
 export interface IConsumerMetadata {
-  orgs: string[]
+  organisations: string[]
   versions: string[]
   components: string[]
 }
