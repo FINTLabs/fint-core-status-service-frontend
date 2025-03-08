@@ -9,7 +9,7 @@ import {
 import {IResource} from "~/types/consumer/IResource";
 import {componentFromRequest} from "~/types/consumer/IComponent";
 
-export interface IConsumerFields {
+export interface IConsumer {
   version: string;
   shared: boolean;
   organisations: string[];
@@ -20,7 +20,7 @@ export interface IConsumerFields {
   };
 }
 
-export function newConsumerFields(): IConsumerFields {
+export function newConsumer(): IConsumer {
   return {
     version: "",
     shared: false,
@@ -30,7 +30,7 @@ export function newConsumerFields(): IConsumerFields {
   }
 }
 
-export function consumerFieldsFromRequest(consumerRequest: IConsumerRequest): IConsumerFields {
+export function consumerFromRequest(consumerRequest: IConsumerRequest): IConsumer {
   return {
     version: consumerRequest.version,
     shared: true,
