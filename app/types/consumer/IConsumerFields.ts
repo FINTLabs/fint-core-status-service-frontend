@@ -6,12 +6,14 @@ import {
   IAllocation,
   MemoryUnit
 } from "~/types/consumer/IAllocation";
+import {IResource} from "~/types/consumer/IResource";
+import {componentFromRequest} from "~/types/consumer/IComponent";
 
 export interface IConsumerFields {
   version: string;
   shared: boolean;
   organisations: string[];
-  components: string[];
+  components: Record<string, IResource[]>
   allocations: {
     memory: IAllocation<MemoryUnit>;
     cpu: IAllocation<CpuUnit>;
@@ -23,7 +25,7 @@ export function newConsumerFields(): IConsumerFields {
     version: "",
     shared: false,
     organisations: [],
-    components: [],
+    components: {},
     allocations: defaultAllocations()
   }
 }
@@ -33,7 +35,7 @@ export function consumerFieldsFromRequest(consumerRequest: IConsumerRequest): IC
     version: consumerRequest.version,
     shared: true,
     organisations: [consumerRequest.org],
-    components: [`${consumerRequest.domain} ${consumerRequest.package}`],
+    components: componentFromRequest(consumerRequest),
     allocations: allocationsFromRequest(consumerRequest)
   }
 }
