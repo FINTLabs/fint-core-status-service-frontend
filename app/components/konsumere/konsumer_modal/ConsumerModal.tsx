@@ -8,6 +8,7 @@ import ResourcePage from "~/components/konsumere/konsumer_modal/ResourcePage";
 import AllocationPage from "~/components/konsumere/konsumer_modal/AllocationPage";
 import {IConsumerRequest} from "~/types/consumer/IConsumerRequest";
 import {mockConsumerRequest} from "~/mocks/mock_consumer";
+import DeployPage from "~/components/konsumere/konsumer_modal/DeployPage";
 
 interface ConsumerModalProps {
   openModal: boolean
@@ -70,7 +71,8 @@ export default function ConsumerModal({
       key="allocation"
       consumer={consumer}
       setConsumer={setConsumer}
-    />
+    />,
+    <DeployPage/>
   ];
 
   return (
