@@ -1,7 +1,10 @@
 import {IConsumerRequest} from "~/types/consumer/IConsumerRequest";
 
-export type MemoryUnit = "Mi" | "Gi";
-export type CpuUnit = "m" | "core";
+export const memoryUnits = ['Mi', 'Gi'] as const;
+export type MemoryUnit = typeof memoryUnits[number];
+
+export const cpuUnits = ['m', 'core'] as const;
+export type CpuUnit = typeof cpuUnits[number];
 
 export interface IAllocation<T extends string> {
   request: string;
