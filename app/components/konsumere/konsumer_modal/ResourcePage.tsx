@@ -1,8 +1,10 @@
-import {IConsumer} from "~/types/IConsumer";
-import {ChangeEvent, useMemo} from "react";
+import {IConsumer} from "~/types/consumer/IConsumer";
+import {ChangeEvent, useEffect, useState} from "react";
+import {useFetcher} from "@remix-run/react";
+import {IComponent} from "~/types/consumer/IComponent";
+import {IResource} from "~/types/consumer/IResource";
 import {Accordion, Heading, VStack} from "@navikt/ds-react";
-import ResourceBox from "./ResourceBox"; // adjust the import path as needed
-import {IResource} from "~/types/IComponent";
+import ResourceBox from "~/components/konsumere/konsumer_modal/ResourceBox";
 
 interface ResourceFieldsProps {
   consumer: IConsumer;
@@ -10,30 +12,50 @@ interface ResourceFieldsProps {
 }
 
 export default function ResourcePage({consumer, setConsumer}: ResourceFieldsProps) {
-  const staticWriteableResources = useMemo(
-    () => new Set(
-      Object.values(consumer.components).flatMap(resources =>
-        resources.filter(resource => resource.writeable).map(resource => resource.name)
-      )
-    ),
-    []
-  );
+  const fetcher = useFetcher<IComponent>();
+  const [staticWriteableResources, setStaticWriteableResources] = useState<Set<string>>(new Set());
 
   const updateResource = (
     componentName: string,
     resourceName: string,
     changes: Partial<IResource>
   ) => {
-    setConsumer((prevConsumer) => ({
+    setConsumer(prevConsumer => ({
       ...prevConsumer,
       components: {
         ...prevConsumer.components,
-        [componentName]: prevConsumer.components[componentName].map((resource) =>
+        [componentName]: prevConsumer.components[componentName].map(resource =>
           resource.name === resourceName ? {...resource, ...changes} : resource
-        ),
-      },
+        )
+      }
     }));
   };
+
+  useEffect(() => {
+    const componentKeys = Object.keys(consumer.components);
+    const queryParams = new URLSearchParams();
+    componentKeys.forEach(key => queryParams.append("components", key));
+    fetcher.load(`/konsumere/komponenter?${queryParams.toString()}`);
+  }, []);
+
+  useEffect(() => {
+    if (fetcher.data) {
+      setConsumer(prevConsumer => ({
+        ...prevConsumer,
+        components: updateConsumerResources(prevConsumer.components, fetcher.data!)
+      }));
+
+      setStaticWriteableResources(
+        new Set(
+          Object.entries(fetcher.data).flatMap(([componentName, resources]) =>
+            resources
+              .filter((resource: IResource) => resource.writeable)
+              .map((resource: IResource) => `${componentName} ${resource.name}`)
+          )
+        )
+      );
+    }
+  }, [fetcher.data, setConsumer]);
 
   return (
     <Accordion>
@@ -49,7 +71,7 @@ export default function ResourcePage({consumer, setConsumer}: ResourceFieldsProp
                   readOnly={false}
                   key={resource.name + i}
                   resource={resource}
-                  staticWriteableResources={staticWriteableResources}
+                  staticWriteable={staticWriteableResources.has(`${componentName} ${resource.name}`)}
                   onResourceSwitch={(e: ChangeEvent<HTMLInputElement>) =>
                     updateResource(componentName, resource.name, {enabled: e.target.checked})
                   }
@@ -67,4 +89,26 @@ export default function ResourcePage({consumer, setConsumer}: ResourceFieldsProp
       ))}
     </Accordion>
   );
+}
+
+function updateConsumerResources(existing: IComponent, newComponents: IComponent): IComponent {
+  const updatedComponents = {...existing};
+
+  for (const key in newComponents) {
+    const newResources: IResource[] = newComponents[key];
+
+    if (!updatedComponents[key]) {
+      updatedComponents[key] = newResources;
+    } else {
+      const mergedResources = [...updatedComponents[key]];
+      newResources.forEach(newRes => {
+        const exists = mergedResources.some(existingRes => existingRes.name === newRes.name);
+        if (!exists) {
+          mergedResources.push(newRes);
+        }
+      });
+      updatedComponents[key] = mergedResources;
+    }
+  }
+  return updatedComponents;
 }
