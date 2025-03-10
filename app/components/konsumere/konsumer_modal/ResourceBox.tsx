@@ -1,7 +1,7 @@
 import {Box, HStack, Switch, Tooltip} from "@navikt/ds-react";
 import {CloudSlashIcon, PencilLineIcon} from "@navikt/aksel-icons";
-import {IResource} from "~/types/IComponent";
 import React from "react";
+import {IResource} from "~/types/consumer/IResource";
 
 interface ResourceBoxProps {
   resource: IResource;
@@ -10,7 +10,7 @@ interface ResourceBoxProps {
   onCacheSwitch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
   size?: "medium" | "small" | undefined
-  staticWriteableResources?: Set<string>;
+  staticWriteable: boolean
 }
 
 export default function ResourceBox({
@@ -20,7 +20,7 @@ export default function ResourceBox({
                                       onCacheSwitch,
                                       size = "normal",
                                       readOnly = false,
-                                      staticWriteableResources = new Set(),
+                                      staticWriteable = false,
                                     }: ResourceBoxProps) {
   const gapValue = size === "small" ? "2" : "4";
   const boxHeight = size === "small" ? "h-6" : "h-8"
@@ -32,7 +32,7 @@ export default function ResourceBox({
           size={size}
           readOnly={readOnly}
           value={resource.name}
-          chegacked={resource.enabled}
+          checked={resource.enabled}
           onChange={onResourceSwitch}
         >
           {resource.name}
@@ -42,7 +42,7 @@ export default function ResourceBox({
             <Switch
               size={size}
               readOnly={readOnly}
-              disabled={staticWriteableResources.has(resource.name)}
+              disabled={staticWriteable}
               checked={resource.writeable}
               onChange={onWriteableSwitch}
             >
