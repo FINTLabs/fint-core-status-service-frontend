@@ -1,15 +1,15 @@
 import {HStack, Modal, Stepper} from "@navikt/ds-react";
-import {PlusIcon} from "@navikt/aksel-icons";
+import {DocPencilIcon, PlusIcon} from "@navikt/aksel-icons";
 import React, {useState} from "react";
 import SetupPage from "~/components/konsumere/konsumer_modal/SetupPage";
 import {consumerFromRequest, newConsumer} from "~/types/consumer/IConsumer";
 import {IConsumerMetadata} from "~/types/consumer/IConsumerMetadata";
 import ResourcePage from "~/components/konsumere/konsumer_modal/ResourcePage";
 import AllocationPage from "~/components/konsumere/konsumer_modal/AllocationPage";
-import ConfirmationPage from "~/components/konsumere/konsumer_modal/ConfirmationPage";
 import {IConsumerRequest} from "~/types/consumer/IConsumerRequest";
+import {mockConsumerRequest} from "~/mocks/mock_consumer";
 
-interface AdjustConsumerModalProps {
+interface ConsumerModalProps {
   openModal: boolean
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
   consumerMetadata: IConsumerMetadata
@@ -21,11 +21,11 @@ export default function ConsumerModal({
                                         openModal,
                                         setOpenModal,
                                         consumerMetadata,
-                                        initialConsumer,
-                                        editing = false,
-                                      }: AdjustConsumerModalProps) {
-  const [activeStep, setActiveStep] = useState(1);
-  const [consumerFields, setConsumerFields] = useState(
+                                        initialConsumer = mockConsumerRequest,
+                                      }: ConsumerModalProps) {
+  const [activeStep, setActiveStep] = useState(3);
+  const editing = initialConsumer != undefined
+  const [consumer, setConsumer] = useState(
     initialConsumer != undefined
       ? consumerFromRequest(initialConsumer)
       : newConsumer()
@@ -33,9 +33,9 @@ export default function ConsumerModal({
 
   const moveStep = (step) => {
     if (
-      !consumerFields.version ||
-      (consumerFields.organisations.length === 0 && !consumerFields.shared) ||
-      Object.keys(consumerFields.components).length === 0
+      !consumer.version ||
+      (consumer.organisations.length === 0 && !consumer.shared) ||
+      Object.keys(consumer.components).length === 0
     ) {
       alert("Required fields are not set");
       return;
@@ -43,30 +43,33 @@ export default function ConsumerModal({
     setActiveStep(step);
   };
 
+  const header = editing
+    ? {
+      heading: `${initialConsumer?.domain} ${initialConsumer?.package} - ${initialConsumer?.org}`,
+      icon: <DocPencilIcon/>
+    }
+    : {
+      heading: "Ny Konsumer",
+      icon: <PlusIcon/>
+    };
 
   const steps = [
     <SetupPage
       key="setup"
       editing={editing}
       consumerMetadata={consumerMetadata}
-      consumer={consumerFields}
-      setConsumer={setConsumerFields}
+      consumer={consumer}
+      setConsumer={setConsumer}
     />,
     <ResourcePage
       key="resource"
-      consumer={consumerFields}
-      setConsumer={setConsumerFields}
+      consumer={consumer}
+      setConsumer={setConsumer}
     />,
     <AllocationPage
       key="allocation"
-      consumer={consumerFields}
-      setConsumer={setConsumerFields}
-    />,
-    <ConfirmationPage
-      key="confirmation"
-      editing={editing}
-      initialConsumer={initialConsumer}
-      consumer={consumerFields}
+      consumer={consumer}
+      setConsumer={setConsumer}
     />
   ];
 
@@ -76,10 +79,7 @@ export default function ConsumerModal({
         width="700px"
         open={openModal}
         onClose={() => setOpenModal(false)}
-        header={{
-          heading: "Ny Konsumer",
-          icon: <PlusIcon/>
-        }}
+        header={header}
       >
         <Modal.Body>
           {steps[activeStep - 1]}
