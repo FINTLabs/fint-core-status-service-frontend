@@ -1,5 +1,5 @@
 import {IComponent} from "~/types/consumer/IComponent";
-import {MetamodelApi} from "~/api/metamodelApi";
+import {MetamodelApi} from "~/api/MetamodelApi";
 
 export const loader = async ({ request })  => {
   const url = new URL(request.url);
