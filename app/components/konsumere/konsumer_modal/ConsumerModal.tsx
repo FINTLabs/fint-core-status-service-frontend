@@ -72,7 +72,9 @@ export default function ConsumerModal({
       consumer={consumer}
       setConsumer={setConsumer}
     />,
-    <DeployPage/>
+    <DeployPage
+      consumer={consumer}
+    />
   ];
 
   return (
