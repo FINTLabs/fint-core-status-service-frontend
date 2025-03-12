@@ -4,6 +4,10 @@ import React from "react";
 import {IOrganisationTab} from "~/types/IOrganisationTab";
 
 interface onClickProp {
+  org: string,
+  applications: number,
+  errors: number,
+  restarts: number,
   onClick?: () => void;
 }
 
