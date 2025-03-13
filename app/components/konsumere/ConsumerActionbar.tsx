@@ -26,7 +26,7 @@ export default function ConsumerActionbar({setQuery, openModalSetter}: ConsumerA
           icon={<PlusIcon aria-hidden/>}
           onClick={() => openModalSetter(true)}
         >
-          Ny Consumer
+          Ny Konsumer
         </Button>
       </HStack>
     </HStack>
