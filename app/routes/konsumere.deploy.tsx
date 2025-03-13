@@ -1,9 +1,7 @@
-import type { ActionFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { ConsumerApi } from "~/api/ConsumerApi";
+import type {ActionFunction} from "@remix-run/node";
+import {ConsumerApi} from "~/api/ConsumerApi";
 
-export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData();
+export const action: ActionFunction = async ({request}) => {
   const consumer = await request.json()
 
   try {
