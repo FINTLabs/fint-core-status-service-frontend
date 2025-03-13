@@ -14,7 +14,6 @@ interface ConsumerModalProps {
   openModal: boolean
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
   consumerMetadata: IConsumerMetadata
-  editing: boolean
   initialConsumer?: IConsumerRequest
 }
 
@@ -24,7 +23,7 @@ export default function ConsumerModal({
                                         consumerMetadata,
                                         initialConsumer = mockConsumerRequest,
                                       }: ConsumerModalProps) {
-  const [activeStep, setActiveStep] = useState(3);
+  const [activeStep, setActiveStep] = useState(1);
   const editing = initialConsumer != undefined
   const [consumer, setConsumer] = useState(
     initialConsumer != undefined
