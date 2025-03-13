@@ -3,7 +3,7 @@ import {fromConsumerToRequests, IConsumerRequest} from "~/types/consumer/IConsum
 import {IConsumer} from "~/types/consumer/IConsumer";
 
 const PROFILE = process.env.PROFILE;
-const CONSUMER_URL = process.env.METAMODEL_URL;
+const CONSUMER_URL = process.env.CONSUMER_URL;
 
 export class ConsumerApi {
 
