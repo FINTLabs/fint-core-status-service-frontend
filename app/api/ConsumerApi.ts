@@ -39,10 +39,10 @@ export class ConsumerApi {
     return response;
   }
 
-  static async deployConsumer(consumer: IConsumer): Promise<void> {
-    await Promise.all(
+  static deployConsumer(consumer: IConsumer): Promise<Response[]> {
+    return Promise.all(
       fromConsumerToRequests(consumer).map(c => this.deploy(c))
-    )
+    );
   }
 
 }
