@@ -4,12 +4,12 @@ import {SVGProps} from "react";
 
 
 interface TitleProps {
-  Icon: React.RefAttributes<SVGSVGElement>;
+  icon: React.RefAttributes<SVGSVGElement>;
   onIconClick?: () => void;
 }
 
 export default function Title({
-                                Icon,
+                                icon,
                                 onIconClick,
                               }: TitleProps) {
   return (
@@ -26,7 +26,7 @@ export default function Title({
               onClick={onIconClick}
               style={{cursor: onIconClick ? "pointer" : "default"}}
             >
-              {Icon}
+              {icon}
             </div>
             <VStack gap={{xs: "4", md: "5"}}>
               <Heading level="1" size="xlarge">
