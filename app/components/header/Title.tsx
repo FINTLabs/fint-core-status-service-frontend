@@ -3,12 +3,12 @@ import {ChangingRoomIcon} from "@navikt/aksel-icons";
 
 
 interface TitleProps {
-  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   onIconClick?: () => void;
 }
 
 export default function Title({
-                                Icon = ChangingRoomIcon,
+                                icon = ChangingRoomIcon,
                                 onIconClick,
                               }: TitleProps) {
   return (
