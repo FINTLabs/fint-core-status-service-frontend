@@ -23,7 +23,6 @@ export default function Header({ onHeaderChange, value }: headerProps) {
                 {MENU_LINKS.map((menuLink, index) => (
                   <Dropdown.Menu.GroupedList.Item>
                     <LinkPanel
-                      as={Dropdown.Toggle}
                       href={menuLink.href}
                       key={index}
                       className={"w-full"}
