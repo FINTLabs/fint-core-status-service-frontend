@@ -2,7 +2,15 @@ import {Box, Heading, HStack, VStack,} from "@navikt/ds-react";
 import {ChangingRoomIcon} from "@navikt/aksel-icons";
 
 
-export default function Title() {
+interface TitleProps {
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  onIconClick?: () => void;
+}
+
+export default function Title({
+                                Icon = ChangingRoomIcon,
+                                onIconClick,
+                              }: TitleProps) {
   return (
     <Box
       as="header"
@@ -12,9 +20,13 @@ export default function Title() {
     >
       <div className="max-w-5xl">
         <Box paddingInline="4" paddingBlock="0 6">
-          <HStack align="start" gap="8">
-            <ChangingRoomIcon style={{width: '48px', height: '48px'}}/>
-
+          <HStack align="start" gap="4">
+            <div
+              onClick={onIconClick}
+              style={{cursor: onIconClick ? "pointer" : "default"}}
+            >
+              <Icon style={{width: "48px", height: "48px"}}/>
+            </div>
             <VStack gap={{xs: "4", md: "5"}}>
               <Heading level="1" size="xlarge">
                 Konsumere
