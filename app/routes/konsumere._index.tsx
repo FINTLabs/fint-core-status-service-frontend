@@ -7,6 +7,7 @@ import {MockOrganisationTabs} from "~/mocks/mock_organisation_tabs";
 import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
 import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
 import {useNavigate} from "react-router";
+import {ChangingRoomIcon} from "@navikt/aksel-icons";
 
 export default function Konsumere() {
   const navigate = useNavigate()
@@ -22,7 +23,9 @@ export default function Konsumere() {
   return (
     <HStack justify="center">
       <VStack className="w-2/3" gap="8">
-        <Title/>
+        <Title
+          icon={<ChangingRoomIcon style={{width: '48px', height: '48px'}}/>}
+        />
         <ConsumerActionbar
           setQuery={setQuery}
           openModalSetter={setOpenModal}
