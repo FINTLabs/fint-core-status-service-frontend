@@ -1,13 +1,13 @@
 import {HStack, VStack} from "@navikt/ds-react";
 import React, {useState} from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
-import OrganisationTab from "~/components/konsumere/OrganisationTab";
 import Title from "~/components/header/Title";
 import {MockOrganisationTabs} from "~/mocks/mock_organisation_tabs";
 import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
 import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
 import {useNavigate} from "react-router";
 import {ChangingRoomIcon} from "@navikt/aksel-icons";
+import {OrganizationTab} from "~/components/konsumere/OrganisationTab";
 
 export default function Konsumere() {
   const navigate = useNavigate()
@@ -33,7 +33,7 @@ export default function Konsumere() {
         />
         <HStack gap="4">
           {filteredOrganisationTabs.map((tab) => (
-            <OrganisationTab
+            <OrganizationTab
               onClick={() => navigate(`/konsumere/${tab.org}`)}
               className="cursor-pointer"
               key={tab.org}
