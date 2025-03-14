@@ -7,7 +7,7 @@ import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
 import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
 import {useNavigate} from "react-router";
 import {ChangingRoomIcon} from "@navikt/aksel-icons";
-import {OrganizationTab} from "~/components/konsumere/OrganisationTab";
+import {OrganizationTab} from "~/components/konsumere/OrganizationTab";
 
 export default function Konsumere() {
   const navigate = useNavigate()
