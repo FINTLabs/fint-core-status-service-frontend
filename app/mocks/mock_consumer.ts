@@ -10,7 +10,7 @@ export const mockConsumerRequest: IConsumerRequest = {
   limitsMemory: "512Mi",
   requestsCpu: "100m",
   requestsMemory: "256Mi",
-  resources: ["Resource A", "Resource B", "Resource C"],
-  writeableResources: ["Resource C"],
+  resources: ["elevfravar"],
+  writeableResources: [],
   cacheDisabledResources: []
 };
