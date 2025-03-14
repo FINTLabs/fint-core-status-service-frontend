@@ -1,14 +1,15 @@
 import {Box, Heading, HStack, VStack,} from "@navikt/ds-react";
 import {ChangingRoomIcon} from "@navikt/aksel-icons";
+import {SVGProps} from "react";
 
 
 interface TitleProps {
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  Icon: React.RefAttributes<SVGSVGElement>;
   onIconClick?: () => void;
 }
 
 export default function Title({
-                                icon = ChangingRoomIcon,
+                                Icon,
                                 onIconClick,
                               }: TitleProps) {
   return (
@@ -25,7 +26,7 @@ export default function Title({
               onClick={onIconClick}
               style={{cursor: onIconClick ? "pointer" : "default"}}
             >
-              <Icon style={{width: "48px", height: "48px"}}/>
+              {Icon}
             </div>
             <VStack gap={{xs: "4", md: "5"}}>
               <Heading level="1" size="xlarge">
