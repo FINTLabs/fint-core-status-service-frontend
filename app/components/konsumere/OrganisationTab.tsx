@@ -2,13 +2,15 @@ import {Box, HStack, VStack} from "@navikt/ds-react";
 import {ArrowsCirclepathIcon, CaretRightCircleIcon, XMarkOctagonIcon} from "@navikt/aksel-icons";
 import React from "react";
 import {IOrganisationTab} from "~/types/IOrganisationTab";
+import clsx from "clsx";
 
 interface onClickProp {
   org: string,
   applications: number,
   errors: number,
   restarts: number,
-  onClick?: () => void;
+  onClick?: () => void
+  className?: string
 }
 
 export default function OrganisationTab({
@@ -16,14 +18,15 @@ export default function OrganisationTab({
                                           applications,
                                           errors,
                                           restarts,
-                                          onClick
+                                          onClick,
+                                          className
                                         }: IOrganisationTab & onClickProp) {
   return (
     <Box
       borderRadius="large"
       shadow="large"
       width="200px"
-      className="flex flex-col bg-[rgb(152,177,201)]"
+      className={clsx("flex flex-col bg-[rgb(152,177,201)]", className)}
       onClick={onClick}
     >
       <Box
