@@ -6,8 +6,10 @@ import Title from "~/components/header/Title";
 import {MockOrganisationTabs} from "~/mocks/mock_organisation_tabs";
 import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
 import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
+import {useNavigate} from "react-router";
 
 export default function Konsumere() {
+  const navigate = useNavigate()
   const [openModal, setOpenModal] = useState(false)
   const [query, setQuery] = useState("")
   const [organisationTabs] = useState(MockOrganisationTabs)
@@ -28,6 +30,8 @@ export default function Konsumere() {
         <HStack gap="4">
           {filteredOrganisationTabs.map((tab) => (
             <OrganisationTab
+              onClick={() => navigate(`/konsumere/${tab.org}`)}
+              className="cursor-pointer"
               key={tab.org}
               org={tab.org}
               applications={tab.applications}
