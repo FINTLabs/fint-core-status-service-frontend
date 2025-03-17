@@ -12,7 +12,7 @@ import {IConsumerRequest} from "~/types/consumer/IConsumerRequest";
 import {IConsumerMetadata} from "~/types/consumer/IConsumerMetadata";
 import {mockConsumerRequest} from "~/mocks/mock_consumer";
 import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
-import {newConsumer} from "~/types/consumer/IConsumer";
+import {ConsumerTab} from "~/components/konsumere/ConsumerTab";
 
 interface OrgRouteData {
   org: string;
@@ -22,7 +22,6 @@ interface OrgRouteData {
 
 export const loader = async ({params}: { params: { org?: string } }): Promise<OrgRouteData> => {
   const organization = params.org || "defaultOrg";
-  await new Promise(resolve => setTimeout(resolve, 3000));
   return {
     org: organization,
     consumers: [mockConsumerRequest],
@@ -35,7 +34,6 @@ export default function Konsumere() {
   const routeData = useLoaderData<OrgRouteData>()
   const [consumer, setConsumer] = useState()
   const [inTransition, transition] = useTransition();
-  const {organization} = useLoaderData<{ organization: string }>();
   const [consumerTabs] = useState(MockOrganisationTabs)
   const [openModal, setOpenModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,7 +42,7 @@ export default function Konsumere() {
     <HStack justify="center">
       <VStack className="w-2/3" gap="8">
         <Title
-          title={`${organization} Konsumere`}
+          title={`${routeData.org} Konsumere`}
           onIconClick={() => navigate("/konsumere")}
           icon={<ArrowLeftIcon style={{width: '48px', height: '48px'}}/>}
         />
@@ -57,17 +55,19 @@ export default function Konsumere() {
           {inTransition ? (
             <Skeleton width="200px"/>
           ) : (
-            <OrganizationTab
-              className="cursor-pointer"
-              key="asd"
-              org="tab.org"
-              applications={4}
-              errors={3}
-              restarts={2}
-              onClick={() => {
-                setOpenModal(true)
-              }}
-            />
+            routeData.consumers.map(consumer => (
+              <ConsumerTab
+                className="cursor-pointer"
+                key={`${consumer.domain} ${consumer.package}`}
+                consumer={`${consumer.domain} ${consumer.package}`}
+                applications={4}
+                errors={3}
+                restarts={2}
+                onClick={() => {
+                  setOpenModal(true)
+                }}
+              />
+            ))
           )}
         </HStack>
         <ConsumerModal
