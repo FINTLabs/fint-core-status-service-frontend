@@ -6,7 +6,6 @@ import {MockOrganisationTabs} from "~/mocks/mock_organisation_tabs";
 import {ArrowLeftIcon} from "@navikt/aksel-icons";
 import {useNavigate} from "react-router";
 import {useLoaderData} from "@remix-run/react";
-import {OrganizationTab} from "~/components/konsumere/OrganizationTab";
 import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
 import {IConsumerRequest} from "~/types/consumer/IConsumerRequest";
 import {IConsumerMetadata} from "~/types/consumer/IConsumerMetadata";
@@ -38,6 +37,10 @@ export default function Konsumere() {
   const [openModal, setOpenModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState("");
 
+  const filteredConsumers = routeData.consumers.filter(tab =>
+    `${tab.domain} ${tab.package}`.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <HStack justify="center">
       <VStack className="w-2/3" gap="8">
@@ -55,7 +58,7 @@ export default function Konsumere() {
           {inTransition ? (
             <Skeleton width="200px"/>
           ) : (
-            routeData.consumers.map(consumer => (
+            filteredConsumers.map(consumer => (
               <ConsumerTab
                 className="cursor-pointer"
                 key={`${consumer.domain} ${consumer.package}`}
