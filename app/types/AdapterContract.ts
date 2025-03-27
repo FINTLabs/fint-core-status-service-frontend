@@ -1,3 +1,4 @@
+
 export interface Capability {
   domainName: string;
   packageName: string;
@@ -10,6 +11,12 @@ export interface Capability {
   lastFullSync: number;
 }
 
+export interface ICapabilityData {
+  fullSyncIntervalInDays: number;
+  deltaSyncInterval: 'IMMEDIATE' | string;
+  followsContract: boolean;
+  lastFullSync: number;
+}
 export interface AdapterContract {
   adapterId: string;
   username: string;
@@ -17,7 +24,9 @@ export interface AdapterContract {
   heartbeatIntervalInMinutes: number;
   components: string[];
   hasContact: boolean;
-  capabilities: Capability[];
+  capabilities: {
+    [key: string]: ICapabilityData;
+  };
   lastActivity: number;
 }
 

@@ -1,16 +1,12 @@
-import { useRef, useState } from "react";
-import { Popover, Button } from "@navikt/ds-react";
-import { ArrowCirclepathIcon } from "@navikt/aksel-icons";
-
-export interface CapabilitySyncInfo {
-  fullSyncIntervalInDays: number;
-  deltaSyncInterval: string;
-  followsContract: boolean;
-  lastFullSync: number;
-}
+import {useRef, useState} from "react";
+import {Button, Popover} from "@navikt/ds-react";
+import {MigrationIcon} from "@navikt/aksel-icons";
+import {ICapabilityData} from "~/types/AdapterContract";
 
 interface CapabilityStatusProps {
-  capabilities: Record<string, CapabilitySyncInfo>;
+    capabilities: {
+        [key: string]: ICapabilityData;
+    };
 }
 
 export const CapabilityStatus = ({ capabilities }: CapabilityStatusProps) => {
@@ -32,7 +28,7 @@ export const CapabilityStatus = ({ capabilities }: CapabilityStatusProps) => {
         aria-expanded={open}
         size="small"
         icon={
-          <ArrowCirclepathIcon title="Vis detaljer om manglende kontrakter" />
+          <MigrationIcon title="Vis detaljer om manglende kontrakter" />
         }
       />
       <Popover

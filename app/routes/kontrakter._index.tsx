@@ -1,40 +1,14 @@
-import {
-  ActionMenu,
-  Button,
-  Heading,
-  HStack,
-  Label,
-  Modal,
-  Pagination,
-  Search,
-  Table,
-  Tooltip,
-} from "@navikt/ds-react";
-import React, { useEffect, useRef, useState } from "react";
-import { json, LoaderFunction } from "@remix-run/node";
-import { StatusApi } from "~/api/StatusApi";
-import {
-  AdapterContract,
-  ContractModal,
-  convertLastActivity,
-  formatComponents,
-} from "~/types/AdapterContract";
-import { useLoaderData } from "@remix-run/react";
-import {
-  ArrowCirclepathIcon,
-  ChevronDownIcon,
-  HeartBrokenIcon,
-  HeartIcon,
-  MagnifyingGlassIcon,
-} from "@navikt/aksel-icons";
-import { envCookie } from "~/components/cookie";
-import {
-  filterByOrgId,
-  getOrgs,
-} from "~/components/komponenter/ContractFilter";
-import { timeSince } from "~/types/IFintEvent";
-import component from "@navikt/aksel-icons/src/Component";
-import { CapabilityStatus } from "~/components/CapabilityStatus";
+import {ActionMenu, Button, Heading, HStack, Label, Modal, Pagination, Search, Table, Tooltip,} from "@navikt/ds-react";
+import React, {useEffect, useRef, useState} from "react";
+import {json, LoaderFunction} from "@remix-run/node";
+import {StatusApi} from "~/api/StatusApi";
+import {AdapterContract, ContractModal, convertLastActivity, formatComponents,} from "~/types/AdapterContract";
+import {useLoaderData} from "@remix-run/react";
+import {ChevronDownIcon, HeartBrokenIcon, HeartIcon, MagnifyingGlassIcon,} from "@navikt/aksel-icons";
+import {envCookie} from "~/components/cookie";
+import {filterByOrgId, getOrgs,} from "~/components/komponenter/ContractFilter";
+import {timeSince} from "~/types/IFintEvent";
+import {CapabilityStatus} from "~/components/CapabilityStatus";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
@@ -330,12 +304,12 @@ export default function Kontrakter() {
                     />
                   )}
                 </Table.DataCell>
-                <Table.DataCell>
-                  <pre>{JSON.stringify(contract.capabilities, null, 2)}</pre>
+                <Table.DataCell onClick={(e) => e.stopPropagation()} >
+                  {/*<pre>{JSON.stringify(contract.capabilities, null, 2)}</pre>*/}
 
                   <CapabilityStatus capabilities={contract.capabilities} />
 
-                  <ArrowCirclepathIcon title="a11y-title" fontSize="1.5rem" />
+
                 </Table.DataCell>
                 <Tooltip content={timeSince(contract.lastActivity)}>
                   <Table.DataCell scope="row">
