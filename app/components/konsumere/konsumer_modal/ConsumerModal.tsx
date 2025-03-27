@@ -1,37 +1,37 @@
-import {HStack, Modal, Stepper} from "@navikt/ds-react";
-import {DocPencilIcon, PlusIcon} from "@navikt/aksel-icons";
-import React, {useState} from "react";
+import { HStack, Modal, Stepper } from "@navikt/ds-react";
+import { DocPencilIcon, PlusIcon } from "@navikt/aksel-icons";
+import React, { useState } from "react";
 import SetupPage from "~/components/konsumere/konsumer_modal/SetupPage";
-import {consumerFromRequest, newConsumer} from "~/types/consumer/IConsumer";
-import {IConsumerMetadata} from "~/types/consumer/IConsumerMetadata";
+import { consumerFromRequest, newConsumer } from "~/types/consumer/IConsumer";
+import { IConsumerMetadata } from "~/types/consumer/IConsumerMetadata";
 import ResourcePage from "~/components/konsumere/konsumer_modal/ResourcePage";
 import AllocationPage from "~/components/konsumere/konsumer_modal/AllocationPage";
-import {IConsumerRequest} from "~/types/consumer/IConsumerRequest";
-import {mockConsumerRequest} from "~/mocks/mock_consumer";
+import { IConsumerRequest } from "~/types/consumer/IConsumerRequest";
+import { mockConsumerRequest } from "~/mocks/mock_consumer";
 import DeployPage from "~/components/konsumere/konsumer_modal/DeployPage";
 
 interface ConsumerModalProps {
-  openModal: boolean
-  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
-  consumerMetadata: IConsumerMetadata
-  initialConsumer?: IConsumerRequest
+  openModal: boolean;
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  consumerMetadata: IConsumerMetadata;
+  initialConsumer?: IConsumerRequest;
 }
 
 export default function ConsumerModal({
-                                        openModal,
-                                        setOpenModal,
-                                        consumerMetadata,
-                                        initialConsumer = mockConsumerRequest,
-                                      }: ConsumerModalProps) {
+  openModal,
+  setOpenModal,
+  consumerMetadata,
+  initialConsumer = mockConsumerRequest,
+}: ConsumerModalProps) {
   const [activeStep, setActiveStep] = useState(1);
-  const editing = initialConsumer != undefined
+  const editing = initialConsumer != undefined;
   const [consumer, setConsumer] = useState(
     initialConsumer != undefined
       ? consumerFromRequest(initialConsumer)
       : newConsumer()
-  )
+  );
 
-  const moveStep = (step) => {
+  const moveStep = (step: number) => {
     if (
       !consumer.version ||
       (consumer.organisations.length === 0 && !consumer.shared) ||
@@ -45,13 +45,13 @@ export default function ConsumerModal({
 
   const header = editing
     ? {
-      heading: `${initialConsumer?.domain} ${initialConsumer?.package} - ${initialConsumer?.org}`,
-      icon: <DocPencilIcon/>
-    }
+        heading: `${initialConsumer?.domain} ${initialConsumer?.package} - ${initialConsumer?.org}`,
+        icon: <DocPencilIcon />,
+      }
     : {
-      heading: "Ny Konsumer",
-      icon: <PlusIcon/>
-    };
+        heading: "Ny Konsumer",
+        icon: <PlusIcon />,
+      };
 
   const steps = [
     <SetupPage
@@ -71,9 +71,7 @@ export default function ConsumerModal({
       consumer={consumer}
       setConsumer={setConsumer}
     />,
-    <DeployPage
-      consumer={consumer}
-    />
+    <DeployPage key={"deployment"} consumer={consumer} />,
   ];
 
   return (
@@ -84,9 +82,7 @@ export default function ConsumerModal({
         onClose={() => setOpenModal(false)}
         header={header}
       >
-        <Modal.Body>
-          {steps[activeStep - 1]}
-        </Modal.Body>
+        <Modal.Body>{steps[activeStep - 1]}</Modal.Body>
         <Modal.Footer className="flex justify-center">
           <HStack>
             <Stepper
@@ -104,5 +100,5 @@ export default function ConsumerModal({
         </Modal.Footer>
       </Modal>
     </form>
-  )
+  );
 }
