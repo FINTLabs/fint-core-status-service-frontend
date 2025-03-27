@@ -1,5 +1,10 @@
-import React, {useState} from "react";
-import {Box, Button, DatePicker, HStack, Select, useRangeDatepicker, VStack} from "@navikt/ds-react";
+import React, { useState } from "react";
+import {
+  Button,
+  DatePicker,
+  HStack,
+  useRangeDatepicker,
+} from "@navikt/ds-react";
 
 interface DatePickerProps {
   placeholderFrom?: number;
@@ -7,27 +12,29 @@ interface DatePickerProps {
   onSelectedDates?: (data: { from: number | null; to: number | null }) => void;
 }
 
-
-const DatePickerEvents: React.FC<DatePickerProps> = ({onSelectedDates, placeholderFrom, placeholderTo}) => {
-
+const DatePickerEvents: React.FC<DatePickerProps> = ({
+  onSelectedDates,
+  placeholderFrom,
+  placeholderTo,
+}) => {
   const defaultFrom = placeholderFrom ? new Date(placeholderFrom) : new Date();
   const defaultTo = placeholderTo ? new Date(placeholderTo) : new Date();
 
-
-  const {datepickerProps, toInputProps, fromInputProps, selectedRange,} = useRangeDatepicker({
-    fromDate: new Date(new Date().setDate(new Date().getDate() - 1)),
-    toDate: new Date(),
-    onRangeChange: console.info,
-    defaultSelected: {from: defaultFrom, to: defaultTo}
-  });
-  const [appliedDates, setAppliedDates] = useState({from: 0, to: 0});
+  const { datepickerProps, toInputProps, fromInputProps, selectedRange } =
+    useRangeDatepicker({
+      fromDate: new Date(new Date().setDate(new Date().getDate() - 1)),
+      toDate: new Date(),
+      onRangeChange: console.info,
+      defaultSelected: { from: defaultFrom, to: defaultTo },
+    });
+  const [appliedDates, setAppliedDates] = useState({ from: 0, to: 0 });
 
   function convertToUnixTimeStamp(date: Date | null): number | null {
     return date ? date.getTime() : null;
   }
 
   function handleApplyFilter() {
-    if (selectedRange && onSelectedDates) {
+    if (selectedRange?.to && selectedRange.from && onSelectedDates) {
       const fromTimestamp = convertToUnixTimeStamp(selectedRange.from);
       let toDate = new Date(selectedRange.to);
       const today = new Date();
@@ -41,22 +48,33 @@ const DatePickerEvents: React.FC<DatePickerProps> = ({onSelectedDates, placehold
         from: fromTimestamp,
         to: toTimestamp,
       });
-      setAppliedDates({from: fromTimestamp, to: toTimestamp});
+      fromTimestamp &&
+        toTimestamp &&
+        setAppliedDates({ from: fromTimestamp, to: toTimestamp });
     }
   }
 
   function handleResetFilters() {
-    onSelectedDates({
-      from: convertToUnixTimeStamp(new Date(new Date().setDate(new Date().getDate() - 1))),
-      to: convertToUnixTimeStamp(new Date()),
-    });
+    if (onSelectedDates) {
+      onSelectedDates({
+        from: convertToUnixTimeStamp(
+          new Date(new Date().setDate(new Date().getDate() - 1))
+        ),
+        to: convertToUnixTimeStamp(new Date()),
+      });
+    }
   }
 
-  const handlePresetSelect = (value) => {
-    onSelectedDates({
-      from: convertToUnixTimeStamp(new Date(new Date().setMinutes(new Date().getMinutes() - value))),
-      to: convertToUnixTimeStamp(new Date()),
-    });
+  const handlePresetSelect = (value: string) => {
+    const minutes = Number(value);
+    if (onSelectedDates) {
+      onSelectedDates({
+        from: convertToUnixTimeStamp(
+          new Date(new Date().setMinutes(new Date().getMinutes() - minutes))
+        ),
+        to: convertToUnixTimeStamp(new Date()),
+      });
+    }
   };
 
   return (
@@ -80,21 +98,21 @@ const DatePickerEvents: React.FC<DatePickerProps> = ({onSelectedDates, placehold
         fromDate={new Date(new Date().setDate(new Date().getDate() - 30))}
       >
         <HStack wrap gap="4" justify="center">
-          <DatePicker.Input
-            {...fromInputProps}
-            label="Fra"
-          ></DatePicker.Input>
-          <DatePicker.Input
-            {...toInputProps}
-            label="Til"
-          />
+          <DatePicker.Input {...fromInputProps} label="Fra"></DatePicker.Input>
+          <DatePicker.Input {...toInputProps} label="Til" />
         </HStack>
       </DatePicker>
-      <Button style={{marginTop: 20, marginRight: 10}} onClick={handleApplyFilter}>Bruk</Button>
-      <Button style={{marginTop: 20}} onClick={handleResetFilters}>Nullstill</Button>
+      <Button
+        style={{ marginTop: 20, marginRight: 10 }}
+        onClick={handleApplyFilter}
+      >
+        Bruk
+      </Button>
+      <Button style={{ marginTop: 20 }} onClick={handleResetFilters}>
+        Nullstill
+      </Button>
     </div>
   );
 };
-
 
 export default DatePickerEvents;

@@ -1,7 +1,7 @@
-import {Box, HStack, Switch, Tooltip} from "@navikt/ds-react";
-import {CloudSlashIcon, PencilLineIcon} from "@navikt/aksel-icons";
+import { Box, HStack, Switch, Tooltip } from "@navikt/ds-react";
+import { CloudSlashIcon, PencilLineIcon } from "@navikt/aksel-icons";
 import React from "react";
-import {IResource} from "~/types/consumer/IResource";
+import { IResource } from "~/types/consumer/IResource";
 
 interface ResourceBoxProps {
   resource: IResource;
@@ -9,24 +9,27 @@ interface ResourceBoxProps {
   onWriteableSwitch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onCacheSwitch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
-  size?: "medium" | "small" | undefined
-  staticWriteable: boolean
+  size?: "medium" | "small" | undefined;
+  staticWriteable: boolean;
 }
 
 export default function ResourceBox({
-                                      resource,
-                                      onResourceSwitch,
-                                      onWriteableSwitch,
-                                      onCacheSwitch,
-                                      size = "normal",
-                                      readOnly = false,
-                                      staticWriteable = false,
-                                    }: ResourceBoxProps) {
+  resource,
+  onResourceSwitch,
+  onWriteableSwitch,
+  onCacheSwitch,
+  size = "medium",
+  readOnly = false,
+  staticWriteable = false,
+}: ResourceBoxProps) {
   const gapValue = size === "small" ? "2" : "4";
-  const boxHeight = size === "small" ? "h-6" : "h-8"
+  const boxHeight = size === "small" ? "h-6" : "h-8";
 
   return (
-    <Box key={resource.name} className={`w-full ${boxHeight} flex-col flex justify-center p-2`}>
+    <Box
+      key={resource.name}
+      className={`w-full ${boxHeight} flex-col flex justify-center p-2`}
+    >
       <HStack justify="space-between">
         <Switch
           size={size}
@@ -46,7 +49,7 @@ export default function ResourceBox({
               checked={resource.writeable}
               onChange={onWriteableSwitch}
             >
-              <PencilLineIcon aria-hidden/>
+              <PencilLineIcon aria-hidden />
             </Switch>
           </Tooltip>
           <Tooltip content="Slå av cache">
@@ -56,7 +59,7 @@ export default function ResourceBox({
               checked={resource.cacheDisabled}
               onChange={onCacheSwitch}
             >
-              <CloudSlashIcon aria-hidden/>
+              <CloudSlashIcon aria-hidden />
             </Switch>
           </Tooltip>
         </HStack>

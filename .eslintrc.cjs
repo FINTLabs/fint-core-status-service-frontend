@@ -7,9 +7,6 @@
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
-  future: {
-    v2_errorBoundary: true,
-  },
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",

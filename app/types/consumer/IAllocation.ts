@@ -1,10 +1,10 @@
-import {IConsumerRequest} from "~/types/consumer/IConsumerRequest";
+import { IConsumerRequest } from "~/types/consumer/IConsumerRequest";
 
-export const memoryUnits = ['Mi', 'Gi'] as const;
-export type MemoryUnit = typeof memoryUnits[number];
+export const memoryUnits = ["Mi", "Gi"] as const;
+export type MemoryUnit = (typeof memoryUnits)[number];
 
-export const cpuUnits = ['m', 'core'] as const;
-export type CpuUnit = typeof cpuUnits[number];
+export const cpuUnits = ["m", "core"] as const;
+export type CpuUnit = (typeof cpuUnits)[number];
 
 export interface IAllocation<T extends string> {
   request: string;
@@ -13,26 +13,29 @@ export interface IAllocation<T extends string> {
   limitType: T;
 }
 
+//TODO: functions should no be in a type file
 function parseCpuValue(value: string): { amount: string; unit: CpuUnit } {
   if (value.endsWith("m")) {
-    return {amount: value.slice(0, -1), unit: "m"};
+    return { amount: value.slice(0, -1), unit: "m" };
   }
-  return {amount: value, unit: "core"};
+  return { amount: value, unit: "core" };
 }
 
 function parseMemoryValue(value: string): { amount: string; unit: MemoryUnit } {
   if (value.endsWith("Mi")) {
-    return {amount: value.slice(0, -2), unit: "Mi"};
+    return { amount: value.slice(0, -2), unit: "Mi" };
   }
   if (value.endsWith("Gi")) {
-    return {amount: value.slice(0, -2), unit: "Gi"};
+    return { amount: value.slice(0, -2), unit: "Gi" };
   }
 
   throw new Error(`Invalid memory value: ${value}`);
 }
 
-export function exportCpuAllocation(consumer: IConsumerRequest): IAllocation<CpuUnit> {
-  const {requestsCpu, limitsCpu} = consumer;
+export function exportCpuAllocation(
+  consumer: IConsumerRequest
+): IAllocation<CpuUnit> {
+  const { requestsCpu, limitsCpu } = consumer;
   const req = parseCpuValue(requestsCpu);
   const lim = parseCpuValue(limitsCpu);
   return {
@@ -43,8 +46,10 @@ export function exportCpuAllocation(consumer: IConsumerRequest): IAllocation<Cpu
   };
 }
 
-export function exportMemoryAllocation(consumer: IConsumerRequest): IAllocation<MemoryUnit> {
-  const {requestsMemory, limitsMemory} = consumer;
+export function exportMemoryAllocation(
+  consumer: IConsumerRequest
+): IAllocation<MemoryUnit> {
+  const { requestsMemory, limitsMemory } = consumer;
   const req = parseMemoryValue(requestsMemory);
   const lim = parseMemoryValue(limitsMemory);
   return {

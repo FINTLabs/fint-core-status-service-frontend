@@ -7,7 +7,7 @@ export enum OperationType {
 
 export interface SyncPageEntry {
   identifier: string;
-  resource: string
+  resource: string;
 }
 
 export interface RequestFintEvent {
@@ -23,6 +23,8 @@ export interface RequestFintEvent {
 }
 
 export interface ResponseFintEvent {
+  conflictReason?: string;
+  conflicted?: boolean | undefined;
   corrId: string;
   orgId: string;
   adapterId: string;
@@ -35,7 +37,7 @@ export interface ResponseFintEvent {
   rejectReason: string | null;
 }
 
-export interface FintEvent {
+export interface IFintEvent {
   topic: string;
   corrId: string;
   orgId: string;
@@ -44,10 +46,12 @@ export interface FintEvent {
   responseEvent: ResponseFintEvent | null;
 }
 
+//TODO: Move to a util file
 export function timeSince(
-    timestamp: number | undefined,
-    compareTo: number = new Date().getTime()
+  timestamp: number | undefined,
+  compareTo: number = new Date().getTime()
 ): string {
+  if (timestamp === undefined) return "Ukjent tidspunkt";
   const createdTimeStamp = new Date(timestamp);
 
   const elapsedMs = compareTo - createdTimeStamp.getTime();
@@ -86,13 +90,12 @@ export function timeSince(
 export function convertTimeStamp(timestamp: number): string {
   const date = new Date(timestamp);
 
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();
 
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
 
   return `${day}.${month}.${year} ${hours}:${minutes}`;
-
 }
