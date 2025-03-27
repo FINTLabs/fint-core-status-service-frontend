@@ -1,17 +1,14 @@
-import {Box, Heading, HStack, VStack,} from "@navikt/ds-react";
-
+import { Box, Heading, HStack, VStack } from "@navikt/ds-react";
+import React from "react";
 
 interface TitleProps {
-  title: string
+  title: string;
   icon: React.RefAttributes<SVGSVGElement>;
   onIconClick?: () => void;
 }
 
-export default function Title({
-                                title,
-                                icon,
-                                onIconClick
-                              }: TitleProps) {
+//TODO: fix icons, remove divs
+export default function Title({ title, icon, onIconClick }: TitleProps) {
   return (
     <Box
       as="header"
@@ -24,19 +21,18 @@ export default function Title({
           <HStack align="start" gap="4">
             <div
               onClick={onIconClick}
-              style={{cursor: onIconClick ? "pointer" : "default"}}
+              style={{ cursor: onIconClick ? "pointer" : "default" }}
             >
               {icon}
             </div>
-            <VStack gap={{xs: "4", md: "5"}}>
+            <VStack gap={{ xs: "4", md: "5" }}>
               <Heading level="1" size="xlarge">
                 {title}
               </Heading>
-
             </VStack>
           </HStack>
         </Box>
       </div>
     </Box>
   );
-};
+}

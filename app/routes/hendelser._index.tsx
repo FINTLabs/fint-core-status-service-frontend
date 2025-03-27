@@ -1,31 +1,47 @@
-import {ActionMenu, Button, HStack, Label, Modal, Pagination, Search, Select, Table, Tooltip,} from "@navikt/ds-react";
-import {json, LoaderFunction} from "@remix-run/node";
-import {useLoaderData, useSearchParams} from "@remix-run/react";
-import {convertTimeStamp, FintEvent, timeSince} from "~/types/Event";
-import {formatModalBody, ModalBody,} from "~/types/ModalBody";
-import {StatusApi} from "~/api/StatusApi";
+import {
+  ActionMenu,
+  Button,
+  HStack,
+  Label,
+  Modal,
+  Pagination,
+  Search,
+  Select,
+  Table,
+  Tooltip,
+} from "@navikt/ds-react";
+import { json, LoaderFunction } from "@remix-run/node";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  convertTimeStamp,
+  IFintEvent,
+  ResponseFintEvent,
+  timeSince,
+} from "~/types/IFintEvent";
+import { formatModalBody, ModalBody } from "~/types/ModalBody";
+import { StatusApi } from "~/api/StatusApi";
 import {
   CheckmarkIcon,
   ExclamationmarkTriangleIcon,
   FunnelIcon,
   MagnifyingGlassIcon,
-  XMarkIcon
+  XMarkIcon,
 } from "@navikt/aksel-icons";
-import React, {useEffect, useState} from "react";
-import {envCookie} from "~/components/cookie";
-import {filterByOrgId, getOrgs} from "~/components/komponenter/EventFilter";
+import React, { useState } from "react";
+import { envCookie } from "~/components/cookie";
+import { filterByOrgId, getOrgs } from "~/components/komponenter/EventFilter";
 import DatePickerEvents from "~/components/komponenter/DatePicker";
 
 let fromTimestamp: number;
 let toTimestamp: number;
 
 interface loaderProps {
-  fintEvents: FintEvent[];
+  fintEvents: IFintEvent[];
   toTimestamp: number;
   fromTimestamp: number;
 }
 
-export const loader: LoaderFunction = async ({request}) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const fromParam = url.searchParams.get("from");
   const toParam = url.searchParams.get("to");
@@ -40,34 +56,46 @@ export const loader: LoaderFunction = async ({request}) => {
   const selectedEnv = await envCookie.parse(cookieHeader);
 
   try {
-    const fintEvents = await StatusApi.getHendelser(selectedEnv, fromTimestamp, toTimestamp);
-    return json({fintEvents, toTimestamp, fromTimestamp});
+    const fintEvents = await StatusApi.getHendelser(
+      selectedEnv,
+      fromTimestamp,
+      toTimestamp
+    );
+
+    return json({ fintEvents, toTimestamp, fromTimestamp });
   } catch (error) {
     console.error("Loader Error: ", error);
-    return json({fintEvents: [], toTimestamp, fromTimestamp});
+    return json({ fintEvents: [], toTimestamp, fromTimestamp });
   }
 };
 
-
 export default function FintEventTable() {
-  const {fintEvents, toTimestamp, fromTimestamp} = useLoaderData<loaderProps>();
+  const { fintEvents, toTimestamp, fromTimestamp } =
+    useLoaderData<loaderProps>();
   const orgs = getOrgs(fintEvents);
 
   const sortedEvents = React.useMemo(() => {
-    return [...fintEvents].sort((a, b) => (b.requestEvent?.created || 0) - (a.requestEvent?.created || 0));
+    return [...fintEvents].sort(
+      (a, b) => (b.requestEvent?.created || 0) - (a.requestEvent?.created || 0)
+    );
   }, [fintEvents]);
 
   const [selectedOrgs, setSelectedOrgs] = useState(orgs);
-  const [modal, setModal] = useState<ModalBody>(false, Event);
+  const [modal, setModal] = useState<ModalBody>({
+    open: false,
+    event: null,
+  });
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(20);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchVisibleId, setsearchVisibleId] = useState(false);
   const [searchVisibleResource, setsearchVisibleResource] = useState(false);
-  const [responseSortOrder, setResponseSortOrder] = useState<"default" | "hasResponse" | "failed">("default");
+  const [responseSortOrder, setResponseSortOrder] = useState<
+    "default" | "hasResponse" | "failed"
+  >("default");
+
   const [searchParams, setSearchParams] = useSearchParams();
-
-
 
   const itemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = Number(event.target.value);
@@ -77,17 +105,18 @@ export default function FintEventTable() {
 
   const sortedByResponse = React.useMemo(() => {
     if (responseSortOrder === "failed") {
-      return sortedEvents.filter((event) =>
-        !event.responseEvent ||
-        event.responseEvent?.failed ||
-        event.responseEvent?.rejected ||
-        event.responseEvent?.conflicted
+      return sortedEvents.filter(
+        (event) =>
+          !event.responseEvent ||
+          event.responseEvent?.failed ||
+          event.responseEvent?.rejected ||
+          event.responseEvent?.conflicted
       );
     }
 
     if (responseSortOrder === "hasResponse") {
-      return sortedEvents.filter((event) =>
-        event.responseEvent || event.responseEvent
+      return sortedEvents.filter(
+        (event) => event.responseEvent || event.responseEvent
       );
     }
 
@@ -102,9 +131,10 @@ export default function FintEventTable() {
     if (!searchQuery.trim()) return filteredByOrg;
 
     const lowerCaseQuery = searchQuery.toLowerCase();
-    return filteredByOrg.filter((event: FintEvent) =>
-      event.corrId.toLowerCase().includes(lowerCaseQuery) ||
-      event.requestEvent?.resourceName.toLowerCase().includes(lowerCaseQuery)
+    return filteredByOrg.filter(
+      (event: IFintEvent) =>
+        event.corrId.toLowerCase().includes(lowerCaseQuery) ||
+        event.requestEvent?.resourceName.toLowerCase().includes(lowerCaseQuery)
     );
   }, [searchQuery, filteredByOrg]);
 
@@ -166,17 +196,25 @@ export default function FintEventTable() {
     setCurrentPage(1);
   }
 
-  const failedEventTag = (event: {
-    responseEvent?: { failed?: boolean; rejected?: boolean; conflicted?: boolean }
-  }) => {
-    if (!event.responseEvent) return undefined;
-    if (event.responseEvent.failed) return "Event Failed; " + event.responseEvent.errorMessage;
-    if (event.responseEvent.rejected) return "Event Rejected; " + event.responseEvent.rejectReason;
-    if (event.responseEvent.conflicted) return "Event Conflicted; " + event.responseEvent.conflictReason;
+  const failedEventTag = (responseEvent: ResponseFintEvent) => {
+    if (!responseEvent) return undefined;
+    if (responseEvent.failed)
+      return "Event Failed; " + responseEvent.errorMessage;
+    if (responseEvent.rejected)
+      return "Event Rejected; " + responseEvent.rejectReason;
+    if (responseEvent.conflicted)
+      return "Event Conflicted; " + responseEvent.conflictReason;
     return undefined;
   };
 
-  const handleDateScope = ({from, to}: { from: number | null; to: number | null }) => {
+  //TODO: need an explaination as to what the goal is with search params (set here, but read in loader?)
+  const handleDateScope = ({
+    from,
+    to,
+  }: {
+    from: number | null;
+    to: number | null;
+  }) => {
     const params: Record<string, string> = {};
     if (from !== null) {
       params.from = from.toString();
@@ -190,58 +228,68 @@ export default function FintEventTable() {
   return (
     <div className="flex flex-col h-full justify-between gap-4 min-h-[76vh]">
       <Modal
-        width={'60%'}
+        width={"60%"}
         open={modal.open}
-        header={{heading: String(modal.event?.corrId)}}
+        header={{ heading: String(modal.event?.corrId) }}
         closeOnBackdropClick
-        onClose={() => setModal({open: false, event: null})}
+        onClose={() => setModal({ open: false, event: null })}
       >
         {modal.event && formatModalBody(modal.event)}
       </Modal>
-      <Table size="small" style={{tableLayout: 'fixed'}}>
+      <Table size="small" style={{ tableLayout: "fixed" }}>
         <Table.Header>
           <Table.Row shadeOnHover={true}>
-            <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleId((prev) => !prev)}
-                              style={{width: "140px"}}>
+            <Table.HeaderCell
+              scope="col"
+              onBlur={() => setsearchVisibleId((prev) => !prev)}
+              style={{ width: "140px" }}
+            >
               {!searchVisibleId ? (
-                <button
-                  className={"flex-row flex"}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setsearchVisibleId((prev) => !prev);
-                  }}>
+                <>
                   <Label className={"cursor-pointer"}>Hendelse ID</Label>
-                  <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
-                </button>
+                  <Button
+                    variant="tertiary"
+                    size="xsmall"
+                    // className={"flex-row flex"}
+                    icon={<MagnifyingGlassIcon title="Search" />}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setsearchVisibleId((prev) => !prev);
+                    }}
+                  />
+                </>
               ) : (
-                <form>
-                  <HStack gap="4" className="max-w-fit pb-4">
-                    <Search
-                      label={"Søk etter CorrId"}
-                      hideLabel={true}
-                      size="small"
-                      variant={"simple"}
-                      onChange={(value: string) => handleSearch(value)}
-                    />
-                  </HStack>
-                </form>
+                <HStack gap="4" className="max-w-fit pb-4">
+                  <Search
+                    label={"Søk etter CorrId"}
+                    hideLabel={true}
+                    size="small"
+                    variant={"simple"}
+                    onChange={(value: string) => handleSearch(value)}
+                    value={searchQuery}
+                  />
+                </HStack>
               )}
             </Table.HeaderCell>
-            <Table.HeaderCell scope="col" style={{ width: "100px" }}>Operasjon</Table.HeaderCell>
-            <Table.HeaderCell scope="col" style={{width: "150px"}}>
+            <Table.HeaderCell scope="col" style={{ width: "100px" }}>
+              Operasjon
+            </Table.HeaderCell>
+            <Table.HeaderCell scope="col" style={{ width: "150px" }}>
               <ActionMenu>
                 <ActionMenu.Trigger>
-                  <Button
-                    variant="tertiary-neutral"
-                  >
-                    Organisasjon
-                  </Button>
+                  <Button variant="tertiary-neutral">Organisasjon</Button>
                 </ActionMenu.Trigger>
                 <ActionMenu.Content>
                   <ActionMenu.Group label="Velg organisasjon">
                     <ActionMenu.CheckboxItem
-                      checked={Object.values(checkedStates).every(Boolean) ? true : isIndeterminate() ? "indeterminate" : false}
+                      checked={
+                        Object.values(checkedStates).every(Boolean)
+                          ? true
+                          : isIndeterminate()
+                          ? "indeterminate"
+                          : false
+                      }
                       onCheckedChange={handleSelectAll}
                     >
                       Velg alle
@@ -250,7 +298,9 @@ export default function FintEventTable() {
                       <ActionMenu.CheckboxItem
                         key={index}
                         checked={checkedStates[index]}
-                        onCheckedChange={() => handleCheckboxChange(value, index)}
+                        onCheckedChange={() =>
+                          handleCheckboxChange(value, index)
+                        }
                       >
                         {value}
                       </ActionMenu.CheckboxItem>
@@ -259,8 +309,11 @@ export default function FintEventTable() {
                 </ActionMenu.Content>
               </ActionMenu>
             </Table.HeaderCell>
-            <Table.HeaderCell scope="col" onBlur={() => setsearchVisibleResource((prev) => !prev)}
-                              style={{width: "280px"}}>
+            <Table.HeaderCell
+              scope="col"
+              onBlur={() => setsearchVisibleResource((prev) => !prev)}
+              style={{ width: "280px" }}
+            >
               {!searchVisibleResource ? (
                 <button
                   className={"flex-row flex"}
@@ -268,9 +321,10 @@ export default function FintEventTable() {
                     e.preventDefault();
                     e.stopPropagation();
                     setsearchVisibleResource((prev) => !prev);
-                  }}>
+                  }}
+                >
                   <Label className={"cursor-pointer"}>Ressurser</Label>
-                  <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
+                  <MagnifyingGlassIcon title="Search" fontSize="0.7rem" />
                 </button>
               ) : (
                 <form>
@@ -286,15 +340,25 @@ export default function FintEventTable() {
                 </form>
               )}
             </Table.HeaderCell>
-            <Table.HeaderCell scope="col" onClick={toggleResponseSort} style={{width: "100px", cursor: "pointer"}}>
-              Status {responseSortOrder === "hasResponse" ? "↑" : responseSortOrder === "failed" ? "↓" : ""}
+            <Table.HeaderCell
+              scope="col"
+              onClick={toggleResponseSort}
+              style={{ width: "100px", cursor: "pointer" }}
+            >
+              Status{" "}
+              {responseSortOrder === "hasResponse"
+                ? "↑"
+                : responseSortOrder === "failed"
+                ? "↓"
+                : ""}
             </Table.HeaderCell>
-            <Table.HeaderCell scope="col" style={{width: "160px"}}>
+            <Table.HeaderCell scope="col" style={{ width: "160px" }}>
               <ActionMenu>
                 <ActionMenu.Trigger>
                   <Button
-                    icon={<FunnelIcon title="a11y-title" fontSize="1rem"/>}
-                    variant="tertiary-neutral">
+                    icon={<FunnelIcon title="a11y-title" fontSize="1rem" />}
+                    variant="tertiary-neutral"
+                  >
                     Overført
                   </Button>
                 </ActionMenu.Trigger>
@@ -302,7 +366,8 @@ export default function FintEventTable() {
                   <DatePickerEvents
                     placeholderFrom={fromTimestamp}
                     placeholderTo={toTimestamp}
-                    onSelectedDates={handleDateScope}/>
+                    onSelectedDates={handleDateScope}
+                  />
                 </ActionMenu.Content>
               </ActionMenu>
             </Table.HeaderCell>
@@ -319,11 +384,15 @@ export default function FintEventTable() {
             pagedEvents.map((event, i) => (
               <Table.Row
                 key={i}
-                onClick={() => setModal({open: true, event})}
-                style={{cursor: "pointer"}}
+                onClick={() => setModal({ open: true, event })}
+                style={{ cursor: "pointer" }}
               >
-                  <Table.DataCell className={"w-full text-center"}>{event.corrId.slice(0, 5)}...{event.corrId.slice(-5)}</Table.DataCell>
-                  <Table.DataCell>{event.requestEvent.operationType}</Table.DataCell>
+                <Table.DataCell className={"w-full text-center"}>
+                  {event.corrId.slice(0, 5)}...{event.corrId.slice(-5)}
+                </Table.DataCell>
+                <Table.DataCell>
+                  {event.requestEvent?.operationType}
+                </Table.DataCell>
                 <Table.DataCell>{event.orgId}</Table.DataCell>
                 <Table.DataCell>{createResourceUri(event)}</Table.DataCell>
                 <Table.DataCell>
@@ -334,9 +403,9 @@ export default function FintEventTable() {
                       <ExclamationmarkTriangleIcon
                         className="w-full text-center"
                         fontSize="1.5rem"
-                        title={failedEventTag(event)}
+                        title={failedEventTag(event.responseEvent)}
                       />
-                    ) : failedEventTag(event) === undefined ? (
+                    ) : failedEventTag(event.responseEvent) === undefined ? (
                       <CheckmarkIcon
                         title="Has response"
                         className="w-full text-center"
@@ -363,8 +432,11 @@ export default function FintEventTable() {
       </Table>
 
       <HStack justify="center" padding={"5"} className="">
-        <Select label={"sidestørrelse"} size={"small"} className={"w-36 relative bottom-4"}
-                onChange={itemsPerPageChange}
+        <Select
+          label={"sidestørrelse"}
+          size={"small"}
+          className={"w-36 relative bottom-4"}
+          onChange={itemsPerPageChange}
         >
           <option value={20}>20</option>
           <option value={50}>50</option>

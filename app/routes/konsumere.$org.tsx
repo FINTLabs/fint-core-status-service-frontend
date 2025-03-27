@@ -1,17 +1,17 @@
-import {HStack, Skeleton, VStack} from "@navikt/ds-react";
-import React, {useState, useTransition} from "react";
+import { HStack, Skeleton, VStack } from "@navikt/ds-react";
+import React, { useState, useTransition } from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
 import Title from "~/components/header/Title";
-import {MockOrganisationTabs} from "~/mocks/mock_organisation_tabs";
-import {ArrowLeftIcon} from "@navikt/aksel-icons";
-import {useNavigate} from "react-router";
-import {useLoaderData} from "@remix-run/react";
+import { MockOrganisationTabs } from "~/mocks/mock_organisation_tabs";
+import { ArrowLeftIcon } from "@navikt/aksel-icons";
+import { useNavigate } from "react-router";
+import { useLoaderData } from "@remix-run/react";
 import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
-import {IConsumerRequest} from "~/types/consumer/IConsumerRequest";
-import {IConsumerMetadata} from "~/types/consumer/IConsumerMetadata";
-import {mockConsumerRequest} from "~/mocks/mock_consumer";
-import {MockConsumerMetadata} from "~/mocks/mock_consumer_metadata";
-import {ConsumerTab} from "~/components/konsumere/ConsumerTab";
+import { IConsumerRequest } from "~/types/consumer/IConsumerRequest";
+import { IConsumerMetadata } from "~/types/consumer/IConsumerMetadata";
+import { mockConsumerRequest } from "~/mocks/mock_consumer";
+import { MockConsumerMetadata } from "~/mocks/mock_consumer_metadata";
+import { ConsumerTab } from "~/components/konsumere/ConsumerTab";
 
 interface OrgRouteData {
   org: string;
@@ -19,26 +19,33 @@ interface OrgRouteData {
   consumers: IConsumerRequest[];
 }
 
-export const loader = async ({params}: { params: { org?: string } }): Promise<OrgRouteData> => {
+export const loader = async ({
+  params,
+}: {
+  params: { org?: string };
+}): Promise<OrgRouteData> => {
   const organization = params.org || "defaultOrg";
   return {
     org: organization,
     consumers: [mockConsumerRequest],
-    consumerMetadata: MockConsumerMetadata
+    consumerMetadata: MockConsumerMetadata,
   };
 };
 
+//TODO: What is this file - where is it used
 export default function Konsumere() {
-  const navigate = useNavigate()
-  const routeData = useLoaderData<OrgRouteData>()
-  const [consumer, setConsumer] = useState()
+  const navigate = useNavigate();
+  const routeData = useLoaderData<OrgRouteData>();
+  // const [consumer, setConsumer] = useState();
   const [inTransition, transition] = useTransition();
-  const [consumerTabs] = useState(MockOrganisationTabs)
-  const [openModal, setOpenModal] = useState(false)
+  const [consumerTabs] = useState(MockOrganisationTabs);
+  const [openModal, setOpenModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredConsumers = routeData.consumers.filter(tab =>
-    `${tab.domain} ${tab.package}`.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredConsumers = routeData.consumers.filter((tab) =>
+    `${tab.domain} ${tab.package}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -47,7 +54,7 @@ export default function Konsumere() {
         <Title
           title={`${routeData.org} Konsumere`}
           onIconClick={() => navigate("/konsumere")}
-          icon={<ArrowLeftIcon style={{width: '48px', height: '48px'}}/>}
+          icon={<ArrowLeftIcon style={{ width: "48px", height: "48px" }} />}
         />
         <ConsumerActionbar
           setQuery={setSearchQuery}
@@ -56,9 +63,9 @@ export default function Konsumere() {
 
         <HStack gap="4">
           {inTransition ? (
-            <Skeleton width="200px"/>
+            <Skeleton width="200px" />
           ) : (
-            filteredConsumers.map(consumer => (
+            filteredConsumers.map((consumer) => (
               <ConsumerTab
                 className="cursor-pointer"
                 key={`${consumer.domain} ${consumer.package}`}
@@ -67,7 +74,7 @@ export default function Konsumere() {
                 errors={3}
                 restarts={2}
                 onClick={() => {
-                  setOpenModal(true)
+                  setOpenModal(true);
                 }}
               />
             ))

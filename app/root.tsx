@@ -12,7 +12,7 @@ import {
 import "./tailwind.css";
 import "@navikt/ds-css";
 import Header from "~/components/root/Header";
-import {Page, VStack} from "@navikt/ds-react";
+import {Page} from "@navikt/ds-react";
 import {LoaderFunctionArgs} from "@remix-run/router";
 import {HeaderProperties} from "~/components/root/HeaderProperties";
 import {envCookie} from "~/components/cookie";
@@ -81,7 +81,7 @@ function MainApp() {
   return (
       <Page>
       <Header onHeaderChange={setEnv} value={selectedEnv}/>
-        <Page.Block as={"main"} gutters width={"lg"} className="bg-body">
+        <Page.Block as={"main"} gutters width={"xl"}>
         <Outlet/>
       </Page.Block>
       </Page>
@@ -96,7 +96,6 @@ export function ErrorBoundary() {
         return (
           CustomErrorNotFound(error.statusText)
         );
-        break
       case 500:
         return (
           CustomErrorFetchingError(error.statusText)

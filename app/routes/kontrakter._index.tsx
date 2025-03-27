@@ -1,6 +1,5 @@
 import {
   ActionMenu,
-  BodyLong,
   Button,
   Heading,
   HStack,
@@ -11,17 +10,33 @@ import {
   Table,
   Tooltip,
 } from "@navikt/ds-react";
-import React, {useEffect, useRef, useState} from "react";
-import {json, LoaderFunction} from "@remix-run/node";
-import {StatusApi} from "~/api/StatusApi";
-import {AdapterContract, ContractModal, convertLastActivity, formatComponents} from "~/types/AdapterContract";
-import {useLoaderData} from "@remix-run/react";
-import {ChevronDownIcon, HeartBrokenIcon, HeartIcon, MagnifyingGlassIcon} from "@navikt/aksel-icons";
-import {envCookie} from "~/components/cookie";
-import {filterByOrgId, getOrgs} from "~/components/komponenter/ContractFilter";
-import {timeSince} from "~/types/Event";
+import React, { useEffect, useRef, useState } from "react";
+import { json, LoaderFunction } from "@remix-run/node";
+import { StatusApi } from "~/api/StatusApi";
+import {
+  AdapterContract,
+  ContractModal,
+  convertLastActivity,
+  formatComponents,
+} from "~/types/AdapterContract";
+import { useLoaderData } from "@remix-run/react";
+import {
+  ArrowCirclepathIcon,
+  ChevronDownIcon,
+  HeartBrokenIcon,
+  HeartIcon,
+  MagnifyingGlassIcon,
+} from "@navikt/aksel-icons";
+import { envCookie } from "~/components/cookie";
+import {
+  filterByOrgId,
+  getOrgs,
+} from "~/components/komponenter/ContractFilter";
+import { timeSince } from "~/types/IFintEvent";
+import component from "@navikt/aksel-icons/src/Component";
+import { CapabilityStatus } from "~/components/CapabilityStatus";
 
-export const loader: LoaderFunction = async ({request}) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
   const selectedEnv = await envCookie.parse(cookieHeader);
   try {
@@ -32,7 +47,6 @@ export const loader: LoaderFunction = async ({request}) => {
     return [];
   }
 };
-
 
 export default function Kontrakter() {
   const [modal, setModal] = useState<ContractModal>({
@@ -48,7 +62,9 @@ export default function Kontrakter() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchVisible, setSearchVisible] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const [heartbeatSortOrder, setHeartbeatSortOrder] = useState<"none" | "healthyFirst" | "unhealthyFirst">("none");
+  const [heartbeatSortOrder, setHeartbeatSortOrder] = useState<
+    "none" | "healthyFirst" | "unhealthyFirst"
+  >("none");
 
   const [checkedStates, setCheckedStates] = React.useState(
     orgs.reduce((acc, _, index) => {
@@ -79,7 +95,9 @@ export default function Kontrakter() {
         return a.hasContact ? 1 : -1;
       });
     } else {
-      filteredContracts.sort((a, b) => (b.lastActivity || 0) - (a.lastActivity || 0));
+      filteredContracts.sort(
+        (a, b) => (b.lastActivity || 0) - (a.lastActivity || 0)
+      );
     }
 
     return filteredContracts;
@@ -147,6 +165,9 @@ export default function Kontrakter() {
     setPage(1);
   }
 
+  //TODO: Fix onClear for search (not working on first click)
+
+  //TODO: What is the first div for ?
   return (
     <div
       className="flex flex-col h-full justify-between gap-4"
@@ -154,7 +175,7 @@ export default function Kontrakter() {
     >
       <Modal
         open={modal.open}
-        onClose={() => setModal({open: false, contract: null})}
+        onClose={() => setModal({ open: false, contract: null })}
         aria-labelledby="modal-heading"
         closeOnBackdropClick
       >
@@ -164,62 +185,62 @@ export default function Kontrakter() {
           </Heading>
         </Modal.Header>
         <Modal.Body>
-          <BodyLong className="">
-            <pre className="bg-gray-100 p-3 rounded max-w-full max-h-96 overflow-auto text-sm">
-              {JSON.stringify(modal.contract, null, 2)}
-            </pre>
-          </BodyLong>
+          <pre className=" max-w-full max-h-96 overflow-auto text-sm">
+            {JSON.stringify(modal.contract, null, 2)}
+          </pre>
         </Modal.Body>
       </Modal>
-      <Table style={{tableLayout: 'fixed'}}
-             size="small">
+      <Table style={{ tableLayout: "fixed" }} size="small">
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell
               scope="col"
-              style={{width: "400px"}}
-              onBlur={() => setSearchVisible(prev => !prev)}
+              style={{ width: "400px" }}
+              onBlur={() => setSearchVisible((prev) => !prev)}
             >
               {!searchVisible ? (
-                <button
-                  className={"flex-row flex"}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setSearchVisible((prev) => !prev);
-                  }}
-                >
+                <>
                   <Label className={"cursor-pointer"}>Adapter</Label>
-                  <MagnifyingGlassIcon title="Search" fontSize="0.7rem"/>
-                </button>
+                  <Button
+                    variant="tertiary"
+                    size="xsmall"
+                    icon={<MagnifyingGlassIcon title="Search" />}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSearchVisible((prev) => !prev);
+                    }}
+                  />
+                </>
               ) : (
-                <form>
-                  <HStack gap="4" className="max-w-fit pb-4">
-                    <Search
-                      label={"Søk etter CorrId"}
-                      hideLabel={true}
-                      size="small"
-                      variant={"simple"}
-                      onChange={(value: string) => handleSearch(value)}
-                    />
-                  </HStack>
-                </form>
+                <HStack gap="4" className="max-w-fit pb-4">
+                  <Search
+                    label={"Søk etter CorrId"}
+                    hideLabel={true}
+                    size="small"
+                    variant={"simple"}
+                    onChange={(value: string) => handleSearch(value)}
+                    value={searchQuery}
+                  />
+                </HStack>
               )}
             </Table.HeaderCell>
 
             <Table.HeaderCell scope="col">
               <ActionMenu>
                 <ActionMenu.Trigger>
-                  <Button
-                    variant="tertiary-neutral"
-                  >
-                    Organisasjon
-                  </Button>
+                  <Button variant="tertiary-neutral">Organisasjon</Button>
                 </ActionMenu.Trigger>
                 <ActionMenu.Content>
                   <ActionMenu.Group label="Velg organisasjon">
                     <ActionMenu.CheckboxItem
-                      checked={Object.values(checkedStates).every(Boolean) ? true : isIndeterminate() ? "indeterminate" : false}
+                      checked={
+                        Object.values(checkedStates).every(Boolean)
+                          ? true
+                          : isIndeterminate()
+                          ? "indeterminate"
+                          : false
+                      }
                       onCheckedChange={handleSelectAll}
                     >
                       Velg alle
@@ -228,7 +249,9 @@ export default function Kontrakter() {
                       <ActionMenu.CheckboxItem
                         key={index}
                         checked={checkedStates[index]}
-                        onCheckedChange={() => handleCheckboxChange(value, index)}
+                        onCheckedChange={() =>
+                          handleCheckboxChange(value, index)
+                        }
                       >
                         {value}
                       </ActionMenu.CheckboxItem>
@@ -247,19 +270,26 @@ export default function Kontrakter() {
                   return "none";
                 });
               }}
-              style={{cursor: "pointer"}}
+              style={{ cursor: "pointer" }}
             >
               <Label className="cursor-pointer flex items-center">
                 Heartbeat
                 {heartbeatSortOrder === "healthyFirst" && (
-                  <ChevronDownIcon title="Sort by healthy first" fontSize="0.7rem"/>
+                  <ChevronDownIcon
+                    title="Sort by healthy first"
+                    fontSize="0.7rem"
+                  />
                 )}
                 {heartbeatSortOrder === "unhealthyFirst" && (
-                  <ChevronDownIcon title="Sort by unhealthy first" fontSize="0.7rem"
-                                   style={{transform: "rotate(180deg)"}}/>
+                  <ChevronDownIcon
+                    title="Sort by unhealthy first"
+                    fontSize="0.7rem"
+                    style={{ transform: "rotate(180deg)" }}
+                  />
                 )}
               </Label>
             </Table.HeaderCell>
+            <Table.HeaderCell>Fullsync</Table.HeaderCell>
             <Table.HeaderCell scope="col">Siste overføring</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -272,7 +302,10 @@ export default function Kontrakter() {
             </Table.Row>
           ) : (
             paginatedContracts.map((contract, i) => (
-              <Table.Row key={i} onClick={() => setModal({open: true, contract})}>
+              <Table.Row
+                key={i}
+                onClick={() => setModal({ open: true, contract })}
+              >
                 <Table.DataCell
                   scope="row"
                   className="max-w-[400px] overflow-hidden text-ellipsis whitespace-nowrap"
@@ -296,6 +329,13 @@ export default function Kontrakter() {
                       fontSize="1.5rem"
                     />
                   )}
+                </Table.DataCell>
+                <Table.DataCell>
+                  <pre>{JSON.stringify(contract.capabilities, null, 2)}</pre>
+
+                  <CapabilityStatus capabilities={contract.capabilities} />
+
+                  <ArrowCirclepathIcon title="a11y-title" fontSize="1.5rem" />
                 </Table.DataCell>
                 <Tooltip content={timeSince(contract.lastActivity)}>
                   <Table.DataCell scope="row">

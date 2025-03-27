@@ -6,6 +6,8 @@ export interface Capability {
   deltaSyncInterval: string | null;
   component: string;
   entityUri: string;
+  followsContract: boolean;
+  lastFullSync: number;
 }
 
 export interface AdapterContract {
@@ -27,27 +29,26 @@ export interface ContractModal {
 export function convertLastActivity(timestamp: number): string {
   const date = new Date(timestamp);
 
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();
 
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
 
   return `${day}.${month}.${year} ${hours}:${minutes}`;
-
 }
 
 export function formatComponents(compontents: string[]): Array<string> {
-  const resources = new Array<string>;
+  const resources = new Array<string>();
   compontents.forEach((component: string) => {
-    const parts = component.split('.');
+    const parts = component.split(".");
     if (parts.length > 1) {
-        if (!resources.find(resource => resource === parts[0])) {
-            resources.push(parts[0]);
-        }
+      if (!resources.find((resource) => resource === parts[0])) {
+        resources.push(parts[0]);
+      }
     }
-  })
+  });
 
   return resources;
 }
