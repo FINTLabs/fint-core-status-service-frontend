@@ -1,19 +1,19 @@
-import {json, LoaderFunction} from "@remix-run/node";
+import {LoaderFunction} from "@remix-run/node";
 import {ProviderApi} from "~/api/ProviderApi";
 import {Link, useLoaderData} from "@remix-run/react";
 import {Table} from "@navikt/ds-react";
-import displayStackTrace from "~/routes/displayStackTrace";
 
 export const loader: LoaderFunction = async () => {
   const response = await ProviderApi.getProviderError("api")
 
-  return json(response)
+  return new Response(JSON.stringify({ response:response }), {
+    headers: { 'Content-Type': 'application/json' },
+  });
 }
 
 export default function ProviderErrorTable(){
 
-  const provider = useLoaderData<
-    {provider:IProviderException[]}>();
+  const {provider} = useLoaderData<{provider:IProviderException[]}>()
 
   return (
     <Table>
