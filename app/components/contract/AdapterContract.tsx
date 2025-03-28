@@ -3,6 +3,7 @@ import { HeartIcon } from "@navikt/aksel-icons";
 import ComponentIcons from "~/components/contract/ComponentIcons";
 
 //TODO: remove this file?
+// @ts-ignore
 export default function AdapterContract({ adapterContract }) {
   return (
     <Box

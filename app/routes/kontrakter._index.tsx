@@ -2,15 +2,15 @@ import {ActionMenu, Button, Heading, HStack, Label, Modal, Pagination, Search, T
 import React, {useEffect, useRef, useState} from "react";
 import {json, LoaderFunction} from "@remix-run/node";
 import {StatusApi} from "~/api/StatusApi";
-import {AdapterContract, ContractModal, convertLastActivity, formatComponents,} from "~/types/AdapterContract";
+import {IAdapterContract, IContractModal} from "~/types/IAdapterContract";
 import {useLoaderData} from "@remix-run/react";
 import {ChevronDownIcon, HeartBrokenIcon, HeartIcon, MagnifyingGlassIcon,} from "@navikt/aksel-icons";
 import {envCookie} from "~/components/cookie";
 import {filterByOrgId, getOrgs,} from "~/components/komponenter/ContractFilter";
-import {timeSince} from "~/types/IFintEvent";
 import {CapabilityStatus} from "~/components/CapabilityStatus";
+import {formatComponents, timeSince} from "~/types/FintUtils";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({request}) => {
   const cookieHeader = request.headers.get("Cookie");
   const selectedEnv = await envCookie.parse(cookieHeader);
   try {
@@ -23,12 +23,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Kontrakter() {
-  const [modal, setModal] = useState<ContractModal>({
+  const [modal, setModal] = useState<IContractModal>({
     open: false,
     contract: null,
   });
 
-  const data = useLoaderData<AdapterContract[]>();
+  const data = useLoaderData<IAdapterContract[]>();
   const orgs = getOrgs(data);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -149,7 +149,7 @@ export default function Kontrakter() {
     >
       <Modal
         open={modal.open}
-        onClose={() => setModal({ open: false, contract: null })}
+        onClose={() => setModal({open: false, contract: null})}
         aria-labelledby="modal-heading"
         closeOnBackdropClick
       >
@@ -164,12 +164,12 @@ export default function Kontrakter() {
           </pre>
         </Modal.Body>
       </Modal>
-      <Table style={{ tableLayout: "fixed" }} size="small">
+      <Table style={{tableLayout: "fixed"}} size="small">
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell
               scope="col"
-              style={{ width: "400px" }}
+              style={{width: "400px"}}
               onBlur={() => setSearchVisible((prev) => !prev)}
             >
               {!searchVisible ? (
@@ -178,7 +178,7 @@ export default function Kontrakter() {
                   <Button
                     variant="tertiary"
                     size="xsmall"
-                    icon={<MagnifyingGlassIcon title="Search" />}
+                    icon={<MagnifyingGlassIcon title="Search"/>}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -212,8 +212,8 @@ export default function Kontrakter() {
                         Object.values(checkedStates).every(Boolean)
                           ? true
                           : isIndeterminate()
-                          ? "indeterminate"
-                          : false
+                            ? "indeterminate"
+                            : false
                       }
                       onCheckedChange={handleSelectAll}
                     >
@@ -244,7 +244,7 @@ export default function Kontrakter() {
                   return "none";
                 });
               }}
-              style={{ cursor: "pointer" }}
+              style={{cursor: "pointer"}}
             >
               <Label className="cursor-pointer flex items-center">
                 Heartbeat
@@ -258,7 +258,7 @@ export default function Kontrakter() {
                   <ChevronDownIcon
                     title="Sort by unhealthy first"
                     fontSize="0.7rem"
-                    style={{ transform: "rotate(180deg)" }}
+                    style={{transform: "rotate(180deg)"}}
                   />
                 )}
               </Label>
@@ -278,7 +278,7 @@ export default function Kontrakter() {
             paginatedContracts.map((contract, i) => (
               <Table.Row
                 key={i}
-                onClick={() => setModal({ open: true, contract })}
+                onClick={() => setModal({open: true, contract})}
               >
                 <Table.DataCell
                   scope="row"
@@ -304,16 +304,16 @@ export default function Kontrakter() {
                     />
                   )}
                 </Table.DataCell>
-                <Table.DataCell onClick={(e) => e.stopPropagation()} >
+                <Table.DataCell onClick={(e) => e.stopPropagation()}>
                   {/*<pre>{JSON.stringify(contract.capabilities, null, 2)}</pre>*/}
 
-                  <CapabilityStatus capabilities={contract.capabilities} />
+                  <CapabilityStatus capabilities={contract.capabilities}/>
 
 
                 </Table.DataCell>
                 <Tooltip content={timeSince(contract.lastActivity)}>
                   <Table.DataCell scope="row">
-                    {convertLastActivity(contract.lastActivity)}
+                    {timeSince(contract.lastActivity)}
                   </Table.DataCell>
                 </Tooltip>
               </Table.Row>

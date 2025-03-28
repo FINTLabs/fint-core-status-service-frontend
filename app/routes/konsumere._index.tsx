@@ -25,7 +25,7 @@ export default function Konsumere() {
       <VStack className="w-2/3" gap="8">
         <Title
           title="konsumere"
-          icon={<ChangingRoomIcon style={{width: '48px', height: '48px'}}/>}
+          icon={ChangingRoomIcon}
         />
         <ConsumerActionbar
           setQuery={setQuery}

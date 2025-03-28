@@ -13,10 +13,8 @@ import {
 import { json, LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import {
-  convertTimeStamp,
   IFintEvent,
   ResponseFintEvent,
-  timeSince,
 } from "~/types/IFintEvent";
 import { formatModalBody, ModalBody } from "~/types/ModalBody";
 import { StatusApi } from "~/api/StatusApi";
@@ -31,6 +29,7 @@ import React, { useState } from "react";
 import { envCookie } from "~/components/cookie";
 import { filterByOrgId, getOrgs } from "~/components/komponenter/EventFilter";
 import DatePickerEvents from "~/components/komponenter/DatePicker";
+import {convertTimeStamp, timeSince} from "~/types/FintUtils";
 
 let fromTimestamp: number;
 let toTimestamp: number;

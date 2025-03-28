@@ -1,5 +1,4 @@
-import { convertTimeStamp, IFintEvent, timeSince } from "~/types/IFintEvent";
-import { BodyLong, HGrid, HStack, Modal } from "@navikt/ds-react";
+import {BodyLong, HGrid, HStack, Modal} from "@navikt/ds-react";
 import {
   ArrowsSquarepathIcon,
   Buildings3Icon,
@@ -7,24 +6,26 @@ import {
   PaperplaneIcon,
   TagIcon,
 } from "@navikt/aksel-icons";
+import {convertTimeStamp, timeSince} from "~/types/FintUtils";
+import {IFintEvent} from "~/types/IFintEvent";
 
 export interface ModalBody {
   open: boolean;
   event: IFintEvent | null;
 }
 
-//TODO: i am sorry, but WTF!?? round and round we go...
-export function formatJson(event: IFintEvent): JSX.Element {
-  if (event.requestFintEvent?.value) {
-    event.requestFintEvent.value = formatJson(event);
-    delete event.requestFintEvent.value;
-  } else if (event.responseFintEvent?.value) {
-    delete event.responseFintEvent.value;
+export function formatJson(event: IFintEvent, type: string): JSX.Element {
+  let hold;
+  if (type === "Request") {
+    delete event.requestEvent?.value;
+    hold = event.requestEvent;
+  } else if (type === "Response"){
+    delete event.responseEvent?.value;
+    hold = event.responseEvent;
   }
-
   return (
     <pre className="bg-gray-100 p-3 rounded max-w-full max-h-64 text-sm min-h-64 overflow-scroll">
-      {JSON.stringify(event, null, 2)}
+      {JSON.stringify(hold, null, 2)}
     </pre>
   );
 }
@@ -38,26 +39,26 @@ export function formatModalBody(event: IFintEvent) {
           columns={!event?.responseEvent ? 1 : 2}
           className="max-w-full"
         >
-          <div>{formatJson(event?.requestEvent)}</div>
-          <div>{event?.responseEvent && formatJson(event?.responseEvent)}</div>
+          <div>{formatJson(event, "Request")}</div>
+          <div>{formatJson(event, "Response")}</div>
         </HGrid>
-        <HStack style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <HourglassIcon title="Time between request and response" />
+        <HStack style={{display: "flex", alignItems: "center", gap: "8px"}}>
+          <HourglassIcon title="Time between request and response"/>
           {timeSince(
             event?.requestEvent?.created,
             event?.responseEvent?.handledAt
           )}
-          <PaperplaneIcon title="Created" />
+          <PaperplaneIcon title="Created"/>
           {convertTimeStamp(event?.requestEvent?.created)}
-          <ArrowsSquarepathIcon title="handledAt" />
+          <ArrowsSquarepathIcon title="handledAt"/>
           {convertTimeStamp(event?.responseEvent?.handledAt)}
         </HStack>
-        <HStack style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Buildings3Icon title="Org-Id" />
+        <HStack style={{display: "flex", alignItems: "center", gap: "8px"}}>
+          <Buildings3Icon title="Org-Id"/>
           {event?.orgId}
         </HStack>
-        <HStack style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <TagIcon title="Kafka Topic" />
+        <HStack style={{display: "flex", alignItems: "center", gap: "8px"}}>
+          <TagIcon title="Kafka Topic"/>
           {event?.topic}
         </HStack>
       </BodyLong>

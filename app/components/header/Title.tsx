@@ -3,12 +3,11 @@ import React from "react";
 
 interface TitleProps {
   title: string;
-  icon: React.RefAttributes<SVGSVGElement>;
+  icon?: React.ElementType;
   onIconClick?: () => void;
 }
 
-//TODO: fix icons, remove divs
-export default function Title({ title, icon, onIconClick }: TitleProps) {
+export default function Title({ title, icon: IconComponent, onIconClick }: TitleProps) {
   return (
     <Box
       as="header"
@@ -19,12 +18,7 @@ export default function Title({ title, icon, onIconClick }: TitleProps) {
       <div className="max-w-5xl">
         <Box paddingInline="4" paddingBlock="0 6">
           <HStack align="start" gap="4">
-            <div
-              onClick={onIconClick}
-              style={{ cursor: onIconClick ? "pointer" : "default" }}
-            >
-              {icon}
-            </div>
+              {IconComponent && <IconComponent title="Header Icon" style={{width: '48px', height: '48px'}} onClick={onIconClick}/>}
             <VStack gap={{ xs: "4", md: "5" }}>
               <Heading level="1" size="xlarge">
                 {title}

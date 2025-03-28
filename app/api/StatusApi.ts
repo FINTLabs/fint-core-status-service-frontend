@@ -1,6 +1,6 @@
 import * as process from "process";
 import { IFintEvent } from "~/types/IFintEvent";
-import { AdapterContract } from "~/types/AdapterContract";
+import { IAdapterContract } from "~/types/IAdapterContract";
 import { backendRoutesMap } from "~/api/backendRoutes";
 import { HeaderProperties } from "~/components/root/HeaderProperties";
 import { IStats } from "~/types/IStats";
@@ -45,7 +45,7 @@ export class StatusApi {
     return this.getResponse<IFintEvent[]>(env, url);
   }
 
-  static async getContracts(env: string): Promise<AdapterContract[]> {
+  static async getContracts(env: string): Promise<IAdapterContract[]> {
     return this.getResponse(env, "contract");
   }
 

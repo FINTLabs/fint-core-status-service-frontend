@@ -3,7 +3,6 @@ import React, { useState, useTransition } from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
 import Title from "~/components/header/Title";
 import { MockOrganisationTabs } from "~/mocks/mock_organisation_tabs";
-import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { useNavigate } from "react-router";
 import { useLoaderData } from "@remix-run/react";
 import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
@@ -12,6 +11,7 @@ import { IConsumerMetadata } from "~/types/consumer/IConsumerMetadata";
 import { mockConsumerRequest } from "~/mocks/mock_consumer";
 import { MockConsumerMetadata } from "~/mocks/mock_consumer_metadata";
 import { ConsumerTab } from "~/components/konsumere/ConsumerTab";
+import {ArrowLeftIcon} from "@navikt/aksel-icons";
 
 interface OrgRouteData {
   org: string;
@@ -54,7 +54,7 @@ export default function Konsumere() {
         <Title
           title={`${routeData.org} Konsumere`}
           onIconClick={() => navigate("/konsumere")}
-          icon={<ArrowLeftIcon style={{ width: "48px", height: "48px" }} />}
+          icon={ArrowLeftIcon}
         />
         <ConsumerActionbar
           setQuery={setSearchQuery}
@@ -70,7 +70,7 @@ export default function Konsumere() {
                 className="cursor-pointer"
                 key={`${consumer.domain} ${consumer.package}`}
                 consumer={`${consumer.domain} ${consumer.package}`}
-                applications={4}
+                // applications={4}
                 errors={3}
                 restarts={2}
                 onClick={() => {
@@ -81,7 +81,7 @@ export default function Konsumere() {
           )}
         </HStack>
         <ConsumerModal
-          initialConsumer={consumer}
+          initialConsumer={mockConsumerRequest}
           openModal={openModal}
           setOpenModal={setOpenModal}
           consumerMetadata={routeData.consumerMetadata}

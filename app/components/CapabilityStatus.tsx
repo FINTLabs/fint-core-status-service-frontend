@@ -1,7 +1,7 @@
 import {useRef, useState} from "react";
 import {Button, Popover} from "@navikt/ds-react";
-import {MigrationIcon} from "@navikt/aksel-icons";
-import {ICapabilityData} from "~/types/AdapterContract";
+import {ExclamationmarkTriangleIcon, MigrationIcon} from "@navikt/aksel-icons";
+import {ICapabilityData} from "~/types/IAdapterContract";
 
 interface CapabilityStatusProps {
     capabilities: {
@@ -40,7 +40,7 @@ export const CapabilityStatus = ({ capabilities }: CapabilityStatusProps) => {
           {nonCompliant.map(([key, value]) => (
             <div key={key}>
               <strong>{key}</strong>:{" "}
-              {new Date(value.lastFullSync).toLocaleString()}
+              {value.lastFullSync===0? ("Ikke levert"):(new Date(value.lastFullSync).toLocaleString())}
             </div>
           ))}
         </Popover.Content>
