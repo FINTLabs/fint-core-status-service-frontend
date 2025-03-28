@@ -17,7 +17,7 @@ export function formatStats(stats: IStats) {
             {/*<a href={"/kontrakter"} style={{textDecoration: "none", color: "inherit"}}>*/}
                 <Box padding={"10"} height={"200"} borderRadius='xlarge' background={"bg-subtle"} >
                     <Heading align="center" size="medium">
-                        Adaptere
+                        Kontrakter
                     </Heading>
                     <HStack gap="1">
                         <TasklistIcon title="Total Contracts" fontSize="1.5rem" style={{marginLeft: "20%"}}/>
@@ -31,7 +31,7 @@ export function formatStats(stats: IStats) {
             <Link to={"/hendelser"}>
                 <Box padding={"10"} height={"200"} borderRadius='xlarge' background={"bg-subtle"} >
                     <Heading align="center" size="medium">
-                        Eventer
+                        Hendelser
                     </Heading>
                     <HStack gap="1">
                         <ArrowRightLeftIcon title="Total requests" fontSize="1.5rem" style={{marginLeft: "10%"}}/>

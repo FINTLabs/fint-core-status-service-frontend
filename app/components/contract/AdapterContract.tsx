@@ -2,7 +2,7 @@ import { Box, HStack, Spacer, VStack } from "@navikt/ds-react";
 import { HeartIcon } from "@navikt/aksel-icons";
 import ComponentIcons from "~/components/contract/ComponentIcons";
 
-//TODO: remove this file?
+//TODO: fix this poop
 // @ts-ignore
 export default function AdapterContract({ adapterContract }) {
   return (

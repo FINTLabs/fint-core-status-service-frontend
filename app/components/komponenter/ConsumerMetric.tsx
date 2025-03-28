@@ -1,7 +1,7 @@
 import {Box, Heading, VStack} from "@navikt/ds-react";
-import {Consumer} from "~/components/komponenter/Consumer";
+import {IConsumer} from "~/components/komponenter/IConsumer";
 
-export default function ConsumerMetric({consumer}: { consumer: Consumer }) {
+export default function ConsumerMetric({consumer}: { consumer: IConsumer }) {
     return (
       <Box borderRadius="large" shadow="xsmall" padding="2">
         <VStack>

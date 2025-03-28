@@ -1,9 +1,9 @@
 import {Box, Heading, HStack} from "@navikt/ds-react";
 import ConsumerMetric from "~/components/komponenter/ConsumerMetric";
-import {Consumer} from "~/components/komponenter/Consumer";
+import {IConsumer} from "~/components/komponenter/IConsumer";
 
-export default function AllConsumers({consumers}: { consumers: Consumer[] }) {
-  const consumersByDomain = consumers.reduce((acc: { [domain: string]: Consumer[] }, consumer) => {
+export default function AllConsumers({consumers}: { consumers: IConsumer[] }) {
+  const consumersByDomain = consumers.reduce((acc: { [domain: string]: IConsumer[] }, consumer) => {
     if (!acc[consumer.domain]) {
       acc[consumer.domain] = [];
     }

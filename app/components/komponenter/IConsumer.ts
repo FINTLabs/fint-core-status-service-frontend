@@ -1,5 +1,4 @@
-//TODO: WHYYYYYY is this here.. move to types
-export interface Consumer {
+export interface IConsumer {
   org: string;
   domain: string;
   package: string;

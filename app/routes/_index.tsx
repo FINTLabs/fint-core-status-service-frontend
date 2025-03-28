@@ -45,8 +45,7 @@ export default function Index() {
   console.log(currentCookie);
   useNavigate();
 
-  //TODO: why the onClick ? is that not the dropdowns job ?
-  //TODO: why two different names, ex adapter / kontrakter
+  //TODO: work in progrss, will be refactored
   return (
     <div>
       <Box className="p-5" onClick={() => setEnv("api")}>
