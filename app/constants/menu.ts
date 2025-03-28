@@ -19,5 +19,9 @@ export const MENU_LINKS: MenuLink[] = [
   {
     name: "Konsumere",
     href: "/konsumere",
-  }
+  },
+  {
+  name: "ProviderError",
+  href: "/providerFeil",
+}
 ];
