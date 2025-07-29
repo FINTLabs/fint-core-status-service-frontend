@@ -44,8 +44,7 @@ export default function Index() {
     const {setEnv} = useEnv();
     console.log(currentCookie);
     useNavigate();
-
-    //TODO: work in progrss, will be refactored
+    
     return (
         <div className={"pt-12"}>
             <Box className="p-5" onClick={() => setEnv("api")}>
