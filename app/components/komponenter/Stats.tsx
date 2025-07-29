@@ -1,5 +1,5 @@
 import {IStats} from "~/types/IStats";
-import {Box, Detail, Heading, HGrid, HStack} from "@navikt/ds-react";
+import {Box, Detail, Heading, HGrid, HStack, Label, ProgressBar, VStack} from "@navikt/ds-react";
 import {
     ArrowRightLeftIcon,
     ArrowsSquarepathIcon,
@@ -13,25 +13,46 @@ import {Link} from '@remix-run/react';
 export function formatStats(stats: IStats, env: string) {
     return (
         <Box>
-            <HStack className={"w-full border-b-2 mb-4"} align={"center"}>
+            <HStack className={"w-full border-b-2 mb-4"} gap={"1"} align={"center"}>
                 <SealCheckmarkFillIcon title="a11y-title" fontSize="1.5rem"/>
                 <Heading size={"large"}>Miljø Oversikt - {env}</Heading>
             </HStack>
-            <HGrid gap="6" columns={3}>
+            <HGrid gap="6" columns={4}>
                 <Link to={"/kontrakter"}>
-                    <Box padding={"10"} height={"200"} borderRadius='xlarge' background={"bg-subtle"}>
-                        <Heading align="center" size="medium">
-                            Kontrakter
-                        </Heading>
-                        <HStack gap="1">
-                            <TasklistIcon title="Total Contracts" fontSize="1.5rem" style={{marginLeft: "20%"}}/>
-                            {stats.adapterContractAmount}
-                            <HeartIcon title="Healty heartbeats" fontSize="1.5rem" style={{marginLeft: "5%"}}/>
-                            {stats.hasContectAmount}
-                        </HStack>
-                    </Box></Link>
+                    <VStack gap={"4"}>
+                        <Box padding={"4"} borderRadius='xlarge' background={"bg-subtle"}>
+                            <Heading align="center" size="medium" spacing>
+                                Kontrakter
+                            </Heading>
+                            <HStack align={"center"} justify={"space-between"} padding={"2"} className={"w-full"}>
+                                <HStack>
+                                    <HeartIcon title="Healty heartbeats" fontSize="1.5rem"/>
+                                    <Label>
+                                        {stats.hasContectAmount}
+                                    </Label>
+                                </HStack>
+                                <HStack>
+                                    <Label>
+                                        {stats.adapterContractAmount} total
+                                    </Label>
+                                    <TasklistIcon title="Total Contracts"
+                                                  fontSize="1.5rem"/>
+                                </HStack>
+                            </HStack>
+                            <ProgressBar
+                                size={"small"}
+                                value={stats.hasContectAmount}
+                                valueMax={stats.adapterContractAmount}
+                                aria-label={"Kontakter progressbar"}
+                            />
+                        </Box>
+                        <Box padding={"10"} borderRadius='xlarge' background={"bg-subtle"}>
+
+                        </Box>
+                    </VStack>
+                </Link>
                 <Link to={"/hendelser"}>
-                    <Box padding={"10"} height={"200"} borderRadius='xlarge' background={"bg-subtle"}>
+                    <Box padding={"10"} borderRadius='xlarge' background={"bg-subtle"}>
                         <Heading align="center" size="medium">
                             Hendelser
                         </Heading>
@@ -45,7 +66,7 @@ export function formatStats(stats: IStats, env: string) {
                         </HStack>
                     </Box>
                 </Link>
-                <Box padding={"10"} height={"200"} borderRadius='xlarge' background={"bg-subtle"}>
+                <Box padding={"10"} borderRadius='xlarge' background={"bg-subtle"} className={"col-span-2"}>
                     <Heading align="center" size="medium">
                         Konsumere
                     </Heading>
