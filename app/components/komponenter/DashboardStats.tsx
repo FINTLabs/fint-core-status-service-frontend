@@ -10,7 +10,7 @@ import {
 } from "@navikt/aksel-icons";
 import {Link} from '@remix-run/react';
 
-export function formatStats(stats: IStats, env: string) {
+export function DashboardStats(stats: IStats, env: string) {
     return (
         <Box>
             <HStack className={"w-full border-b-2 mb-4"} gap={"1"} align={"center"}>

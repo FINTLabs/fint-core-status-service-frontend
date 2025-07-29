@@ -19,7 +19,7 @@ interface headerProps {
 
 export default function Header({onHeaderChange, value}: headerProps) {
     return (
-        <HStack className="w-full px-48 h-full flex justify-between" as={"header"}>
+        <HStack className="w-screen h-full flex items-center justify-center gap-3" as={"header"}>
             <HeaderElement>
                 Kult navn
             </HeaderElement>

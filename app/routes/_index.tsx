@@ -3,7 +3,7 @@ import {LoaderFunction} from "@remix-run/node";
 import {StatusApi} from "~/api/StatusApi";
 import {useLoaderData} from "@remix-run/react";
 import {IStats} from "~/types/IStats";
-import {formatStats} from "~/components/komponenter/Stats";
+import {DashboardStats} from "~/components/komponenter/DashboardStats";
 import {Box} from "@navikt/ds-react";
 import {envCookie} from "~/components/cookie";
 import {useEnv} from "~/constants/envContext";
@@ -57,13 +57,13 @@ export default function Index() {
     return (
         <div className={"pt-12"}>
             <Box className="p-5" onClick={() => setEnv("api")}>
-                {stats.api ? formatStats(stats.api, "Api") : <p>No data available</p>}
+                {stats.api ? DashboardStats(stats.api, "Api") : <p>No data available</p>}
             </Box>
             <Box className="p-3" onClick={() => setEnv("beta")}>
-                {stats.beta ? formatStats(stats.beta, "Beta") : <p>No data available</p>}
+                {stats.beta ? DashboardStats(stats.beta, "Beta") : <p>No data available</p>}
             </Box>
             <Box className="p-3" onClick={() => setEnv("alpha")}>
-                {stats.alpha ? formatStats(stats.alpha, "Alpha") : <p>No data available</p>}
+                {stats.alpha ? DashboardStats(stats.alpha, "Alpha") : <p>No data available</p>}
             </Box>
         </div>
     );
