@@ -6,17 +6,20 @@ type props = {
 export default function CircularProgressBar({maxValue, value}: props) {
 
     const currentValue: number = Math.round((value / maxValue) * 100);
-    const valueOffset: number = 450 - (value * 4.5);
+    const circumference: number = 2 * Math.PI * 56;
+    const valueOffset: number = circumference * (1 - (value / maxValue));
+
+
     return (
         <div className={"h-32 w-32 relative"}>
             <div className={"h-32 w-32 rounded-full p-4 shadow-lg drop-shadow-2xl"}
                  style={{
-                     boxShadow: "2px 2px 6px -1px #F76650",
+                     boxShadow: "2px 2px 6px -1px #6B133D",
                  }}
             >
                 <div className={"h-24 w-24 rounded-full flex items-center justify-center"}
                      style={{
-                         boxShadow: "inset 2px 2px 6px -1px #F76650",
+                         boxShadow: "inset 2px 2px 6px -1px #7F78E8",
                      }}
                 >
                     <p className={"text-3xl pl-2"}>{currentValue}%</p>
@@ -32,12 +35,15 @@ export default function CircularProgressBar({maxValue, value}: props) {
                               stopColor={"#6B133D"}/>
                     </linearGradient>
                 </defs>
-                <circle cx="64" cy="64" r="56" strokeLinecap={"round"} fill={"none"}
-                        stroke="url(#CircularProgressBarGradient)"
-                        strokeDasharray={450}
-                        strokeDashoffset={valueOffset}
-                        strokeWidth={"16px"}
-                />
+                <g transform="scale(-1,1) translate(-128,0)">
+                    <circle cx="64" cy="64" r="56" strokeLinecap={"round"} fill={"none"}
+                            stroke="url(#CircularProgressBarGradient)"
+                            strokeDasharray={2 * Math.PI * 56}
+                            strokeDashoffset={valueOffset}
+                            strokeWidth={"16px"}
+                            transform="rotate(-90 64 64)"
+                    />
+                </g>
             </svg>
         </div>
     )
