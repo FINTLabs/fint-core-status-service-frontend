@@ -9,6 +9,7 @@ import {
     SealCheckmarkFillIcon
 } from "@navikt/aksel-icons";
 import {Link} from '@remix-run/react';
+import CircularProgressBar from "~/components/root/CircularProgressBar";
 
 export function DashboardStats(stats: IStats, env: string) {
     return (
@@ -46,8 +47,9 @@ export function DashboardStats(stats: IStats, env: string) {
                                 aria-label={"Kontakter progressbar"}
                             />
                         </Box>
-                        <Box padding={"10"} borderRadius='xlarge' background={"bg-subtle"}>
-
+                        <Box padding={"10"} borderRadius='xlarge' className={"flex justify-center items-center"}
+                             background={"bg-subtle"}>
+                            <CircularProgressBar maxValue={stats.adapterContractAmount} value={stats.hasContectAmount}/>
                         </Box>
                     </VStack>
                 </Link>
