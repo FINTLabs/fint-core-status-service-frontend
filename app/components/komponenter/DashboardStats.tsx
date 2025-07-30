@@ -13,7 +13,7 @@ import {Link} from '@remix-run/react';
 export function DashboardStats(stats: IStats, env: string) {
     return (
         <Box>
-            <HStack className={"w-full border-b-2 mb-4"} gap={"1"} align={"center"}>
+            <HStack className={"w-full border-b-2 mb-4 text-[#F76650]"} gap={"1"} align={"center"}>
                 <SealCheckmarkFillIcon title="a11y-title" fontSize="1.5rem"/>
                 <Heading size={"large"}>Miljø Oversikt - {env}</Heading>
             </HStack>
