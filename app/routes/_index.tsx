@@ -55,7 +55,7 @@ export default function Index() {
     useNavigate();
 
     return (
-        <div className={"pt-12 flex flex-col w-full"}>
+        <div className={"pt-4 flex flex-col w-full"}>
             <Box className="p-5" onClick={() => setEnv("api")}>
                 {stats.api ? DashboardStats(stats.api, "Api") : <p>No data available</p>}
             </Box>

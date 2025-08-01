@@ -73,11 +73,12 @@ export function DashboardStats(stats: IStats, env: string) {
                         <CircularProgressBar maxValue={stats.eventAmount} value={stats.eventResponses}/>
                     </Box>
                 </VStack>
-                <Box padding={"10"} borderRadius='xlarge' background={"bg-subtle"} className={"col-span-2"}>
+                <Box padding={"10"} borderRadius='xlarge' background={"bg-subtle"}
+                     className={"col-span-2 flex flex-col justify-start items-center"}>
                     <Heading align="center" size="medium">
                         Konsumere
                     </Heading>
-                    <Detail style={{marginLeft: "30%"}}>Will be added later</Detail>
+                    <Detail className={"w-fit"}>Will be added later</Detail>
                 </Box>
             </HGrid>
         </Box>

@@ -19,19 +19,23 @@ interface headerProps {
 
 export default function Header({onHeaderChange, value}: headerProps) {
     return (
-        <HStack className="w-screen h-full flex items-center justify-center gap-3" as={"header"}>
+        <HStack
+            className="w-screen h-full flex items-center justify-center gap-3 border-b-[#F76650] border-b-2 py-2"
+            as={"header"}>
             <HeaderElement>
-                Kult navn
+                Status Service
             </HeaderElement>
             <HeaderElement>
-                {MENU_LINKS.map((menuLink, index) => (
-                    <LinkCard key={index}>
-                        <LinkCard.Anchor href={menuLink.href}><></>
-                        </LinkCard.Anchor>
-                        <LinkCard.Icon>{iconList[index]}</LinkCard.Icon>
-                        <LinkCard.Title>{menuLink.name}</LinkCard.Title>
-                    </LinkCard>
-                ))}
+                <HStack gap={"3"}>
+                    {MENU_LINKS.map((menuLink, index) => (
+                        <LinkCard key={index}>
+                            <LinkCard.Anchor href={menuLink.href}><></>
+                            </LinkCard.Anchor>
+                            <LinkCard.Icon>{iconList[index]}</LinkCard.Icon>
+                            <LinkCard.Title>{menuLink.name}</LinkCard.Title>
+                        </LinkCard>
+                    ))}
+                </HStack>
             </HeaderElement>
             <HeaderElement>
                 <EnvSelector onChange={onHeaderChange} value={value}/>
