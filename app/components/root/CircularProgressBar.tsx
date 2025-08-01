@@ -5,7 +5,7 @@ type props = {
 
 export default function CircularProgressBar({maxValue, value}: props) {
 
-    const currentValue: number = Math.round((value / maxValue) * 100);
+    const currentValue: number = Math.floor((value / maxValue) * 100);
     const circumference: number = 2 * Math.PI * 56;
     const valueOffset: number = circumference * (1 - (value / maxValue));
 
