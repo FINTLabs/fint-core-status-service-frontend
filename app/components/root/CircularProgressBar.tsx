@@ -9,10 +9,12 @@ export default function CircularProgressBar({maxValue, value}: props) {
     const circumference: number = 2 * Math.PI * 56;
     const valueOffset: number = circumference * (1 - (value / maxValue));
 
+    const firstColor: string = "#6B133D"
+    const secondColor: string = "#7F78E8"
 
     return (
         <div className={"h-32 w-32 relative"}>
-            <div className={"h-32 w-32 rounded-full p-4 shadow-lg drop-shadow-2xl"}
+            <div className={"h-32 w-32 rounded-full p-4"}
                  style={{
                      boxShadow: "2px 2px 6px -1px #6B133D",
                  }}
@@ -30,9 +32,9 @@ export default function CircularProgressBar({maxValue, value}: props) {
                 <defs>
                     <linearGradient id={"CircularProgressBarGradient"}>
                         <stop offset={"0%"}
-                              stopColor={"#7F78E8"}/>
+                              stopColor={firstColor}/>
                         <stop offset={"100%"}
-                              stopColor={"#6B133D"}/>
+                              stopColor={secondColor}/>
                     </linearGradient>
                 </defs>
                 <g transform="scale(-1,1) translate(-128,0)">
