@@ -22,28 +22,23 @@ export default function Header({onHeaderChange, value}: headerProps) {
     return (
         <>
             <NovariHeader appName={"*future 'Kundeportalen' header*"} showLogoWithTitle={true} menu={[
-                [
-                    "Dashboard",
-                    "/"
-                ],
-                [
-                    "Kontrakter",
-                    "/kontrakter"
-                ],
-                [
-                    "Hendelser",
-                    "/hendelser"
-                ],
-                [
-                    "Konsumere",
-                    "/konsumere",
-                ],
-                [
-                    "ProviderError",
-                    "/providerFeil",
-                ]
-
-
+                ["Home", "/"],
+                {
+                    label: "Main Sections",
+                    items: [
+                        ["About", "/about"],
+                        ["Team", "/team"],
+                        ["Careers", "/careers"],
+                    ],
+                },
+                ["Contact", "/contact"],
+                {
+                    label: "Settings",
+                    items: [
+                        ["Profile", "/profile"],
+                        ["Security", "/security"],
+                    ],
+                },
             ]} isLoggedIn={true}></NovariHeader>
             <HStack
                 className="w-screen h-full flex items-center justify-center gap-3 border-t-[#F76650] border-t-2 py-2"
