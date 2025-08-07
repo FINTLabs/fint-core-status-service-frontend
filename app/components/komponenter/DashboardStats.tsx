@@ -9,7 +9,9 @@ import {
     SealCheckmarkFillIcon
 } from "@navikt/aksel-icons";
 import {Link} from '@remix-run/react';
-import CircularProgressBar from "~/components/root/CircularProgressBar";
+
+import {NovariCircularProgressBar} from "novari-frontend-components";
+
 
 export function DashboardStats(stats: IStats, env: string) {
     return (
@@ -45,7 +47,7 @@ export function DashboardStats(stats: IStats, env: string) {
                     </Box>
                     <Box padding={"10"} borderRadius='xlarge' className={"flex justify-center items-center"}
                          background={"bg-subtle"}>
-                        <CircularProgressBar maxValue={stats.adapterContractAmount} value={stats.hasContectAmount}/>
+                        <NovariCircularProgressBar maxValue={stats.adapterContractAmount} value={stats.hasContectAmount}/>
                     </Box>
                 </VStack>
 
@@ -70,7 +72,7 @@ export function DashboardStats(stats: IStats, env: string) {
                     </Box>
                     <Box padding={"10"} borderRadius='xlarge' className={"flex justify-center items-center"}
                          background={"bg-subtle"}>
-                        <CircularProgressBar maxValue={stats.eventAmount} value={stats.eventResponses}/>
+                        <NovariCircularProgressBar maxValue={stats.eventAmount} value={stats.eventResponses}/>
                     </Box>
                 </VStack>
                 <Box padding={"10"} borderRadius='xlarge' background={"bg-subtle"}
