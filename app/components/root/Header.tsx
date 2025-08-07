@@ -23,9 +23,8 @@ export default function Header({onHeaderChange, value}: headerProps) {
         <>
             <NovariHeader appName={"*future 'Kundeportalen' header*"} showLogoWithTitle={true} menu={[
                 [
-                "Dashboard",
-                "/"
-
+                    "Dashboard",
+                    "/"
                 ],
                 [
                     "Kontrakter",
