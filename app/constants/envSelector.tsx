@@ -13,7 +13,8 @@ export const EnvSelector = ({
     };
 
     return (
-        <Select label="" hideLabel defaultValue={value} onChange={handleChange} className={"!bg-[#5A51E1]/5 w-24"}>
+        <Select label="" size={"small"} hideLabel defaultValue={value} onChange={handleChange} className={"!bg-[#5A51E1]/5" +
+            " w-24"}>
             <option value="api">API</option>
             <option value="beta">BETA</option>
             <option value="alpha">ALPHA</option>

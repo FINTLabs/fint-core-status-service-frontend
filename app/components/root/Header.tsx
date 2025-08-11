@@ -32,9 +32,13 @@ export default function Header({onHeaderChange, value}: headerProps) {
                         ["Security", "/security"],
                     ],
                 },
-            ]} isLoggedIn={true}
+            ]}
+            isLoggedIn={true}
+            onLogout={() => (console.log("logout"))}
+            displayName={"Ola Nordmann"}
+            />
+            <div className={"w-full border-b-2 border-[#6B133D]"}/>
 
-            ></NovariHeader>
             <NovariHeader showLogoWithTitle={false} appName={"Status Service"} menu={[
                 ["Dashboard", "/"],
                 ["Kontrakter", "/Kontrakter"],
@@ -43,11 +47,11 @@ export default function Header({onHeaderChange, value}: headerProps) {
                 ["ProviderError", "/providerFeil"]
             ]}
                           onMenuClick={(action) => navigate(action)}
-                          isLoggedIn={true}>
-            </NovariHeader>
+                          isLoggedIn={true}/>
             <HeaderElement>
-                <div className={"w-full h-fit px-66 flex flex-row gap-3 items-center justify-end bg-[#FCF5ED]"}>
-                    <Heading size={"medium"}>Velg Miljø</Heading>
+                <div className={"h-fit flex flex-row gap-3 items-center justify-end " +
+                    " absolute top-16 right-4 z-20"}>
+                    <Heading size={"small"}>Velg Miljø</Heading>
                     <EnvSelector onChange={onHeaderChange} value={value}/>
                 </div>
             </HeaderElement>
