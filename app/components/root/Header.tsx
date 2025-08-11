@@ -35,7 +35,6 @@ export default function Header({onHeaderChange, value}: headerProps) {
             ]} isLoggedIn={true}
 
             ></NovariHeader>
-            <div className={"border-t-[#6B133D] border-t-2 w-full"}/>
             <NovariHeader showLogoWithTitle={false} appName={"Status Service"} menu={[
                 ["Dashboard", "/"],
                 ["Kontrakter", "/Kontrakter"],
@@ -52,7 +51,7 @@ export default function Header({onHeaderChange, value}: headerProps) {
                     <EnvSelector onChange={onHeaderChange} value={value}/>
                 </div>
             </HeaderElement>
-            <div className={"border-t-[#6B133D] border-t-2 w-full mt-2"}/>
+
         </>
     );
 }
