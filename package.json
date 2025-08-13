@@ -17,7 +17,7 @@
     "@remix-run/serve": "^2.11.2",
     "@tailwindcss/vite": "^4.1.11",
     "isbot": "^4.1.0",
-    "novari-frontend-components": "^0.13.3",
+    "novari-frontend-components": "^1.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
