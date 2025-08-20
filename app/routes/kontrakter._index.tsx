@@ -23,7 +23,7 @@ export const loader: LoaderFunction = async ({request}) => {
       alerts.push({
         id: item.adapterId,
         variant: "error",
-        message: `Varsling om sletting av inaktive: ${item.adapterId}`
+        message: `Varsling om sletting av inaktive: ${item.adapterId.slice(0, 10)}...`
       });
     })
     return json({data: events, inactive: alerts});
@@ -160,9 +160,10 @@ export default function Kontrakter() {
       ref={tableContainerRef}
     >
       <NovariSnackbar
-        items={alertState.slice(0, 3)}
+        items={alertState}
         position={'top-right'}
         onCloseItem={handleCloseItem}
+        size={"small"}
       />
       <Modal
         open={modal.open}
