@@ -34,6 +34,10 @@ export class StatusApi {
     return getResponse(env, "contract");
   }
 
+  static async getInactiveContracts(env: string): Promise<IAdapterContract[]> {
+    return getResponse(env, "contract/inactive");
+  }
+
   static async getStats(env: string): Promise<IStats> {
     return getResponse(env, "stats");
   }

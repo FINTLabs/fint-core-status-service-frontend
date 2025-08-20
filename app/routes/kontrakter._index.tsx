@@ -9,13 +9,24 @@ import {envCookie} from "~/components/cookie";
 import {filterByOrgId, getOrgs,} from "~/components/komponenter/ContractFilter";
 import {CapabilityStatus} from "~/components/CapabilityStatus";
 import {formatComponents, timeSince} from "~/types/FintUtils";
+import {NovariSnackbar, NovariSnackbarItem, useAlerts} from "novari-frontend-components";
+import {size} from "valibot";
 
 export const loader: LoaderFunction = async ({request}) => {
   const cookieHeader = request.headers.get("Cookie");
   const selectedEnv = await envCookie.parse(cookieHeader);
+  const alerts: NovariSnackbarItem[] = [];
   try {
     const events = await StatusApi.getContracts(selectedEnv);
-    return json(events);
+    const inactive = await StatusApi.getInactiveContracts(selectedEnv);
+    inactive.forEach((item) => {
+      alerts.push({
+        id: item.adapterId,
+        variant: "error",
+        message: `Varsling om sletting av inaktive: ${item.adapterId}`
+      });
+    })
+    return json({data: events, inactive: alerts});
   } catch (error) {
     console.error("Loader Error: ", error);
     return [];
@@ -28,7 +39,8 @@ export default function Kontrakter() {
     contract: null,
   });
 
-  const data = useLoaderData<IAdapterContract[]>();
+  const {data, inactive} = useLoaderData<{ data: IAdapterContract[], inactive: NovariSnackbarItem[] }>();
+  const {alertState, handleCloseItem} = useAlerts<any>(inactive);
   const orgs = getOrgs(data);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -147,6 +159,11 @@ export default function Kontrakter() {
       className="flex flex-col h-full justify-between gap-4"
       ref={tableContainerRef}
     >
+      <NovariSnackbar
+        items={alertState.slice(0, 3)}
+        position={'top-right'}
+        onCloseItem={handleCloseItem}
+      />
       <Modal
         open={modal.open}
         onClose={() => setModal({open: false, contract: null})}
