@@ -11,6 +11,7 @@ import {CapabilityStatus} from "~/components/CapabilityStatus";
 import {formatComponents, timeSince} from "~/types/FintUtils";
 import {NovariSnackbar, NovariSnackbarItem, useAlerts} from "novari-frontend-components";
 import {size} from "valibot";
+import {id} from "date-fns/locale";
 
 export const loader: LoaderFunction = async ({request}) => {
   const cookieHeader = request.headers.get("Cookie");
@@ -150,6 +151,11 @@ export default function Kontrakter() {
     setSearchQuery(value);
     setPage(1);
   }
+
+  const rowClass = (contract: IAdapterContract) =>
+    inactive.some(x => x.id === contract.adapterId)
+      ? "bg-red-50 hover:bg-red-100"
+      : "";
 
   //TODO: Fix onClear for search (not working on first click)
 
@@ -297,6 +303,7 @@ export default function Kontrakter() {
               <Table.Row
                 key={i}
                 onClick={() => setModal({open: true, contract})}
+                className={`cursor-pointer transition-colors ${rowClass(contract)}`}
               >
                 <Table.DataCell
                   scope="row"
