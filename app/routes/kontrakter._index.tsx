@@ -1,19 +1,40 @@
-import {ActionMenu, Button, Heading, HStack, Label, Modal, Pagination, Search, Table, Tooltip,} from "@navikt/ds-react";
-import React, {useEffect, useRef, useState} from "react";
-import {json, LoaderFunction} from "@remix-run/node";
-import {StatusApi} from "~/api/StatusApi";
-import {IAdapterContract, IContractModal} from "~/types/IAdapterContract";
-import {useLoaderData} from "@remix-run/react";
-import {ChevronDownIcon, HeartBrokenIcon, HeartIcon, MagnifyingGlassIcon,} from "@navikt/aksel-icons";
-import {envCookie} from "~/components/cookie";
-import {filterByOrgId, getOrgs,} from "~/components/komponenter/ContractFilter";
-import {CapabilityStatus} from "~/components/CapabilityStatus";
-import {formatComponents, timeSince} from "~/types/FintUtils";
-import {NovariSnackbar, NovariSnackbarItem, useAlerts} from "novari-frontend-components";
-import {size} from "valibot";
-import {id} from "date-fns/locale";
+import {
+  ActionMenu,
+  Button,
+  Heading,
+  HStack,
+  Label,
+  Modal,
+  Pagination,
+  Search,
+  Table,
+  Tooltip,
+} from "@navikt/ds-react";
+import React, { useEffect, useRef, useState } from "react";
+import { json, LoaderFunction } from "@remix-run/node";
+import { StatusApi } from "~/api/StatusApi";
+import { IAdapterContract, IContractModal } from "~/types/IAdapterContract";
+import { useLoaderData } from "@remix-run/react";
+import {
+  ChevronDownIcon,
+  HeartBrokenIcon,
+  HeartIcon,
+  MagnifyingGlassIcon,
+} from "@navikt/aksel-icons";
+import { envCookie } from "~/components/cookie";
+import {
+  filterByOrgId,
+  getOrgs,
+} from "~/components/komponenter/ContractFilter";
+import { CapabilityStatus } from "~/components/CapabilityStatus";
+import { formatComponents, timeSince } from "~/types/FintUtils";
+import {
+  NovariSnackbar,
+  NovariSnackbarItem,
+  useAlerts,
+} from "novari-frontend-components";
 
-export const loader: LoaderFunction = async ({request}) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
   const selectedEnv = await envCookie.parse(cookieHeader);
   const alerts: NovariSnackbarItem[] = [];
@@ -24,10 +45,10 @@ export const loader: LoaderFunction = async ({request}) => {
       alerts.push({
         id: item.adapterId,
         variant: "error",
-        message: `Varsling om sletting av inaktive: ${item.adapterId.slice(0, 10)}...`
+        message: `Varsling om sletting av inaktive: ${item.adapterId}`,
       });
-    })
-    return json({data: events, inactive: alerts});
+    });
+    return json({ data: events, inactive: alerts });
   } catch (error) {
     console.error("Loader Error: ", error);
     return [];
@@ -40,8 +61,11 @@ export default function Kontrakter() {
     contract: null,
   });
 
-  const {data, inactive} = useLoaderData<{ data: IAdapterContract[], inactive: NovariSnackbarItem[] }>();
-  const {alertState, handleCloseItem} = useAlerts<any>(inactive);
+  const { data, inactive } = useLoaderData<{
+    data: IAdapterContract[];
+    inactive: NovariSnackbarItem[];
+  }>();
+  const { alertState, handleCloseItem } = useAlerts<any>(inactive);
   const orgs = getOrgs(data);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -153,7 +177,7 @@ export default function Kontrakter() {
   }
 
   const rowClass = (contract: IAdapterContract) =>
-    inactive.some(x => x.id === contract.adapterId)
+    inactive.some((x) => x.id === contract.adapterId)
       ? "bg-red-50 hover:bg-red-100"
       : "";
 
@@ -167,13 +191,13 @@ export default function Kontrakter() {
     >
       <NovariSnackbar
         items={alertState}
-        position={'top-right'}
+        position={"top-right"}
         onCloseItem={handleCloseItem}
         size={"small"}
       />
       <Modal
         open={modal.open}
-        onClose={() => setModal({open: false, contract: null})}
+        onClose={() => setModal({ open: false, contract: null })}
         aria-labelledby="modal-heading"
         closeOnBackdropClick
       >
@@ -188,12 +212,12 @@ export default function Kontrakter() {
           </pre>
         </Modal.Body>
       </Modal>
-      <Table style={{tableLayout: "fixed"}} size="small">
+      <Table style={{ tableLayout: "fixed" }} size="small">
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell
               scope="col"
-              style={{width: "400px"}}
+              style={{ width: "400px" }}
               onBlur={() => setSearchVisible((prev) => !prev)}
             >
               {!searchVisible ? (
@@ -202,7 +226,7 @@ export default function Kontrakter() {
                   <Button
                     variant="tertiary"
                     size="xsmall"
-                    icon={<MagnifyingGlassIcon title="Search"/>}
+                    icon={<MagnifyingGlassIcon title="Search" />}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -236,8 +260,8 @@ export default function Kontrakter() {
                         Object.values(checkedStates).every(Boolean)
                           ? true
                           : isIndeterminate()
-                            ? "indeterminate"
-                            : false
+                          ? "indeterminate"
+                          : false
                       }
                       onCheckedChange={handleSelectAll}
                     >
@@ -268,7 +292,7 @@ export default function Kontrakter() {
                   return "none";
                 });
               }}
-              style={{cursor: "pointer"}}
+              style={{ cursor: "pointer" }}
             >
               <Label className="cursor-pointer flex items-center">
                 Heartbeat
@@ -282,7 +306,7 @@ export default function Kontrakter() {
                   <ChevronDownIcon
                     title="Sort by unhealthy first"
                     fontSize="0.7rem"
-                    style={{transform: "rotate(180deg)"}}
+                    style={{ transform: "rotate(180deg)" }}
                   />
                 )}
               </Label>
@@ -302,8 +326,10 @@ export default function Kontrakter() {
             paginatedContracts.map((contract, i) => (
               <Table.Row
                 key={i}
-                onClick={() => setModal({open: true, contract})}
-                className={`cursor-pointer transition-colors ${rowClass(contract)}`}
+                onClick={() => setModal({ open: true, contract })}
+                className={`cursor-pointer transition-colors ${rowClass(
+                  contract
+                )}`}
               >
                 <Table.DataCell
                   scope="row"
@@ -332,9 +358,7 @@ export default function Kontrakter() {
                 <Table.DataCell onClick={(e) => e.stopPropagation()}>
                   {/*<pre>{JSON.stringify(contract.capabilities, null, 2)}</pre>*/}
 
-                  <CapabilityStatus capabilities={contract.capabilities}/>
-
-
+                  <CapabilityStatus capabilities={contract.capabilities} />
                 </Table.DataCell>
                 <Tooltip content={timeSince(contract.lastActivity)}>
                   <Table.DataCell scope="row">
