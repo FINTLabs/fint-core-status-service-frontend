@@ -194,6 +194,7 @@ export default function Kontrakter() {
         position={"top-right"}
         onCloseItem={handleCloseItem}
         size={"small"}
+        className={"max-w-[520px] mt-34"}
       />
       <Modal
         open={modal.open}
@@ -285,6 +286,7 @@ export default function Kontrakter() {
             <Table.HeaderCell scope="col">Komponenter</Table.HeaderCell>
             <Table.HeaderCell
               scope="col"
+              className="text-sm"
               onClick={() => {
                 setHeartbeatSortOrder((prev) => {
                   if (prev === "none") return "healthyFirst";
@@ -311,8 +313,12 @@ export default function Kontrakter() {
                 )}
               </Label>
             </Table.HeaderCell>
-            <Table.HeaderCell>Fullsync</Table.HeaderCell>
-            <Table.HeaderCell scope="col">Siste overføring</Table.HeaderCell>
+            <Table.HeaderCell style={{ width: "120px" }}>
+              Fullsync
+            </Table.HeaderCell>
+            <Table.HeaderCell scope="col" style={{ width: "220px" }}>
+              Siste overføring
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
