@@ -249,7 +249,7 @@ export default function Kontrakter() {
               )}
             </Table.HeaderCell>
 
-            <Table.HeaderCell scope="col">
+            <Table.HeaderCell scope="col" style={{ width: "180px" }}>
               <ActionMenu>
                 <ActionMenu.Trigger>
                   <Button variant="tertiary-neutral">Organisasjon</Button>
@@ -333,7 +333,7 @@ export default function Kontrakter() {
               <Table.Row
                 key={i}
                 onClick={() => setModal({ open: true, contract })}
-                className={`cursor-pointer transition-colors ${rowClass(
+                className={`cursor-pointer h-[43px] transition-colors ${rowClass(
                   contract
                 )}`}
               >
