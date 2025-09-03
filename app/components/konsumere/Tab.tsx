@@ -13,7 +13,7 @@ interface TabProps {
   onClick?: () => void;
 }
 
-export function Tab({ header, fields, onClick }: TabProps) {
+export function ConsumerTab({ header, fields, onClick }: TabProps) {
   return (
     <LinkCard className={"w-[31%]"} onClick={onClick}>
       <LinkCard.Title>{header}</LinkCard.Title>

@@ -3,7 +3,7 @@ import {
   CaretRightCircleIcon,
   XMarkOctagonIcon,
 } from "@navikt/aksel-icons";
-import { Tab, TabField } from "~/components/konsumere/Tab";
+import { ConsumerTab, TabField } from "~/components/konsumere/Tab";
 
 interface OrganizationTabProps {
   org: string;
@@ -38,5 +38,5 @@ export function OrganizationTab({
     },
   ];
 
-  return <Tab header={org} fields={fields} onClick={onClick} />;
+  return <ConsumerTab header={org} fields={fields} onClick={onClick} />;
 }

@@ -1,6 +1,6 @@
-import {ArrowsCirclepathIcon, XMarkOctagonIcon} from "@navikt/aksel-icons";
+import { ArrowsCirclepathIcon, XMarkOctagonIcon } from "@navikt/aksel-icons";
 import React from "react";
-import {Tab, TabField} from "~/components/konsumere/Tab";
+import { ConsumerTab, TabField } from "~/components/konsumere/Tab";
 
 interface ConsumerTabProps {
   consumer: string;
@@ -11,21 +11,31 @@ interface ConsumerTabProps {
 }
 
 export function ConsumerTab({
-                              consumer,
-                              errors,
-                              restarts,
-                              onClick,
-                              className,
-                            }: ConsumerTabProps) {
+  consumer,
+  errors,
+  restarts,
+  onClick,
+  className,
+}: ConsumerTabProps) {
   const fields: TabField[] = [
-    {icon: <XMarkOctagonIcon aria-hidden/>, value: errors, toolTip: "Antall feil i alle konsumere"},
-    {icon: <ArrowsCirclepathIcon aria-hidden/>, value: restarts, toolTip: "Antall restart av konsumere"},
+    {
+      icon: <XMarkOctagonIcon aria-hidden />,
+      value: errors,
+      toolTip: "Antall feil i alle konsumere",
+    },
+    {
+      icon: <ArrowsCirclepathIcon aria-hidden />,
+      value: restarts,
+      toolTip: "Antall restart av konsumere",
+    },
   ];
 
-  return <Tab
-    header={consumer}
-    fields={fields}
-    onClick={onClick}
-    className={className}
-  />;
+  return (
+    <ConsumerTab
+      header={consumer}
+      fields={fields}
+      onClick={onClick}
+      className={className}
+    />
+  );
 }

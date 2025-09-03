@@ -1,4 +1,4 @@
-import { HStack, Skeleton, VStack } from "@navikt/ds-react";
+import { HStack, Page, Skeleton, VStack } from "@navikt/ds-react";
 import React, { useState, useTransition } from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
 import Title from "~/components/header/Title";
@@ -11,7 +11,7 @@ import { IConsumerMetadata } from "~/types/consumer/IConsumerMetadata";
 import { mockConsumerRequest } from "~/mocks/mock_consumer";
 import { MockConsumerMetadata } from "~/mocks/mock_consumer_metadata";
 import { ConsumerTab } from "~/components/konsumere/ConsumerTab";
-import {ArrowLeftIcon} from "@navikt/aksel-icons";
+import { ArrowLeftIcon } from "@navikt/aksel-icons";
 
 interface OrgRouteData {
   org: string;
@@ -49,8 +49,8 @@ export default function Konsumere() {
   );
 
   return (
-    <HStack justify="center">
-      <VStack className="w-2/3" gap="8">
+    <Page.Block width={"md"}>
+      <VStack gap="8">
         <Title
           title={`${routeData.org} Konsumere`}
           onIconClick={() => navigate("/konsumere")}
@@ -87,6 +87,6 @@ export default function Konsumere() {
           consumerMetadata={routeData.consumerMetadata}
         />
       </VStack>
-    </HStack>
+    </Page.Block>
   );
 }
