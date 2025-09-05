@@ -13,9 +13,9 @@ interface TabProps {
   onClick?: () => void;
 }
 
-export function ConsumerTab({ header, fields, onClick }: TabProps) {
+export function Tab({ header, fields, onClick }: TabProps) {
   return (
-    <LinkCard className={"w-[31%]"} onClick={onClick}>
+    <LinkCard className={"w-[31%] !bg-[#FCF5ED]"} onClick={onClick}>
       <LinkCard.Title>{header}</LinkCard.Title>
       <LinkCard.Description>
         {fields.map((field, index) => (

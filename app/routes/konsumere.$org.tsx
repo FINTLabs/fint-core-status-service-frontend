@@ -1,5 +1,5 @@
 import { HStack, Page, Skeleton, VStack } from "@navikt/ds-react";
-import React, { useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
 import Title from "~/components/header/Title";
 import { MockOrganisationTabs } from "~/mocks/mock_organisation_tabs";
@@ -67,7 +67,6 @@ export default function Konsumere() {
           ) : (
             filteredConsumers.map((consumer) => (
               <ConsumerTab
-                className="cursor-pointer"
                 key={`${consumer.domain} ${consumer.package}`}
                 consumer={`${consumer.domain} ${consumer.package}`}
                 // applications={4}
