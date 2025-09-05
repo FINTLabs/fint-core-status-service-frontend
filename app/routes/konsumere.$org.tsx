@@ -70,6 +70,7 @@ export default function Konsumere() {
                 key={`${consumer.domain} ${consumer.package}`}
                 consumer={`${consumer.domain} ${consumer.package}`}
                 // applications={4}
+                // Why is this hardcoded?
                 errors={3}
                 restarts={2}
                 onClick={() => {
