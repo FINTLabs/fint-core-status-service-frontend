@@ -2,7 +2,6 @@ import { HStack, Page, Skeleton, VStack } from "@navikt/ds-react";
 import { useState, useTransition } from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
 import { MockOrganisationTabs } from "~/mocks/mock_organisation_tabs";
-import { useNavigate } from "react-router";
 import { useLoaderData } from "@remix-run/react";
 import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
 import { IConsumerRequest } from "~/types/consumer/IConsumerRequest";
@@ -33,7 +32,6 @@ export const loader = async ({
 
 //TODO: What is this file - where is it used
 export default function Konsumere() {
-  const navigate = useNavigate();
   const routeData = useLoaderData<OrgRouteData>();
   // const [consumer, setConsumer] = useState();
   const [inTransition, transition] = useTransition();

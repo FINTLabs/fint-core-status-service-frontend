@@ -1,4 +1,4 @@
-import { Heading, HStack, Page, VStack } from "@navikt/ds-react";
+import { HStack, Page, VStack } from "@navikt/ds-react";
 import { useState } from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
 import { MockOrganisationTabs } from "~/mocks/mock_organisation_tabs";
