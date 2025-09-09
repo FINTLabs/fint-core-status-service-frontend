@@ -1,4 +1,4 @@
-import { HStack, Page, Skeleton, VStack } from "@navikt/ds-react";
+import { Heading, HStack, Page, Skeleton, VStack } from "@navikt/ds-react";
 import { useState, useTransition } from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
 import { MockOrganisationTabs } from "~/mocks/mock_organisation_tabs";
@@ -9,7 +9,6 @@ import { IConsumerMetadata } from "~/types/consumer/IConsumerMetadata";
 import { mockConsumerRequest } from "~/mocks/mock_consumer";
 import { MockConsumerMetadata } from "~/mocks/mock_consumer_metadata";
 import { ConsumerTab } from "~/components/konsumere/ConsumerTab";
-import { ConsumerHeader } from "~/components/konsumere/ConsumerHeader";
 
 interface OrgRouteData {
   org: string;
@@ -33,7 +32,6 @@ export const loader = async ({
 //TODO: What is this file - where is it used
 export default function Konsumere() {
   const routeData = useLoaderData<OrgRouteData>();
-  // const [consumer, setConsumer] = useState();
   const [inTransition, transition] = useTransition();
   const [consumerTabs] = useState(MockOrganisationTabs);
   const [openModal, setOpenModal] = useState(false);
@@ -48,7 +46,12 @@ export default function Konsumere() {
   return (
     <Page.Block width={"md"}>
       <VStack gap="8">
-        <ConsumerHeader />
+        <VStack>
+          <Heading size={"xlarge"} className={"!text-[#6B133D] pt-4"}>
+            Kontroller Konsumere
+          </Heading>
+          <div className={"w-full h-1 bg-[#6B133D]/50 rounded-full"} />
+        </VStack>
         <ConsumerActionbar
           setQuery={setSearchQuery}
           openModalSetter={setOpenModal}
