@@ -1,7 +1,6 @@
 import { HStack, Page, Skeleton, VStack } from "@navikt/ds-react";
 import { useState, useTransition } from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
-import Title from "~/components/header/Title";
 import { MockOrganisationTabs } from "~/mocks/mock_organisation_tabs";
 import { useNavigate } from "react-router";
 import { useLoaderData } from "@remix-run/react";
@@ -11,7 +10,7 @@ import { IConsumerMetadata } from "~/types/consumer/IConsumerMetadata";
 import { mockConsumerRequest } from "~/mocks/mock_consumer";
 import { MockConsumerMetadata } from "~/mocks/mock_consumer_metadata";
 import { ConsumerTab } from "~/components/konsumere/ConsumerTab";
-import { ArrowLeftIcon } from "@navikt/aksel-icons";
+import { ConsumerHeader } from "~/components/konsumere/ConsumerHeader";
 
 interface OrgRouteData {
   org: string;
@@ -51,16 +50,11 @@ export default function Konsumere() {
   return (
     <Page.Block width={"md"}>
       <VStack gap="8">
-        <Title
-          title={`${routeData.org} Konsumere`}
-          onIconClick={() => navigate("/konsumere")}
-          icon={ArrowLeftIcon}
-        />
+        <ConsumerHeader />
         <ConsumerActionbar
           setQuery={setSearchQuery}
           openModalSetter={setOpenModal}
         />
-
         <HStack gap="4">
           {inTransition ? (
             <Skeleton width="200px" />

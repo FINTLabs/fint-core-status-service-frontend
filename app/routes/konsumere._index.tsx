@@ -1,13 +1,12 @@
-import { HStack, Page, VStack } from "@navikt/ds-react";
+import { Heading, HStack, Page, VStack } from "@navikt/ds-react";
 import { useState } from "react";
 import ConsumerActionbar from "~/components/konsumere/ConsumerActionbar";
-import Title from "~/components/header/Title";
 import { MockOrganisationTabs } from "~/mocks/mock_organisation_tabs";
 import ConsumerModal from "~/components/konsumere/konsumer_modal/ConsumerModal";
 import { MockConsumerMetadata } from "~/mocks/mock_consumer_metadata";
 import { useNavigate } from "react-router";
-import { ChangingRoomIcon } from "@navikt/aksel-icons";
 import { OrganizationTab } from "~/components/konsumere/OrganizationTab";
+import { ConsumerHeader } from "~/components/konsumere/ConsumerHeader";
 
 export default function Konsumere() {
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ export default function Konsumere() {
   return (
     <Page.Block width={"md"}>
       <VStack gap="8">
-        <Title title="konsumere" icon={ChangingRoomIcon} />
+        <ConsumerHeader />
         <ConsumerActionbar setQuery={setQuery} openModalSetter={setOpenModal} />
         <HStack className={"flex flex-row gap-6"}>
           {filteredOrganisationTabs.map((tab) => (

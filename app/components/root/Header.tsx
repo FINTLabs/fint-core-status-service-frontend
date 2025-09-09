@@ -1,4 +1,3 @@
-import HeaderElement from "~/components/header/HeaderElement";
 import { EnvSelector } from "~/constants/envSelector";
 import { NovariHeader, NovariSubHeader } from "novari-frontend-components";
 import { useNavigate } from "react-router";
@@ -79,24 +78,23 @@ export default function Header({ onHeaderChange, value }: headerProps) {
         onLogout={() => console.log("logout")}
         displayName={"Ola Nordmann"}
       />
-      <HeaderElement>
-        <NovariSubHeader
-          appName={"Status Service"}
-          menu={[
-            ["Dashboard", "/"],
-            ["Kontrakter", "/Kontrakter"],
-            ["Hendelser", "/hendelser"],
-            ["Konsumere", "/Konsumere"],
-            ["ProviderError", "/providerFeil"],
-          ]}
-          onMenuClick={(action) => navigate(action)}
-        >
-          <div className={"h-fit flex flex-row gap-3 items-center justify-end"}>
-            <Heading size={"small"}>Velg Miljø</Heading>
-            <EnvSelector onChange={onHeaderChange} value={value} />
-          </div>
-        </NovariSubHeader>
-      </HeaderElement>
+
+      <NovariSubHeader
+        appName={"Status Service"}
+        menu={[
+          ["Dashboard", "/"],
+          ["Kontrakter", "/Kontrakter"],
+          ["Hendelser", "/hendelser"],
+          ["Konsumere", "/Konsumere"],
+          ["ProviderError", "/providerFeil"],
+        ]}
+        onMenuClick={(action) => navigate(action)}
+      >
+        <div className={"h-fit flex flex-row gap-3 items-center justify-end"}>
+          <Heading size={"small"}>Velg Miljø</Heading>
+          <EnvSelector onChange={onHeaderChange} value={value} />
+        </div>
+      </NovariSubHeader>
     </>
   );
 }
