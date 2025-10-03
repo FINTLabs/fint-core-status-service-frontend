@@ -1,6 +1,5 @@
 import { AdapterePage } from "~/components/AdapterePage";
 import type { AdaptereData } from "~/types";
-import { useEffect, useState } from "react";
 import {useLoaderData, type LoaderFunction} from "react-router";
 import AdaptereApi from "~/routes/api/AdaptereApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";

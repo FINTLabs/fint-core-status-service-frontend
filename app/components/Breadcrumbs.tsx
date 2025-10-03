@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import { ChevronRightIcon, HouseIcon } from "@navikt/aksel-icons";
 
 interface BreadcrumbItem {
@@ -11,7 +11,6 @@ interface BreadcrumbsProps {
 }
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
-  const location = useLocation();
 
   return (
     <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-6" aria-label="Breadcrumb">

@@ -1,5 +1,4 @@
 import { Modal, Button, Heading, Tabs } from "@navikt/ds-react";
-import { XMarkIcon } from "@navikt/aksel-icons";
 
 interface RequestData {
   corrId: string;

@@ -1,4 +1,4 @@
-import { Box, Checkbox, Select, Fieldset, Heading, HGrid } from "@navikt/ds-react";
+import { Box, Checkbox, Select, Fieldset, HGrid } from "@navikt/ds-react";
 
 interface AdaptereFilterProps {
   statusFilter: { ok: boolean; error: boolean };

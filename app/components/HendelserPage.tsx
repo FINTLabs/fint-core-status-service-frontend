@@ -119,6 +119,7 @@ export function HendelserPage({ initialData, env }: HendelserPageProps) {
       <HendelserTable
         data={filteredData}
         onRowClick={handleRowClick}
+        loading={loadingDetail}
       />
 
       {/* Modal */}

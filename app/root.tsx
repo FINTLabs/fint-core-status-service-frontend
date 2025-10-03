@@ -9,7 +9,7 @@ import {
   useLoaderData,
   type LoaderFunctionArgs,
 } from "react-router";
-import { Box, Page, Provider } from "@navikt/ds-react";
+import { Box, Page } from "@navikt/ds-react";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 

@@ -1,13 +1,14 @@
-import { Box, Table } from "@navikt/ds-react";
+import { Box, Loader, Table } from "@navikt/ds-react";
 import { CheckmarkCircleFillIcon, XMarkIcon } from "@navikt/aksel-icons";
 import type { HendelserData } from "../types";
 
 interface HendelserTableProps {
   data: HendelserData[];
   onRowClick: (hendelse: HendelserData) => void;
+  loading: boolean;
 }
 
-export function HendelserTable({ data, onRowClick }: HendelserTableProps) {
+export function HendelserTable({ data, onRowClick, loading }: HendelserTableProps) {
   return (
     <Box
       background="surface-subtle"
@@ -15,7 +16,8 @@ export function HendelserTable({ data, onRowClick }: HendelserTableProps) {
       borderRadius="large"
       shadow="xsmall"
     >
-      <Table>
+      {loading && <Loader size="small" />}
+      <Table >
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Hendelse ID</Table.HeaderCell>
