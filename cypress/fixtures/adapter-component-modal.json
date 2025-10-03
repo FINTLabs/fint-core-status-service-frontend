@@ -1,0 +1,38 @@
+{
+  "adapterId": "https://vigoiks.no/fintlabs-no/personvern/samtykke",
+  "username": "personvern-adapter-credentials-fmloj@adapter.fintlabs.no",
+  "orgId": "fintlabs.no",
+  "heartbeatIntervalInMinutes": 1,
+  "lastHeartbeat": 1759488876,
+  "components": [
+    "personvern.samtykke"
+  ],
+  "hasContact": true,
+  "capabilities": [
+    {
+      "resourceName": "behandling",
+      "fullSyncIntervalInDays": 1,
+      "deltaSyncInterval": "IMMEDIATE",
+      "followsContract": false,
+      "lastFullSync": null,
+      "lastFullSyncTime": null
+    },
+    {
+      "resourceName": "samtykke",
+      "fullSyncIntervalInDays": 1,
+      "deltaSyncInterval": "IMMEDIATE",
+      "followsContract": false,
+      "lastFullSync": null,
+      "lastFullSyncTime": null
+    },
+    {
+      "resourceName": "tjeneste",
+      "fullSyncIntervalInDays": 1,
+      "deltaSyncInterval": "IMMEDIATE",
+      "followsContract": false,
+      "lastFullSync": null,
+      "lastFullSyncTime": null
+    }
+  ],
+  "lastActivity": 0
+}

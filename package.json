@@ -1,0 +1,49 @@
+{
+  "name": "fint-core-status-service-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc"
+  },
+  "dependencies": {
+    "@cypress/react": "^9.0.1",
+    "@navikt/aksel-icons": "^7.31.0",
+    "@navikt/ds-css": "^7.31.0",
+    "@navikt/ds-react": "^7.31.0",
+    "@react-router/node": "^7.9.2",
+    "@react-router/serve": "^7.9.2",
+    "isbot": "^5.1.31",
+    "msw": "^2.11.3",
+    "novari-frontend-components": "^3.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router": "^7.9.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@react-router/dev": "^7.9.2",
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/node": "^22",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "eslint-plugin-cypress": "^5.2.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^6.1.0",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7",
+    "vite-tsconfig-paths": "^5.1.4"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
+}

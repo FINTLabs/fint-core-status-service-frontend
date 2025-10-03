@@ -1,0 +1,20 @@
+[
+  {
+    "adapter": "elevprogram-visma",
+    "driftspuls": "feil",
+    "deltaOverføring": "",
+    "fullOverføring": ""
+  },
+  {
+    "adapter": "elevprogram-visma2",
+    "driftspuls": "ok",
+    "deltaOverføring": "I dag",
+    "fullOverføring": "Lørdag"
+  },
+  {
+    "adapter": "elevprogram-dev",
+    "driftspuls": "feil",
+    "deltaOverføring": "15.03.2024",
+    "fullOverføring": "15.03.2024"
+  }
+]

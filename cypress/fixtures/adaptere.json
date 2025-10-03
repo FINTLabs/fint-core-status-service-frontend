@@ -1,0 +1,68 @@
+[
+  {
+    "fintlabs_no": {
+      "personvern": {
+        "component": [
+          {
+            "packageName": "kodeverk",
+            "healthy": "HEALTHY",
+            "heartbeat": true,
+            "lastDelta": {
+              "healthy": false,
+              "date": "2024-01-15"
+            },
+            "lastFull": {
+              "healthy": false,
+              "date": "2024-01-10",
+              "expectedDate": "2024-01-20"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "fintlabs_no": {
+      "utdanning": {
+        "component": [
+          {
+            "packageName": "elev",
+            "healthy": "HEALTHY",
+            "heartbeat": true,
+            "lastDelta": {
+              "healthy": true,
+              "date": "2024-01-16"
+            },
+            "lastFull": {
+              "healthy": true,
+              "date": "2024-01-15",
+              "expectedDate": "2024-01-22"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "vestfoldfylke_no": {
+      "helse": {
+        "component": [
+          {
+            "packageName": "pasient",
+            "healthy": "UNHEALTHY",
+            "heartbeat": false,
+            "lastDelta": {
+              "healthy": false,
+              "date": "2024-01-12"
+            },
+            "lastFull": {
+              "healthy": false,
+              "date": "2024-01-08",
+              "expectedDate": "2024-01-18"
+            }
+          }
+        ]
+      }
+    }
+  }
+]
