@@ -43,8 +43,8 @@ export function HendelserPage({ initialData, env }: HendelserPageProps) {
 
   // Fetch hendelse detail data from API
   const [hendelseDetailData, setHendelseDetailData] = useState<{
-    request: any;
-    response: any;
+    request: unknown;
+    response: unknown;
   } | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
@@ -53,8 +53,9 @@ export function HendelserPage({ initialData, env }: HendelserPageProps) {
       setLoadingDetail(true);
       const response = await HendelserApi.getHendelseDetail(hendelseId);
       setHendelseDetailData(response.data || null);
-    } catch (err) {
-      console.error("Failed to fetch hendelse detail:", err);
+    } catch {
+      // Handle error silently or use proper error logging
+      // console.error("Failed to fetch hendelse detail:", err);
       // Set empty data on error
       setHendelseDetailData({
         request: null,

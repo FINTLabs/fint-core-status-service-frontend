@@ -19,7 +19,7 @@ import themeHref from "./styles/novari-theme.css?url";
 import akselHref from "@navikt/ds-css?url";
 import { ENVIRONMENT_COOKIE_NAME, parseEnvironmentFromCookieHeader, setEnvironmentCookie } from "~/utils/cookies";
 
-let server: any;
+let server: unknown;
 
 async function initializeMSW() {
   try {
@@ -27,21 +27,22 @@ async function initializeMSW() {
       if (typeof window !== "undefined") {
         const { worker } = await import("../cypress/mocks/browser");
         await worker.start({ onUnhandledRequest: "bypass" });
-        console.log("MSW worker started successfully");
+        // MSW worker started successfully
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).__mswReady = true;
       } else {
         const { server: nodeServer } = await import("../cypress/mocks/node");
         server = nodeServer;
         server.listen({ onUnhandledRequest: "bypass" });
-        console.log("MSW server started successfully");
+        // MSW server started successfully
       }
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (typeof window !== "undefined") (window as any).__mswReady = true;
     }
-  } catch (error) {
-    console.warn("MSW initialization failed:", error);
+  } catch {
+    // MSW initialization failed - handle silently
+    // console.warn("MSW initialization failed:", error);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof window !== "undefined") (window as any).__mswReady = true;
   }
@@ -91,6 +92,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     headers: { "Content-Type": "application/json" },
   });
 };
+
+//TODO: add logging and clean eslint errors
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

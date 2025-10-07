@@ -15,7 +15,12 @@ export function AdaptereTable({ data, sortState, onSortChange }: AdaptereTablePr
   const handleRowClick = (adapter: AdaptereTableRow) => {
     // Create a URL-safe identifier from domain
     const adapterId = adapter.domain.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/adaptere/${adapterId}`);
+    // Pass the adapter data via state
+    navigate(`/adaptere/${adapterId}`, { 
+      state: { 
+        selectedAdapter: adapter 
+      } 
+    });
   };
 
   return (

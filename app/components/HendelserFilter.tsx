@@ -1,4 +1,5 @@
 import { Box, Button, DatePicker, Fieldset, HStack, Provider, Search, Spacer, useRangeDatepicker } from "@navikt/ds-react";
+import React from "react";
 
 interface HendelserFilterProps {
   searchFilter: string;
@@ -26,8 +27,8 @@ export function HendelserFilter({
     onSearchFilterChange("");
     onDateRangeChange(undefined);
     // Reset the datepicker inputs
-    fromInputProps.onChange?.({ target: { value: "" } } as any);
-    toInputProps.onChange?.({ target: { value: "" } } as any);
+    fromInputProps.onChange?.({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
+    toInputProps.onChange?.({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
   };
 
   return (

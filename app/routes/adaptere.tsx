@@ -14,26 +14,21 @@ export function meta() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  try {
-    console.log('request', request);
-    const cookieHeader = request.headers.get('Cookie');
-    const env = parseEnvironmentFromCookieHeader(cookieHeader);
-    console.log('env', env);
+  // console.log('request', request);
+  const cookieHeader = request.headers.get('Cookie');
+  const env = parseEnvironmentFromCookieHeader(cookieHeader);
+  // console.log('env', env);
 
-    const response = await AdaptereApi.getAllAdapters();
-    // Extract the data from the ApiResponse wrapper
-    const adapterData = response.data || [];
-    return { adapterData, env };
-  } catch (error) {
-    console.error('Failed to load adapter data:', error);
-    throw error;
-  }
+  const response = await AdaptereApi.getAllAdapters();
+  // Extract the data from the ApiResponse wrapper
+  const adapterData = response.data || [];
+  return { adapterData, env };
 }
 
 export default function Adaptere() {
   const { adapterData, env } = useLoaderData() as { adapterData: AdaptereData[], env: string };
   useEnvironmentRefresh(); // This will revalidate when environment changes
-  console.log('env', env);
+  // console.log('env', env);
   if (!adapterData || adapterData.length === 0) {
     return (
       <Box padding="8" paddingBlock="2">

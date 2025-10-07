@@ -18,12 +18,12 @@ class HendelserApi {
     }
 
     static async getHendelseDetail(hendelseId: string): Promise<ApiResponse<{
-        request: any;
-        response: any;
+        request: unknown;
+        response: unknown;
     }>> {
         return await apiManager.call<{
-            request: any;
-            response: any;
+            request: unknown;
+            response: unknown;
         }>({
             method: 'GET',
             endpoint: `/api/hendelser/${hendelseId}/detail`,

@@ -51,7 +51,7 @@ export function HendelserModal({
     });
   };
 
-  const formatJson = (data: any) => {
+  const formatJson = (data: unknown) => {
     return JSON.stringify(data, null, 2);
   };
 

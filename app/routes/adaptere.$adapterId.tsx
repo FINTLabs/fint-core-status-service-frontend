@@ -1,8 +1,8 @@
 import type { Route } from "./+types/adaptere.$adapterId";
-import { Box, Table } from "@navikt/ds-react";
+import { Box, Table, Alert, Heading, BodyShort, HStack } from "@navikt/ds-react";
 import { CheckmarkCircleFillIcon, XMarkIcon, ChevronRightIcon } from "@navikt/aksel-icons";
-import { useNavigate } from "react-router";
-import type { AdapterDetailData } from "../types";
+import { useNavigate, useLocation } from "react-router";
+import type { AdapterDetailData, AdaptereTableRow } from "../types";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 
 export function meta({ params }: Route.MetaArgs) {
@@ -14,6 +14,10 @@ export function meta({ params }: Route.MetaArgs) {
 
 export default function AdaptereDetail({ params }: Route.LoaderArgs) {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get the selected adapter data from navigation state
+  const selectedAdapter = location.state?.selectedAdapter as AdaptereTableRow | undefined;
   
   // Sample data for the detailed view matching new API structure
   const componentData: AdapterDetailData[] = [
@@ -51,7 +55,13 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
 
   const handleRowClick = (component: typeof componentData[0]) => {
     // Navigate to table 3 using the correct route structure
-    navigate(`/adaptere/${params.adapterId}/${component.adapterId}`);
+    // Pass both the component data and selected adapter data via state
+    navigate(`/adaptere/${params.adapterId}/${component.adapterId}`, {
+      state: {
+        selectedComponent: component,
+        selectedAdapter: selectedAdapter
+      }
+    });
   };
 
   // Decode the adapter ID to get domain name
@@ -74,6 +84,42 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
           Komponenter for {domain}
         </p>
       </div>
+
+      {/* Alert showing selected adapter details */}
+      {selectedAdapter && (
+        <Box marginBlock="4">
+          <Alert variant={selectedAdapter.status === 'ok' ? 'success' : 'error'}>
+            <Heading size="small" spacing>
+              Valgt Adapter: {selectedAdapter.domain}
+            </Heading>
+            <HStack gap="space-16" wrap>
+              <div className="space-y-1 flex-1 min-w-0">
+                <BodyShort>
+                  <strong>Organisasjon:</strong> {selectedAdapter.organisation}
+                </BodyShort>
+                <BodyShort>
+                  <strong>Domene:</strong> {selectedAdapter.domain}
+                </BodyShort>
+              </div>
+              <div className="space-y-1 flex-1 min-w-0">
+                <BodyShort>
+                  <strong>Status:</strong> 
+                  <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    selectedAdapter.status === 'ok' 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {selectedAdapter.status === 'ok' ? 'Aktiv' : 'Inaktiv'}
+                  </span>
+                </BodyShort>
+                <BodyShort>
+                  <strong>Antall komponenter:</strong> {selectedAdapter.components.length}
+                </BodyShort>
+              </div>
+            </HStack>
+          </Alert>
+        </Box>
+      )}
 
       <Box
         background="surface-subtle"

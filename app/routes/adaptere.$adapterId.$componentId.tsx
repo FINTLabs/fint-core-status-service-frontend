@@ -1,8 +1,9 @@
 import type { Route } from "./+types/adaptere.$adapterId.$componentId";
-import { Box, Table } from "@navikt/ds-react";
+import { Box, Table, Alert, Heading, BodyShort, HStack } from "@navikt/ds-react";
 import { CheckmarkCircleFillIcon, XMarkIcon } from "@navikt/aksel-icons";
 import { useState } from "react";
-import type { AdapterComponentData } from "../types";
+import { useLocation } from "react-router";
+import type { AdapterComponentData, AdapterDetailData, AdaptereTableRow } from "../types";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { AdapterComponentModal } from "../components/AdapterComponentModal";
 
@@ -14,9 +15,15 @@ export function meta({ params }: Route.MetaArgs) {
 }
 
 export default function AdapterComponent({ params }: Route.LoaderArgs) {
+  const location = useLocation();
+  
+  // Get the selected component and adapter data from navigation state
+  const selectedComponent = location.state?.selectedComponent as AdapterDetailData | undefined;
+  const selectedAdapter = location.state?.selectedAdapter as AdaptereTableRow | undefined;
+  
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAdapter, setSelectedAdapter] = useState<string | null>(null);
+  const [selectedAdapterName, setSelectedAdapterName] = useState<string | null>(null);
 
   // Sample data for the adapter component view
   const adapterData: AdapterComponentData[] = [
@@ -54,13 +61,13 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
 
   // Modal handlers
   const handleRowClick = (adapterName: string) => {
-    setSelectedAdapter(adapterName);
+    setSelectedAdapterName(adapterName);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedAdapter(null);
+    setSelectedAdapterName(null);
   };
 
   // Generate sample adapter component data
@@ -114,6 +121,73 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
         </p>
       </div>
 
+      {/* Alert showing selected component and adapter details */}
+      {(selectedComponent || selectedAdapter) && (
+        <Box marginBlock="4">
+          <Alert variant={selectedComponent?.heartbeat ? 'success' : 'error'}>
+            <Heading size="small" spacing>
+              Valgt Komponent: {componentName}
+            </Heading>
+            <HStack gap="space-16" wrap>
+              <div className="space-y-1 flex-1 min-w-0">
+                {selectedAdapter && (
+                  <>
+                    <BodyShort>
+                      <strong>Adapter:</strong> {selectedAdapter.domain}
+                    </BodyShort>
+                    <BodyShort>
+                      <strong>Organisasjon:</strong> {selectedAdapter.organisation}
+                    </BodyShort>
+                  </>
+                )}
+                {selectedComponent && (
+                  <>
+                    <BodyShort>
+                      <strong>Komponent ID:</strong> {selectedComponent.adapterId}
+                    </BodyShort>
+                    <BodyShort>
+                      <strong>Heartbeat:</strong> 
+                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        selectedComponent.heartbeat 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {selectedComponent.heartbeat ? 'Aktiv' : 'Inaktiv'}
+                      </span>
+                    </BodyShort>
+                    <BodyShort>
+                      <strong>Delta:</strong> {selectedComponent.delta}
+                    </BodyShort>
+                  </>
+                )}
+              </div>
+              <div className="space-y-1 flex-1 min-w-0">
+                {selectedComponent && (
+                  <>
+                    <BodyShort>
+                      <strong>Full Status:</strong> 
+                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        selectedComponent.full.healthy 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {selectedComponent.full.healthy ? 'OK' : 'Feil'}
+                      </span>
+                    </BodyShort>
+                    <BodyShort>
+                      <strong>Full Dato:</strong> {selectedComponent.full.date}
+                    </BodyShort>
+                    <BodyShort>
+                      <strong>Forventet Dato:</strong> {selectedComponent.full.expectedDate}
+                    </BodyShort>
+                  </>
+                )}
+              </div>
+            </HStack>
+          </Alert>
+        </Box>
+      )}
+
       <Box
         background="surface-subtle"
         padding="space-16"
@@ -163,12 +237,12 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
       </Box>
 
       {/* Modal */}
-      {selectedAdapter && (
+      {selectedAdapterName && (
         <AdapterComponentModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          data={generateAdapterComponentData(selectedAdapter)}
-          adapterName={selectedAdapter}
+          data={generateAdapterComponentData(selectedAdapterName)}
+          adapterName={selectedAdapterName}
         />
       )}
     </div>

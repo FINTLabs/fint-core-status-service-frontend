@@ -48,6 +48,7 @@ export default [
         React: 'readonly',
         import: 'readonly',
         HTMLSelectElement: 'readonly',
+        HTMLInputElement: 'readonly',
         EventListener: 'readonly',
       },
       parserOptions: {
@@ -142,6 +143,39 @@ export default [
       'react/prop-types': 'warn',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
+
+  // Cypress files
+  {
+    files: ['cypress/**/*.ts', 'cypress/**/*.js'],
+    languageOptions: {
+      globals: {
+        cy: 'readonly',
+        Cypress: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        before: 'readonly',
+        after: 'readonly',
+        expect: 'readonly',
+        context: 'readonly',
+        specify: 'readonly',
+        xdescribe: 'readonly',
+        xit: 'readonly',
+        xcontext: 'readonly',
+        xspecify: 'readonly',
+        skip: 'readonly',
+        only: 'readonly',
+        JQuery: 'readonly',
+        HTMLElement: 'readonly',
+      },
+    },
+    rules: {
+      'no-console': 'off', // Allow console in tests
+      'no-undef': 'off', // Cypress globals are handled above
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   },
 

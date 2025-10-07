@@ -12,6 +12,9 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
+    env: {
+      // Add any environment variables here
+    },
   },
   component: {
     devServer: {
@@ -23,5 +26,7 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
+    viewportWidth: 1280,
+    viewportHeight: 720,
   },
 });

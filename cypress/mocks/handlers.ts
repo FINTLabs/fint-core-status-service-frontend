@@ -14,19 +14,19 @@ export const handlers = [
 
   // Adapter detail API
   http.get('http://localhost:8080/api/adaptere/:adapterId', ({ params }) => {
-    const { adapterId } = params;
+    const { adapterId: _adapterId } = params;
     return HttpResponse.json(adapterDetailData);
   }),
 
   // Adapter component detail API
   http.get('http://localhost:8080/api/adaptere/:adapterId/:componentId', ({ params }) => {
-    const { adapterId, componentId } = params;
+    const { adapterId: _adapterId, componentId: _componentId } = params;
     return HttpResponse.json(adapterComponentDetailData);
   }),
 
   // Adapter component modal data API
   http.get('http://localhost:8080/api/adaptere/:adapterId/:componentId/:adapterName', ({ params }) => {
-    const { adapterId, componentId, adapterName } = params;
+    const { adapterId: _adapterId, componentId: _componentId, adapterName: _adapterName } = params;
     return HttpResponse.json(adapterComponentModalData);
   }),
 
@@ -37,13 +37,13 @@ export const handlers = [
 
   // Hendelse detail API (for modal)
   http.get('http://localhost:8080/api/hendelser/:hendelseId', ({ params }) => {
-    const { hendelseId } = params;
+    const { hendelseId: _hendelseId } = params;
     return HttpResponse.json(hendelseDetailData);
   }),
 
   // Hendelse detail API (new endpoint)
   http.get('http://localhost:8080/api/hendelser/:hendelseId/detail', ({ params }) => {
-    const { hendelseId } = params;
+    const { hendelseId: _hendelseId } = params;
     return HttpResponse.json(hendelseDetailData);
   })
 ];

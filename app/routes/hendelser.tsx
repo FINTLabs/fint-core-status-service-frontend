@@ -13,20 +13,15 @@ export function meta() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  try {
-    console.log('request', request);
-    const cookieHeader = request.headers.get('Cookie');
-    const env = parseEnvironmentFromCookieHeader(cookieHeader);
-    console.log('env', env);
-    
-    const response = await HendelserApi.getAllHendelser();
-    // Extract the data from the ApiResponse wrapper
-    const hendelserData = response.data || [];
-    return { hendelserData, env };
-  } catch (error) {
-    console.error('Failed to load hendelser data:', error);
-    throw error;
-  }
+  // console.log('request', request);
+  const cookieHeader = request.headers.get('Cookie');
+  const env = parseEnvironmentFromCookieHeader(cookieHeader);
+  // console.log('env', env);
+  
+  const response = await HendelserApi.getAllHendelser();
+  // Extract the data from the ApiResponse wrapper
+  const hendelserData = response.data || [];
+  return { hendelserData, env };
 };
 
 export default function Hendelser() {
