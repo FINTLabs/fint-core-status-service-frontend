@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getEnvironmentCookie, type Environment } from "~/utils/cookies";
 
 export function useEnvironment() {
-  const [environment, setEnvironment] = useState<Environment>('API');
+  const [environment, setEnvironment] = useState<Environment>("API");
 
   useEffect(() => {
     // Load environment from cookie on mount
@@ -14,10 +14,10 @@ export function useEnvironment() {
       setEnvironment(event.detail.environment);
     };
 
-    window.addEventListener('environmentChanged', handleEnvironmentChange as EventListener);
+    window.addEventListener("environmentChanged", handleEnvironmentChange as EventListener);
 
     return () => {
-      window.removeEventListener('environmentChanged', handleEnvironmentChange as EventListener);
+      window.removeEventListener("environmentChanged", handleEnvironmentChange as EventListener);
     };
   }, []);
 

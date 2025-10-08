@@ -1,6 +1,6 @@
 import { AdapterePage } from "~/components/AdapterePage";
-import type { AdaptereData } from "~/types";
-import {useLoaderData, type LoaderFunction} from "react-router";
+import type { IAdaptereData } from "~/types";
+import { useLoaderData, type LoaderFunction } from "react-router";
 import AdaptereApi from "~/routes/api/AdaptereApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 import { useEnvironmentRefresh } from "~/hooks/useEnvironmentRefresh";
@@ -8,25 +8,28 @@ import { Heading, BodyLong, Box } from "@navikt/ds-react";
 
 export function meta() {
   return [
-    { title: "Adaptere - Fint Core Status Service" },
+    { title: "AdapterStatus - Fint Core Status Service" },
     { name: "description", content: "View adapter status and configuration" },
   ];
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
   // console.log('request', request);
-  const cookieHeader = request.headers.get('Cookie');
+  const cookieHeader = request.headers.get("Cookie");
   const env = parseEnvironmentFromCookieHeader(cookieHeader);
   // console.log('env', env);
 
   const response = await AdaptereApi.getAllAdapters();
-  // Extract the data from the ApiResponse wrapper
   const adapterData = response.data || [];
   return { adapterData, env };
-}
+};
 
-export default function Adaptere() {
-  const { adapterData, env } = useLoaderData() as { adapterData: AdaptereData[], env: string };
+export default function AdapterStatus() {
+  const { adapterData, env } = useLoaderData() as {
+    adapterData: IAdaptereData[];
+    env: string;
+  };
+
   useEnvironmentRefresh(); // This will revalidate when environment changes
   // console.log('env', env);
   if (!adapterData || adapterData.length === 0) {

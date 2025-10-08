@@ -29,21 +29,21 @@ interface AdapterComponentModalProps {
   adapterName: string;
 }
 
-export function AdapterComponentModal({ 
-  isOpen, 
-  onClose, 
-  data, 
-  adapterName 
+export function AdapterComponentModal({
+  isOpen,
+  onClose,
+  data,
+  adapterName,
 }: AdapterComponentModalProps) {
   const formatTimestamp = (timestamp: number | null) => {
     if (timestamp === null || timestamp === 0) return "Never";
-    return new Date(timestamp * 1000).toLocaleString('no-NO', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
+    return new Date(timestamp * 1000).toLocaleString("no-NO", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
     });
   };
 
@@ -73,7 +73,7 @@ export function AdapterComponentModal({
           Adapter Komponent: {adapterName}
         </Heading>
       </Modal.Header>
-      
+
       <Modal.Body>
         <div id="adapter-component-modal-description">
           <Tabs defaultValue="overview" size="small">
@@ -81,7 +81,7 @@ export function AdapterComponentModal({
               <Tabs.Tab value="overview" label="Oversikt" />
               <Tabs.Tab value="capabilities" label="Kapabiliteter" />
             </Tabs.List>
-            
+
             <Tabs.Panel value="overview">
               <div className="mt-4">
                 <h3 className="text-lg font-semibold mb-3">Adapter Konfigurasjon</h3>
@@ -119,7 +119,10 @@ export function AdapterComponentModal({
                         <div className="mt-1">
                           {data.hasContact ? (
                             <div className="inline-flex items-center">
-                              <CheckmarkCircleFillIcon className="text-green-600 mr-1" fontSize="1rem" />
+                              <CheckmarkCircleFillIcon
+                                className="text-green-600 mr-1"
+                                fontSize="1rem"
+                              />
                               <span className="text-green-800">Ja</span>
                             </div>
                           ) : (
@@ -134,37 +137,49 @@ export function AdapterComponentModal({
                         <span className="font-medium text-gray-600">Komponenter:</span>
                         <div className="mt-1">
                           {data.components.map((component, index) => (
-                            <span key={index} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1">
+                            <span
+                              key={index}
+                              className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1"
+                            >
                               {component}
                             </span>
                           ))}
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="mt-6">
-                      <h4 className="text-md font-semibold mb-2">Kapabiliteter ({data.capabilities.length})</h4>
+                      <h4 className="text-md font-semibold mb-2">
+                        Kapabiliteter ({data.capabilities.length})
+                      </h4>
                       <div className="space-y-2">
                         {data.capabilities.map((capability, index) => (
                           <div key={index} className="border rounded-lg p-3 bg-gray-50">
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-medium">{capability.resourceName}</span>
                               <div className="flex items-center space-x-2">
-                                <Tag
-                                  variant="info"
-                                  size="small"
-                                >
+                                <Tag variant="info" size="small">
                                   {capability.deltaSyncInterval}
                                 </Tag>
                                 {capability.followsContract ? (
-                                  <CheckmarkCircleFillIcon className="text-green-600" fontSize="1rem" title="Følger kontrakt" />
+                                  <CheckmarkCircleFillIcon
+                                    className="text-green-600"
+                                    fontSize="1rem"
+                                    title="Følger kontrakt"
+                                  />
                                 ) : (
-                                  <XMarkIcon className="text-red-600" fontSize="1rem" title="Følger ikke kontrakt" />
+                                  <XMarkIcon
+                                    className="text-red-600"
+                                    fontSize="1rem"
+                                    title="Følger ikke kontrakt"
+                                  />
                                 )}
                               </div>
                             </div>
                             <div className="text-xs text-gray-600 grid grid-cols-2 gap-2">
-                              <div>Full sync intervall: {capability.fullSyncIntervalInDays} dager</div>
+                              <div>
+                                Full sync intervall: {capability.fullSyncIntervalInDays} dager
+                              </div>
                               <div>Siste full sync: {capability.lastFullSyncTime || "Never"}</div>
                             </div>
                           </div>
@@ -177,7 +192,7 @@ export function AdapterComponentModal({
                 )}
               </div>
             </Tabs.Panel>
-            
+
             <Tabs.Panel value="capabilities">
               <div className="mt-4">
                 <h3 className="text-lg font-semibold mb-3">Detaljert Kapabiliteter</h3>
@@ -188,7 +203,9 @@ export function AdapterComponentModal({
                         <div className="flex items-center justify-between mb-3">
                           <h4 className="text-md font-semibold">{capability.resourceName}</h4>
                           <div className="flex items-center space-x-2">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSyncIntervalColor(capability.deltaSyncInterval)}`}>
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSyncIntervalColor(capability.deltaSyncInterval)}`}
+                            >
                               {capability.deltaSyncInterval}
                             </span>
                             {capability.followsContract ? (
@@ -204,7 +221,7 @@ export function AdapterComponentModal({
                             )}
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
                             <span className="font-medium text-gray-600">Full Sync Intervall:</span>
@@ -219,8 +236,12 @@ export function AdapterComponentModal({
                             <div className="mt-1">{capability.lastFullSyncTime || "Never"}</div>
                           </div>
                           <div>
-                            <span className="font-medium text-gray-600">Siste Full Sync (Timestamp):</span>
-                            <div className="mt-1 font-mono text-xs">{capability.lastFullSync || "null"}</div>
+                            <span className="font-medium text-gray-600">
+                              Siste Full Sync (Timestamp):
+                            </span>
+                            <div className="mt-1 font-mono text-xs">
+                              {capability.lastFullSync || "null"}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -234,7 +255,7 @@ export function AdapterComponentModal({
           </Tabs>
         </div>
       </Modal.Body>
-      
+
       <Modal.Footer>
         <Button variant="tertiary" onClick={onClose}>
           Lukk

@@ -11,17 +11,16 @@ interface BreadcrumbsProps {
 }
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
-
   return (
     <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-6" aria-label="Breadcrumb">
-      <Link 
-        to="/" 
+      <Link
+        to="/"
         className="flex items-center hover:text-blue-600 transition-colors"
         aria-label="Go to home"
       >
         <HouseIcon fontSize="1rem" />
       </Link>
-      
+
       {items.map((item, index) => (
         <div key={index} className="flex items-center space-x-2">
           <ChevronRightIcon fontSize="0.875rem" className="text-gray-400" />
@@ -30,10 +29,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
               {item.label}
             </span>
           ) : (
-            <Link 
-              to={item.href} 
-              className="hover:text-blue-600 transition-colors"
-            >
+            <Link to={item.href} className="hover:text-blue-600 transition-colors">
               {item.label}
             </Link>
           )}

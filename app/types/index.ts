@@ -1,5 +1,5 @@
-// Table 1 - Main Adaptere List Data Structure
-export interface ComponentData {
+// Table 1 - Main AdapterStatus List Data Structure
+export interface IComponentData {
   packageName: string;
   healthy: "HEALTHY" | "UNHEALTHY";
   heartbeat: boolean;
@@ -14,23 +14,23 @@ export interface ComponentData {
   };
 }
 
-export interface AdaptereData {
+export interface IAdaptereData {
   [organisation: string]: {
     [domain: string]: {
-      component: ComponentData[];
+      component: IComponentData[];
     };
   };
 }
 
-export interface AdaptereTableRow {
+export interface IAdaptereTableRow {
   organisation: string;
   domain: string;
-  components: ComponentData[];
+  components: IComponentData[];
   status: "ok" | "error";
 }
 
 // Table 2 - Detail View Data Structure
-export interface AdapterDetailData {
+export interface IAdapterDetailData {
   adapterId: string;
   heartbeat: boolean;
   delta: string;
@@ -42,25 +42,57 @@ export interface AdapterDetailData {
 }
 
 // Table 3 - Component Detail Data Structure
-export interface AdapterComponentData {
+export interface IAdapterComponentData {
   adapter: string;
-  driftspuls: "ok" | "feil";
-  deltaOverføring: string;
-  fullOverføring: string;
+  heartbeatStatus: "ok" | "error";
+  deltaTransfer: string;
+  fullTransfer: string;
 }
 
-// Hendelser Data Structure
-export interface HendelserData {
-  hendelseId: string;
-  operasjon: "CREATE" | "UPDATE" | "DELETE";
-  organisasjon: string;
-  ressurser: string;
+// Events Data Structure
+export interface IEventData {
+  eventId: string;
+  operation: "CREATE" | "UPDATE" | "DELETE";
+  organization: string;
+  resources: string;
   status: "ok" | "error";
-  overført: string;
+  transferred: string;
+  transportType?: string;
+}
+
+// Event Detail Data Structure
+export interface IEventRequest {
+  corrId: string;
+  orgId: string;
+  domainName: string;
+  packageName: string;
+  resourceName: string;
+  operationType: "CREATE" | "UPDATE" | "DELETE";
+  created: number;
+  timeToLive: number;
+}
+
+export interface IEventResponse {
+  corrId: string;
+  orgId: string;
+  adapterId: string;
+  handledAt: number;
+  operationType: "CREATE" | "UPDATE" | "DELETE";
+  failed: boolean;
+  errorMessage: string | null;
+  rejected: boolean;
+  rejectReason: string | null;
+  conflicted: boolean;
+  conflictReason: string | null;
+}
+
+export interface IEventDetail {
+  request: IEventRequest;
+  response: IEventResponse;
 }
 
 // Common types
 export type HealthStatus = "HEALTHY" | "UNHEALTHY";
 export type Status = "ok" | "error";
-export type DriftspulsStatus = "ok" | "feil";
-export type OperasjonType = "CREATE" | "UPDATE" | "DELETE";
+export type HeartbeatStatus = "ok" | "error";
+export type OperationType = "CREATE" | "UPDATE" | "DELETE";

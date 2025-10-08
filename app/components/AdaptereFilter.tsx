@@ -29,8 +29,6 @@ export function AdaptereFilter({
       shadow="xsmall"
       marginBlock="space-32"
     >
-
-      
       <HGrid columns={{ sm: 1, md: 3 }} gap="space-16">
         {/* Status Filter */}
         <Fieldset legend="Status" size="small">
@@ -60,8 +58,10 @@ export function AdaptereFilter({
           onChange={(e) => onOrganisasjonFilterChange(e.target.value)}
         >
           <option value="">Alle organisasjoner</option>
-          {uniqueOrganisasjoner.map(org => (
-            <option key={org} value={org}>{org}</option>
+          {uniqueOrganisasjoner.map((org) => (
+            <option key={org} value={org}>
+              {org}
+            </option>
           ))}
         </Select>
 
@@ -73,8 +73,10 @@ export function AdaptereFilter({
           onChange={(e) => onDomeneFilterChange(e.target.value)}
         >
           <option value="">Alle domener</option>
-          {uniqueDomener.map(domene => (
-            <option key={domene} value={domene}>{domene}</option>
+          {uniqueDomener.map((domene) => (
+            <option key={domene} value={domene}>
+              {domene}
+            </option>
           ))}
         </Select>
       </HGrid>

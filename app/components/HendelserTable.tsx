@@ -1,23 +1,18 @@
 import { Box, Loader, Table } from "@navikt/ds-react";
 import { CheckmarkCircleFillIcon, XMarkIcon } from "@navikt/aksel-icons";
-import type { HendelserData } from "../types";
+import type { IEventData } from "~/types";
 
 interface HendelserTableProps {
-  data: HendelserData[];
-  onRowClick: (hendelse: HendelserData) => void;
+  data: IEventData[];
+  onRowClick: (event: IEventData) => void;
   loading: boolean;
 }
 
 export function HendelserTable({ data, onRowClick, loading }: HendelserTableProps) {
   return (
-    <Box
-      background="surface-subtle"
-      padding="space-16"
-      borderRadius="large"
-      shadow="xsmall"
-    >
+    <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
       {loading && <Loader size="small" />}
-      <Table >
+      <Table>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Hendelse ID</Table.HeaderCell>
@@ -29,33 +24,28 @@ export function HendelserTable({ data, onRowClick, loading }: HendelserTableProp
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {data.map((hendelse, index) => (
-            <Table.Row
-              key={index}
-              onRowClick={() => onRowClick(hendelse)}
-              shadeOnHover={true}
-            >
+          {data.map((event, index) => (
+            <Table.Row key={index} onRowClick={() => onRowClick(event)} shadeOnHover={true}>
               <Table.DataCell>
                 <span className="font-mono text-sm">
-                  {hendelse.hendelseId.substring(0, 5)}...
-                  {hendelse.hendelseId.substring(
-                    hendelse.hendelseId.length - 5,
-                  )}
+                  {event.eventId
+                    ? `${event.eventId.substring(0, 5)}...${event.eventId.substring(event.eventId.length - 5)}`
+                    : "N/A"}
                 </span>
               </Table.DataCell>
               <Table.DataCell>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  {hendelse.operasjon}
+                  {event.operation || "N/A"}
                 </span>
               </Table.DataCell>
               <Table.DataCell>
-                <span className="text-gray-700">{hendelse.organisasjon}</span>
+                <span className="text-gray-700">{event.organization || "N/A"}</span>
               </Table.DataCell>
               <Table.DataCell>
-                <span className="text-gray-700">{hendelse.ressurser}</span>
+                <span className="text-gray-700">{event.resources || "N/A"}</span>
               </Table.DataCell>
               <Table.DataCell>
-                {hendelse.status === "ok" ? (
+                {event.status === "ok" ? (
                   <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
                     <CheckmarkCircleFillIcon
                       className="text-green-600"
@@ -65,16 +55,12 @@ export function HendelserTable({ data, onRowClick, loading }: HendelserTableProp
                   </div>
                 ) : (
                   <div className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
-                    <XMarkIcon
-                      className="text-red-600"
-                      title="Error"
-                      fontSize="1.25rem"
-                    />
+                    <XMarkIcon className="text-red-600" title="Error" fontSize="1.25rem" />
                   </div>
                 )}
               </Table.DataCell>
               <Table.DataCell>
-                <span className="text-gray-700">{hendelse.overført}</span>
+                <span className="text-gray-700">{event.transferred || "N/A"}</span>
               </Table.DataCell>
             </Table.Row>
           ))}

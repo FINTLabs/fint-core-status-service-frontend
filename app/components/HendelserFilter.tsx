@@ -1,4 +1,14 @@
-import { Box, Button, DatePicker, Fieldset, HStack, Provider, Search, Spacer, useRangeDatepicker } from "@navikt/ds-react";
+import {
+  Box,
+  Button,
+  DatePicker,
+  Fieldset,
+  HStack,
+  Provider,
+  Search,
+  Spacer,
+  useRangeDatepicker,
+} from "@navikt/ds-react";
 import React from "react";
 
 interface HendelserFilterProps {
@@ -61,8 +71,18 @@ export function HendelserFilter({
             <Provider>
               <DatePicker {...datepickerProps}>
                 <HStack gap="space-8" justify="start" wrap={false}>
-                  <DatePicker.Input {...fromInputProps} label="Fra dato" size="small" hideLabel={true} />
-                  <DatePicker.Input {...toInputProps} label="Til dato" size="small" hideLabel={true} />
+                  <DatePicker.Input
+                    {...fromInputProps}
+                    label="Fra dato"
+                    size="small"
+                    hideLabel={true}
+                  />
+                  <DatePicker.Input
+                    {...toInputProps}
+                    label="Til dato"
+                    size="small"
+                    hideLabel={true}
+                  />
                 </HStack>
               </DatePicker>
             </Provider>
@@ -71,11 +91,7 @@ export function HendelserFilter({
 
         {/* Clear Button */}
         <div className="flex-shrink-0">
-          <Button
-            variant="tertiary"
-            size="small"
-            onClick={handleClearFilters}
-          >
+          <Button variant="tertiary" size="small" onClick={handleClearFilters}>
             Tøm filtre
           </Button>
         </div>

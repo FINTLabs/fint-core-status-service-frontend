@@ -33,21 +33,21 @@ interface HendelserModalProps {
   hendelseId: string;
 }
 
-export function HendelserModal({ 
-  isOpen, 
-  onClose, 
-  requestData, 
-  responseData, 
-  hendelseId 
+export function HendelserModal({
+  isOpen,
+  onClose,
+  requestData,
+  responseData,
+  hendelseId,
 }: HendelserModalProps) {
   const formatTimestamp = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString('no-NO', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
+    return new Date(timestamp).toLocaleString("no-NO", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
     });
   };
 
@@ -65,11 +65,13 @@ export function HendelserModal({
     >
       <Modal.Header>
         <Heading id="hendelser-modal-title" size="medium">
-          Hendelse Detaljer: 
+          Hendelse Detaljer:
         </Heading>
-        <Heading id="hendelser-modal-title" size="medium">{hendelseId}</Heading>
+        <Heading id="hendelser-modal-title" size="medium">
+          {hendelseId}
+        </Heading>
       </Modal.Header>
-      
+
       <Modal.Body>
         <div id="hendelser-modal-description">
           <Tabs defaultValue="request" size="small">
@@ -77,7 +79,7 @@ export function HendelserModal({
               <Tabs.Tab value="request" label="Request" />
               <Tabs.Tab value="response" label="Response" />
             </Tabs.List>
-            
+
             <Tabs.Panel value="request">
               <div className="mt-4">
                 <h3 className="text-lg font-semibold mb-3">Request Data</h3>
@@ -92,9 +94,7 @@ export function HendelserModal({
                       </div>
                       <div>
                         <span className="font-medium text-gray-600">Created:</span>
-                        <div className="mt-1">
-                          {formatTimestamp(requestData.created)}
-                        </div>
+                        <div className="mt-1">{formatTimestamp(requestData.created)}</div>
                       </div>
                       <div>
                         <span className="font-medium text-gray-600">Organization:</span>
@@ -103,11 +103,15 @@ export function HendelserModal({
                       <div>
                         <span className="font-medium text-gray-600">Operation:</span>
                         <div className="mt-1">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            requestData.operationType === "CREATE" ? 'bg-green-100 text-green-800' :
-                            requestData.operationType === "UPDATE" ? 'bg-blue-100 text-blue-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              requestData.operationType === "CREATE"
+                                ? "bg-green-100 text-green-800"
+                                : requestData.operationType === "UPDATE"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : "bg-red-100 text-red-800"
+                            }`}
+                          >
                             {requestData.operationType}
                           </span>
                         </div>
@@ -141,7 +145,7 @@ export function HendelserModal({
                 )}
               </div>
             </Tabs.Panel>
-            
+
             <Tabs.Panel value="response">
               <div className="mt-4">
                 <h3 className="text-lg font-semibold mb-3">Response Data</h3>
@@ -156,9 +160,7 @@ export function HendelserModal({
                       </div>
                       <div>
                         <span className="font-medium text-gray-600">Handled At:</span>
-                        <div className="mt-1">
-                          {formatTimestamp(responseData.handledAt)}
-                        </div>
+                        <div className="mt-1">{formatTimestamp(responseData.handledAt)}</div>
                       </div>
                       <div>
                         <span className="font-medium text-gray-600">Organization:</span>
@@ -167,14 +169,20 @@ export function HendelserModal({
                       <div>
                         <span className="font-medium text-gray-600">Status:</span>
                         <div className="mt-1">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            !responseData.failed && !responseData.rejected && !responseData.conflicted 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-red-100 text-red-800'
-                          }`}>
-                            {!responseData.failed && !responseData.rejected && !responseData.conflicted 
-                              ? 'Success' 
-                              : 'Failed'}
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              !responseData.failed &&
+                              !responseData.rejected &&
+                              !responseData.conflicted
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {!responseData.failed &&
+                            !responseData.rejected &&
+                            !responseData.conflicted
+                              ? "Success"
+                              : "Failed"}
                           </span>
                         </div>
                       </div>
@@ -187,11 +195,15 @@ export function HendelserModal({
                       <div>
                         <span className="font-medium text-gray-600">Operation:</span>
                         <div className="mt-1">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            responseData.operationType === "CREATE" ? 'bg-green-100 text-green-800' :
-                            responseData.operationType === "UPDATE" ? 'bg-blue-100 text-blue-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              responseData.operationType === "CREATE"
+                                ? "bg-green-100 text-green-800"
+                                : responseData.operationType === "UPDATE"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : "bg-red-100 text-red-800"
+                            }`}
+                          >
                             {responseData.operationType}
                           </span>
                         </div>
@@ -236,7 +248,7 @@ export function HendelserModal({
           </Tabs>
         </div>
       </Modal.Body>
-      
+
       <Modal.Footer>
         <Button variant="tertiary" onClick={onClose}>
           Lukk

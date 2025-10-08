@@ -17,9 +17,14 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import themeHref from "./styles/novari-theme.css?url";
 import akselHref from "@navikt/ds-css?url";
-import { ENVIRONMENT_COOKIE_NAME, parseEnvironmentFromCookieHeader, setEnvironmentCookie } from "~/utils/cookies";
+import {
+  ENVIRONMENT_COOKIE_NAME,
+  parseEnvironmentFromCookieHeader,
+  setEnvironmentCookie,
+} from "~/utils/cookies";
 
-let server: unknown;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let server: any;
 
 async function initializeMSW() {
   try {
@@ -52,16 +57,16 @@ async function initializeMSW() {
 initializeMSW();
 
 export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
+  // { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  // {
+  //   rel: "preconnect",
+  //   href: "https://fonts.gstatic.com",
+  //   crossOrigin: "anonymous",
+  // },
+  // {
+  //   rel: "stylesheet",
+  //   href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+  // },
   {
     rel: "stylesheet",
     href: themeHref,
@@ -77,14 +82,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const cookieValue = parseEnvironmentFromCookieHeader(cookieHeader);
 
   if (!cookieValue) {
-    setEnvironmentCookie('API');
+    setEnvironmentCookie("API");
     return data(
       { cookieValue },
       {
         headers: {
           "Set-Cookie": `${ENVIRONMENT_COOKIE_NAME}=API; path=/; SameSite=Lax`,
         },
-      },
+      }
     );
   }
 
@@ -123,7 +128,7 @@ export default function App() {
     <Page
       footer={
         <Box padding="1" as="footer" className={"novari-footer"}>
-          <Page.Block >
+          <Page.Block>
             <Footer />
           </Page.Block>
         </Box>
@@ -149,9 +154,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
     details =
-      error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
+      error.status === 404 ? "The requested page could not be found." : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
   }

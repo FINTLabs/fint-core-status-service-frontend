@@ -1,15 +1,15 @@
 // Import commands.js using ES2015 syntax:
-import './commands';
+import "./commands";
 
 // Start MSW in Cypress component tests
-import { setupWorker } from 'msw/browser';
-import { handlers } from '../mocks/handlers';
+import { setupWorker } from "msw/browser";
+import { handlers } from "../mocks/handlers";
 
 const worker = setupWorker(...handlers);
 
 before(() => {
   worker.start({
-    onUnhandledRequest: 'bypass',
+    onUnhandledRequest: "bypass",
   });
 });
 

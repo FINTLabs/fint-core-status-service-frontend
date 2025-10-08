@@ -4,9 +4,7 @@
   "orgId": "fintlabs.no",
   "heartbeatIntervalInMinutes": 1,
   "lastHeartbeat": 1759488876,
-  "components": [
-    "personvern.samtykke"
-  ],
+  "components": ["personvern.samtykke"],
   "hasContact": true,
   "capabilities": [
     {

@@ -1,34 +1,34 @@
 [
   {
-    "hendelseId": "07c76ea0-0dd3-4909-820b-b8fe1e221eff",
-    "operasjon": "CREATE",
-    "organisasjon": "rogfk.no",
-    "ressurser": "personvern/samtykke/samtykke",
+    "eventId": "07c76ea0-0dd3-4909-820b-b8fe1e221eff",
+    "operation": "CREATE",
+    "organization": "rogfk.no",
+    "resources": "personvern/samtykke/samtykke",
     "status": "ok",
-    "overført": "03.10.2025 12:10"
+    "transferred": "03.10.2025 12:10"
   },
   {
-    "hendelseId": "5738f985a7-0dd3-4909-820b-b8fe1e221eff",
-    "operasjon": "UPDATE",
-    "organisasjon": "telemarkfylke.no",
-    "ressurser": "administrasjon/personal/personalressurs",
+    "eventId": "5738f985a7-0dd3-4909-820b-b8fe1e221eff",
+    "operation": "UPDATE",
+    "organization": "telemarkfylke.no",
+    "resources": "administrasjon/personal/personalressurs",
     "status": "ok",
-    "overført": "03.10.2025 11:57"
+    "transferred": "03.10.2025 11:57"
   },
   {
-    "hendelseId": "b7551470a6-0dd3-4909-820b-b8fe1e221eff",
-    "operasjon": "UPDATE",
-    "organisasjon": "telemarkfylke.no",
-    "ressurser": "administrasjon/personal/personalressurs",
+    "eventId": "b7551470a6-0dd3-4909-820b-b8fe1e221eff",
+    "operation": "UPDATE",
+    "organization": "telemarkfylke.no",
+    "resources": "administrasjon/personal/personalressurs",
     "status": "ok",
-    "overført": "03.10.2025 11:57"
+    "transferred": "03.10.2025 11:57"
   },
   {
-    "hendelseId": "27637733c8-0dd3-4909-820b-b8fe1e221eff",
-    "operasjon": "CREATE",
-    "organisasjon": "vestfoldfylke.no",
-    "ressurser": "administrasjon/personal/variabellonn",
+    "eventId": "27637733c8-0dd3-4909-820b-b8fe1e221eff",
+    "operation": "CREATE",
+    "organization": "vestfoldfylke.no",
+    "resources": "administrasjon/personal/variabellonn",
     "status": "error",
-    "overført": "03.10.2025 11:27"
+    "transferred": "03.10.2025 11:27"
   }
 ]

@@ -8,7 +8,7 @@ declare global {
        * @example cy.dataCy('greeting')
        */
       dataCy(value: string): Chainable<JQuery<HTMLElement>>;
-      
+
       /**
        * Custom command to wait for API calls to complete
        * @example cy.waitForAPI()
@@ -18,14 +18,14 @@ declare global {
   }
 }
 
-Cypress.Commands.add('dataCy', (value) => {
+Cypress.Commands.add("dataCy", (value) => {
   return cy.get(`[data-cy=${value}]`);
 });
 
-Cypress.Commands.add('waitForAPI', () => {
+Cypress.Commands.add("waitForAPI", () => {
   // Wait for any pending network requests to complete
-  cy.intercept('GET', '/api/**').as('apiCall');
-  cy.wait('@apiCall', { timeout: 10000 });
+  cy.intercept("GET", "/api/**").as("apiCall");
+  cy.wait("@apiCall", { timeout: 10000 });
 });
 
 export {};

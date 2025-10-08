@@ -1,10 +1,10 @@
 import { Box, Table } from "@navikt/ds-react";
 import { CheckmarkCircleFillIcon, XMarkIcon, ChevronRightIcon } from "@navikt/aksel-icons";
 import { useNavigate } from "react-router";
-import type { AdaptereTableRow } from "../types";
+import type { IAdaptereTableRow } from "~/types";
 
 interface AdaptereTableProps {
-  data: AdaptereTableRow[];
+  data: IAdaptereTableRow[];
   sortState?: { orderBy: string; direction: "ascending" | "descending" };
   onSortChange: (sortKey: string) => void;
 }
@@ -12,45 +12,46 @@ interface AdaptereTableProps {
 export function AdaptereTable({ data, sortState, onSortChange }: AdaptereTableProps) {
   const navigate = useNavigate();
 
-  const handleRowClick = (adapter: AdaptereTableRow) => {
+  const handleRowClick = (adapter: IAdaptereTableRow) => {
     // Create a URL-safe identifier from domain
-    const adapterId = adapter.domain.toLowerCase().replace(/\s+/g, '-');
+    const adapterId = adapter.domain.toLowerCase().replace(/\s+/g, "-");
     // Pass the adapter data via state
-    navigate(`/adaptere/${adapterId}`, { 
-      state: { 
-        selectedAdapter: adapter 
-      } 
+    navigate(`/adaptere/${adapterId}`, {
+      state: {
+        selectedAdapter: adapter,
+      },
     });
   };
 
   return (
-    <Box
-      background="surface-subtle"
-      padding="space-16"
-      borderRadius="large"
-      shadow="xsmall"
-    >
+    <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
       <Table sort={sortState} onSortChange={onSortChange}>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Status</Table.HeaderCell>
-            <Table.ColumnHeader sortable sortKey="organisation">Organisasjon</Table.ColumnHeader>
-            <Table.ColumnHeader sortable sortKey="domain">Domene</Table.ColumnHeader>
-            <Table.ColumnHeader sortable sortKey="status">Status</Table.ColumnHeader>
+            <Table.ColumnHeader sortable sortKey="organisation">
+              Organisasjon
+            </Table.ColumnHeader>
+            <Table.ColumnHeader sortable sortKey="domain">
+              Domene
+            </Table.ColumnHeader>
+            <Table.ColumnHeader sortable sortKey="status">
+              Status
+            </Table.ColumnHeader>
             <Table.HeaderCell></Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {data.map((adapter, index) => (
-            <Table.Row 
-              key={index} 
-              onRowClick={() => handleRowClick(adapter)}
-              shadeOnHover={true}
-            >
+            <Table.Row key={index} onRowClick={() => handleRowClick(adapter)} shadeOnHover={true}>
               <Table.DataCell>
-                {adapter.status === 'ok' ? (
+                {adapter.status === "ok" ? (
                   <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                    <CheckmarkCircleFillIcon className="text-green-600" title="OK" fontSize="1.25rem" />
+                    <CheckmarkCircleFillIcon
+                      className="text-green-600"
+                      title="OK"
+                      fontSize="1.25rem"
+                    />
                   </div>
                 ) : (
                   <div className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
@@ -61,12 +62,14 @@ export function AdaptereTable({ data, sortState, onSortChange }: AdaptereTablePr
               <Table.DataCell>{adapter.organisation}</Table.DataCell>
               <Table.DataCell>{adapter.domain}</Table.DataCell>
               <Table.DataCell>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  adapter.status === 'ok' 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-red-100 text-red-800'
-                }`}>
-                  {adapter.status === 'ok' ? 'Aktiv' : 'Inaktiv'}
+                <span
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    adapter.status === "ok"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {adapter.status === "ok" ? "Aktiv" : "Inaktiv"}
                 </span>
               </Table.DataCell>
               <Table.DataCell>

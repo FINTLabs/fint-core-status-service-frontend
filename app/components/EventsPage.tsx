@@ -2,26 +2,23 @@ import { useState } from "react";
 import { Heading, BodyLong, Box } from "@navikt/ds-react";
 import { HendelserFilter } from "./HendelserFilter";
 import { HendelserModal } from "./HendelserModal";
-import type { HendelserData } from "../types";
+import type { IEventData, IEventDetail } from "~/types";
 import { HendelserTable } from "./HendelserTable";
-import HendelserApi from "~/routes/api/HendelserApi";
+import EventsApi from "~/routes/api/HendelserApi";
 
 interface HendelserPageProps {
-  initialData: HendelserData[];
+  initialData: IEventData[];
   env: string;
 }
 
-export function HendelserPage({ initialData, env }: HendelserPageProps) {
+export function EventsPage({ initialData, env }: HendelserPageProps) {
   // Filter states
   const [searchFilter, setSearchFilter] = useState<string>("");
-  const [dateRange, setDateRange] = useState<
-    { from?: Date; to?: Date } | undefined
-  >(undefined);
+  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedHendelse, setSelectedHendelse] =
-    useState<HendelserData | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<IEventData | null>(null);
 
   // Clear all filters
   const handleClearFilters = () => {
@@ -30,67 +27,58 @@ export function HendelserPage({ initialData, env }: HendelserPageProps) {
   };
 
   // Modal handlers
-  const handleRowClick = (hendelse: HendelserData) => {
-    setSelectedHendelse(hendelse);
+  const handleRowClick = (event: IEventData) => {
+    setSelectedEvent(event);
     setIsModalOpen(true);
-    fetchHendelseDetail(hendelse.hendelseId);
+    fetchEventDetail(event.eventId);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedHendelse(null);
+    setSelectedEvent(null);
   };
 
-  // Fetch hendelse detail data from API
-  const [hendelseDetailData, setHendelseDetailData] = useState<{
-    request: unknown;
-    response: unknown;
-  } | null>(null);
+  // Fetch event detail data from API
+  const [eventDetailData, setEventDetailData] = useState<IEventDetail | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
-  const fetchHendelseDetail = async (hendelseId: string) => {
+  const fetchEventDetail = async (eventId: string) => {
     try {
       setLoadingDetail(true);
-      const response = await HendelserApi.getHendelseDetail(hendelseId);
-      setHendelseDetailData(response.data || null);
+      const response = await EventsApi.getEventDetail(eventId);
+      setEventDetailData(response.data || null);
     } catch {
       // Handle error silently or use proper error logging
-      // console.error("Failed to fetch hendelse detail:", err);
-      // Set empty data on error
-      setHendelseDetailData({
-        request: null,
-        response: null,
-      });
+      // console.error("Failed to fetch event detail:", err);
+      // Set null on error
+      setEventDetailData(null);
     } finally {
       setLoadingDetail(false);
     }
   };
 
-
   // Filter the data based on current filters
-  const filteredData = initialData.filter((hendelse) => {
+  const filteredData = initialData.filter((event) => {
     // Search filter - searches both ID and resources
     if (searchFilter) {
       const searchTerm = searchFilter.toLowerCase();
-      const matchesId = hendelse.hendelseId.toLowerCase().includes(searchTerm);
-      const matchesRessurser = hendelse.ressurser
-        .toLowerCase()
-        .includes(searchTerm);
+      const matchesId = event.eventId.toLowerCase().includes(searchTerm);
+      const matchesResources = event.resources.toLowerCase().includes(searchTerm);
 
-      if (!matchesId && !matchesRessurser) {
+      if (!matchesId && !matchesResources) {
         return false;
       }
     }
 
     // Date range filter
     if (dateRange?.from || dateRange?.to) {
-      const hendelseDate = new Date(hendelse.overført);
+      const eventDate = new Date(event.transferred);
 
-      if (dateRange.from && hendelseDate < dateRange.from) {
+      if (dateRange.from && eventDate < dateRange.from) {
         return false;
       }
 
-      if (dateRange.to && hendelseDate > dateRange.to) {
+      if (dateRange.to && eventDate > dateRange.to) {
         return false;
       }
     }
@@ -117,20 +105,16 @@ export function HendelserPage({ initialData, env }: HendelserPageProps) {
         onClearFilters={handleClearFilters}
       />
 
-      <HendelserTable
-        data={filteredData}
-        onRowClick={handleRowClick}
-        loading={loadingDetail}
-      />
+      <HendelserTable data={filteredData} onRowClick={handleRowClick} loading={loadingDetail} />
 
       {/* Modal */}
-      {selectedHendelse && hendelseDetailData && (
+      {selectedEvent && eventDetailData && (
         <HendelserModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          requestData={hendelseDetailData.request}
-          responseData={hendelseDetailData.response}
-          hendelseId={selectedHendelse.hendelseId}
+          requestData={eventDetailData.request}
+          responseData={eventDetailData.response}
+          hendelseId={selectedEvent.eventId}
         />
       )}
     </Box>
