@@ -1,13 +1,15 @@
-import type { Route } from "./+types/adaptere.$adapterId";
+import type { Route } from "./+types/adapterStatus.$adapterId";
 import { Box, Table, Alert, Heading, BodyShort, HStack } from "@navikt/ds-react";
 import { CheckmarkCircleFillIcon, XMarkIcon, ChevronRightIcon } from "@navikt/aksel-icons";
 import { useNavigate, useLocation } from "react-router";
-import type { AdapterDetailData, AdaptereTableRow } from "../types";
-import { Breadcrumbs } from "../components/Breadcrumbs";
+import type { IAdapterDetailData, IAdaptereTableRow } from "~/types";
+import { Breadcrumbs } from "~/components/Breadcrumbs";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
-    { title: `Adapter Detaljer - ${params.adapterId} - Fint Core Status Service` },
+    {
+      title: `Adapter Detaljer - ${params.adapterId} - Fint Core Status Service`,
+    },
     { name: "description", content: "View detailed adapter component status" },
   ];
 }
@@ -15,12 +17,12 @@ export function meta({ params }: Route.MetaArgs) {
 export default function AdaptereDetail({ params }: Route.LoaderArgs) {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Get the selected adapter data from navigation state
-  const selectedAdapter = location.state?.selectedAdapter as AdaptereTableRow | undefined;
-  
+  const selectedAdapter = location.state?.selectedAdapter as IAdaptereTableRow | undefined;
+
   // Sample data for the detailed view matching new API structure
-  const componentData: AdapterDetailData[] = [
+  const componentData: IAdapterDetailData[] = [
     {
       adapterId: "elev",
       heartbeat: true,
@@ -28,8 +30,8 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
       full: {
         healthy: false,
         date: "2024-01-10",
-        expectedDate: "2024-01-20"
-      }
+        expectedDate: "2024-01-20",
+      },
     },
     {
       adapterId: "elevprogram",
@@ -38,8 +40,8 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
       full: {
         healthy: false,
         date: "2024-01-08",
-        expectedDate: "2024-01-18"
-      }
+        expectedDate: "2024-01-18",
+      },
     },
     {
       adapterId: "timeplan",
@@ -48,47 +50,45 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
       full: {
         healthy: true,
         date: "2024-01-15",
-        expectedDate: "2024-01-22"
-      }
-    }
+        expectedDate: "2024-01-22",
+      },
+    },
   ];
 
-  const handleRowClick = (component: typeof componentData[0]) => {
+  const handleRowClick = (component: (typeof componentData)[0]) => {
     // Navigate to table 3 using the correct route structure
     // Pass both the component data and selected adapter data via state
     navigate(`/adaptere/${params.adapterId}/${component.adapterId}`, {
       state: {
         selectedComponent: component,
-        selectedAdapter: selectedAdapter
-      }
+        selectedAdapter: selectedAdapter,
+      },
     });
   };
 
   // Decode the adapter ID to get domain name
   const adapterId = params.adapterId;
-  const domain = adapterId.charAt(0).toUpperCase() + adapterId.slice(1).replace(/-/g, ' ');
+  const domain = adapterId.charAt(0).toUpperCase() + adapterId.slice(1).replace(/-/g, " ");
 
   // Create breadcrumb items
   const breadcrumbItems = [
-    { label: "Adaptere", href: "/adaptere" },
-    { label: domain, href: `/adaptere/${params.adapterId}` }
+    { label: "Adapter", href: "/adaptere" },
+    { label: domain, href: `/adaptere/${params.adapterId}` },
   ];
 
   return (
     <div className="py-8">
       <Breadcrumbs items={breadcrumbItems} />
-      
+
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-4">Adapter Detaljer</h1>
-        <p className="text-xl text-gray-600">
-          Komponenter for {domain}
-        </p>
+        <p className="text-xl text-gray-600">Komponenter for {domain}</p>
       </div>
 
       {/* Alert showing selected adapter details */}
       {selectedAdapter && (
         <Box marginBlock="4">
-          <Alert variant={selectedAdapter.status === 'ok' ? 'success' : 'error'}>
+          <Alert variant={selectedAdapter.status === "ok" ? "success" : "error"}>
             <Heading size="small" spacing>
               Valgt Adapter: {selectedAdapter.domain}
             </Heading>
@@ -103,13 +103,15 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
               </div>
               <div className="space-y-1 flex-1 min-w-0">
                 <BodyShort>
-                  <strong>Status:</strong> 
-                  <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    selectedAdapter.status === 'ok' 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
-                  }`}>
-                    {selectedAdapter.status === 'ok' ? 'Aktiv' : 'Inaktiv'}
+                  <strong>Status:</strong>
+                  <span
+                    className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      selectedAdapter.status === "ok"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {selectedAdapter.status === "ok" ? "Aktiv" : "Inaktiv"}
                   </span>
                 </BodyShort>
                 <BodyShort>
@@ -121,12 +123,7 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
         </Box>
       )}
 
-      <Box
-        background="surface-subtle"
-        padding="space-16"
-        borderRadius="large"
-        shadow="xsmall"
-      >
+      <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
         <Table>
           <Table.Header>
             <Table.Row>
@@ -141,7 +138,7 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
           </Table.Header>
           <Table.Body>
             {componentData.map((component, index) => (
-              <Table.Row 
+              <Table.Row
                 key={index}
                 onRowClick={() => handleRowClick(component)}
                 shadeOnHover={true}
@@ -152,7 +149,11 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
                 <Table.DataCell>
                   {component.heartbeat ? (
                     <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                      <CheckmarkCircleFillIcon className="text-green-600" title="OK" fontSize="1.25rem" />
+                      <CheckmarkCircleFillIcon
+                        className="text-green-600"
+                        title="OK"
+                        fontSize="1.25rem"
+                      />
                     </div>
                   ) : (
                     <div className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
@@ -166,7 +167,11 @@ export default function AdaptereDetail({ params }: Route.LoaderArgs) {
                 <Table.DataCell>
                   {component.full.healthy ? (
                     <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                      <CheckmarkCircleFillIcon className="text-green-600" title="OK" fontSize="1.25rem" />
+                      <CheckmarkCircleFillIcon
+                        className="text-green-600"
+                        title="OK"
+                        fontSize="1.25rem"
+                      />
                     </div>
                   ) : (
                     <div className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">

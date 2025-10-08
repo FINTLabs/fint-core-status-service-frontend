@@ -1,62 +1,67 @@
-import type { Route } from "./+types/adaptere.$adapterId.$componentId";
-import { Box, Table, Alert, Heading, BodyShort, HStack } from "@navikt/ds-react";
+import type { Route } from "./+types/adapterStatus.$adapterId.$componentId";
+import { Alert, BodyShort, Box, Heading, HStack, Table } from "@navikt/ds-react";
 import { CheckmarkCircleFillIcon, XMarkIcon } from "@navikt/aksel-icons";
 import { useState } from "react";
 import { useLocation } from "react-router";
-import type { AdapterComponentData, AdapterDetailData, AdaptereTableRow } from "../types";
-import { Breadcrumbs } from "../components/Breadcrumbs";
-import { AdapterComponentModal } from "../components/AdapterComponentModal";
+import type { IAdapterComponentData, IAdapterDetailData, IAdaptereTableRow } from "~/types";
+import { Breadcrumbs } from "~/components/Breadcrumbs";
+import { AdapterComponentModal } from "~/components/AdapterComponentModal";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
-    { title: `Adapter Komponent - ${params.componentId} - Fint Core Status Service` },
-    { name: "description", content: "View detailed adapter component information" },
+    {
+      title: `Adapter Komponent - ${params.componentId} - Fint Core Status Service`,
+    },
+    {
+      name: "description",
+      content: "View detailed adapter component information",
+    },
   ];
 }
 
 export default function AdapterComponent({ params }: Route.LoaderArgs) {
   const location = useLocation();
-  
+
   // Get the selected component and adapter data from navigation state
-  const selectedComponent = location.state?.selectedComponent as AdapterDetailData | undefined;
-  const selectedAdapter = location.state?.selectedAdapter as AdaptereTableRow | undefined;
-  
+  const selectedComponent = location.state?.selectedComponent as IAdapterDetailData | undefined;
+  const selectedAdapter = location.state?.selectedAdapter as IAdaptereTableRow | undefined;
+
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAdapterName, setSelectedAdapterName] = useState<string | null>(null);
 
   // Sample data for the adapter component view
-  const adapterData: AdapterComponentData[] = [
+  const adapterData: IAdapterComponentData[] = [
     {
       adapter: "elevprogram-visma",
-      driftspuls: "feil",
-      deltaOverføring: "",
-      fullOverføring: ""
+      heartbeatStatus: "error",
+      deltaTransfer: "",
+      fullTransfer: "",
     },
     {
       adapter: "elevprogram-visma2",
-      driftspuls: "ok",
-      deltaOverføring: "I dag",
-      fullOverføring: "Lørdag"
+      heartbeatStatus: "ok",
+      deltaTransfer: "I dag",
+      fullTransfer: "Lørdag",
     },
     {
       adapter: "elevprogram-dev",
-      driftspuls: "feil",
-      deltaOverføring: "15.03.2024",
-      fullOverføring: "15.03.2024"
-    }
+      heartbeatStatus: "error",
+      deltaTransfer: "15.03.2024",
+      fullTransfer: "15.03.2024",
+    },
   ];
 
   // Decode the component ID to get adapter and component info
   const adapterId = params.adapterId;
   const componentName = params.componentId;
-  const domain = adapterId.charAt(0).toUpperCase() + adapterId.slice(1).replace(/-/g, ' ');
+  const domain = adapterId.charAt(0).toUpperCase() + adapterId.slice(1).replace(/-/g, " ");
 
   // Create breadcrumb items
   const breadcrumbItems = [
-    { label: "Adaptere", href: "/adaptere" },
+    { label: "AdapterStatus", href: "/adaptere" },
     { label: domain, href: `/adaptere/${adapterId}` },
-    { label: componentName, href: `/adaptere/${adapterId}/${componentName}` }
+    { label: componentName, href: `/adaptere/${adapterId}/${componentName}` },
   ];
 
   // Modal handlers
@@ -88,7 +93,7 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
           deltaSyncInterval: "IMMEDIATE",
           followsContract: false,
           lastFullSync: null,
-          lastFullSyncTime: null
+          lastFullSyncTime: null,
         },
         {
           resourceName: "samtykke",
@@ -96,24 +101,32 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
           deltaSyncInterval: "IMMEDIATE",
           followsContract: false,
           lastFullSync: null,
-          lastFullSyncTime: null
+          lastFullSyncTime: null,
         },
         {
           resourceName: "tjeneste",
           fullSyncIntervalInDays: 1,
           deltaSyncInterval: "IMMEDIATE",
           followsContract: Math.random() > 0.2, // 80% chance
-          lastFullSync: Math.random() > 0.5 ? Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 86400) : null,
-          lastFullSyncTime: Math.random() > 0.5 ? new Date((Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 86400)) * 1000).toLocaleString('no-NO') : null
-        }
-      ]
+          lastFullSync:
+            Math.random() > 0.5
+              ? Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 86400)
+              : null,
+          lastFullSyncTime:
+            Math.random() > 0.5
+              ? new Date(
+                  (Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 86400)) * 1000
+                ).toLocaleString("no-NO")
+              : null,
+        },
+      ],
     };
   };
 
   return (
     <div className="py-8">
       <Breadcrumbs items={breadcrumbItems} />
-      
+
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-4">Adapter Komponent</h1>
         <p className="text-xl text-gray-600">
@@ -124,7 +137,7 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
       {/* Alert showing selected component and adapter details */}
       {(selectedComponent || selectedAdapter) && (
         <Box marginBlock="4">
-          <Alert variant={selectedComponent?.heartbeat ? 'success' : 'error'}>
+          <Alert variant={selectedComponent?.heartbeat ? "success" : "error"}>
             <Heading size="small" spacing>
               Valgt Komponent: {componentName}
             </Heading>
@@ -146,13 +159,15 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
                       <strong>Komponent ID:</strong> {selectedComponent.adapterId}
                     </BodyShort>
                     <BodyShort>
-                      <strong>Heartbeat:</strong> 
-                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        selectedComponent.heartbeat 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {selectedComponent.heartbeat ? 'Aktiv' : 'Inaktiv'}
+                      <strong>Heartbeat:</strong>
+                      <span
+                        className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          selectedComponent.heartbeat
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {selectedComponent.heartbeat ? "Aktiv" : "Inaktiv"}
                       </span>
                     </BodyShort>
                     <BodyShort>
@@ -165,13 +180,15 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
                 {selectedComponent && (
                   <>
                     <BodyShort>
-                      <strong>Full Status:</strong> 
-                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        selectedComponent.full.healthy 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {selectedComponent.full.healthy ? 'OK' : 'Feil'}
+                      <strong>Full Status:</strong>
+                      <span
+                        className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          selectedComponent.full.healthy
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {selectedComponent.full.healthy ? "OK" : "Feil"}
                       </span>
                     </BodyShort>
                     <BodyShort>
@@ -188,12 +205,7 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
         </Box>
       )}
 
-      <Box
-        background="surface-subtle"
-        padding="space-16"
-        borderRadius="large"
-        shadow="xsmall"
-      >
+      <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
         <Table>
           <Table.Header>
             <Table.Row>
@@ -205,7 +217,7 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
           </Table.Header>
           <Table.Body>
             {adapterData.map((adapter, index) => (
-              <Table.Row 
+              <Table.Row
                 key={index}
                 onRowClick={() => handleRowClick(adapter.adapter)}
                 shadeOnHover={true}
@@ -214,9 +226,13 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
                   <span className="font-medium">{adapter.adapter}</span>
                 </Table.DataCell>
                 <Table.DataCell>
-                  {adapter.driftspuls === 'ok' ? (
+                  {adapter.heartbeatStatus === "ok" ? (
                     <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                      <CheckmarkCircleFillIcon className="text-green-600" title="OK" fontSize="1.25rem" />
+                      <CheckmarkCircleFillIcon
+                        className="text-green-600"
+                        title="OK"
+                        fontSize="1.25rem"
+                      />
                     </div>
                   ) : (
                     <div className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
@@ -225,10 +241,10 @@ export default function AdapterComponent({ params }: Route.LoaderArgs) {
                   )}
                 </Table.DataCell>
                 <Table.DataCell>
-                  <span className="text-gray-700">{adapter.deltaOverføring || '-'}</span>
+                  <span className="text-gray-700">{adapter.deltaTransfer || "-"}</span>
                 </Table.DataCell>
                 <Table.DataCell>
-                  <span className="text-gray-700">{adapter.fullOverføring || '-'}</span>
+                  <span className="text-gray-700">{adapter.fullTransfer || "-"}</span>
                 </Table.DataCell>
               </Table.Row>
             ))}
