@@ -5,7 +5,7 @@ import type { IAdapterDetailData, IAdaptereTableRow } from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterDetailAlert } from "~/components/adapters/AdapterDetailAlert";
 import { AdapterDetailTable } from "~/components/adapters/AdapterDetailTable";
-import AdaptereApi from "./api/AdaptereApi";
+import AdapterApi from "./api/AdapterApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 import { Box } from "@navikt/ds-react";
 
@@ -25,7 +25,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   // console.log('env', env);
   const { adapterId } = params;
 
-  const response = await AdaptereApi.getAdapterDetail(adapterId || "");
+  const response = await AdapterApi.getAdapterDetail(adapterId || "");
   const adapterData = response.data || [];
   return { adapterData, env, adapterId };
 };

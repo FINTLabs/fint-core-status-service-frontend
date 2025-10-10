@@ -6,7 +6,7 @@ import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterComponentModal } from "~/components/adapters/AdapterComponentModal";
 import { AdapterComponentAlert } from "~/components/adapters/AdapterComponentAlert";
 import { AdapterComponentTable } from "~/components/adapters/AdapterComponentTable";
-import AdaptereApi from "./api/AdaptereApi";
+import AdapterApi from "./api/AdapterApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 import { Box } from "@navikt/ds-react";
 
@@ -29,7 +29,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   // console.log('env', env);
   const { adapterId, componentId } = params;
 
-  const response = await AdaptereApi.getAdapterComponentDetail(adapterId || "", componentId || "");
+  const response = await AdapterApi.getAdapterComponentDetail(adapterId || "", componentId || "");
   const adapterData = response.data || [];
   return { adapterData, env, adapterId, componentId };
 };
@@ -61,7 +61,7 @@ export default function AdapterComponent() {
       const fetchModalData = async () => {
         try {
           setLoadingModal(true);
-          const response = await AdaptereApi.getAdapterComponentModalData(
+          const response = await AdapterApi.getAdapterComponentModalData(
             adapterId,
             componentId,
             selectedAdapterName
