@@ -3,7 +3,7 @@ import { CheckmarkCircleFillIcon, XMarkIcon, ChevronRightIcon } from "@navikt/ak
 import { useNavigate } from "react-router";
 import type { IAdaptereTableRow } from "~/types";
 
-interface AdaptereTableProps {
+interface AdapterTableProps {
   data: IAdaptereTableRow[];
   sortState?: { orderBy: string; direction: "ascending" | "descending" };
   onSortChange: (sortKey: string) => void;
@@ -19,7 +19,7 @@ export function AdapterTable({
   currentPage,
   onPageChange,
   itemsPerPage,
-}: AdaptereTableProps) {
+}: AdapterTableProps) {
   const navigate = useNavigate();
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
