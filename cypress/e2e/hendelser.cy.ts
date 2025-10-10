@@ -11,8 +11,8 @@ Cypress.on("uncaught:exception", (err) => {
 describe("Hendelser Page", () => {
   beforeEach(() => {
     // Load fixture data
-    cy.fixture("hendelser").as("hendelserData");
-    cy.fixture("hendelse-detail").as("hendelseDetailData");
+    cy.fixture("events").as("eventsData");
+    cy.fixture("event-detail").as("eventDetailData");
     cy.visit("/hendelser");
 
     // Wait for Novari theme to be applied

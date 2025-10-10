@@ -1,20 +1,20 @@
 [
   {
     "adapter": "elevprogram-visma",
-    "driftspuls": "feil",
-    "deltaOverføring": "",
-    "fullOverføring": ""
+    "heartbeatStatus": "error",
+    "deltaTransfer": "",
+    "fullTransfer": ""
   },
   {
     "adapter": "elevprogram-visma2",
-    "driftspuls": "ok",
-    "deltaOverføring": "I dag",
-    "fullOverføring": "Lørdag"
+    "heartbeatStatus": "ok",
+    "deltaTransfer": "Today",
+    "fullTransfer": "Saturday"
   },
   {
     "adapter": "elevprogram-dev",
-    "driftspuls": "feil",
-    "deltaOverføring": "15.03.2024",
-    "fullOverføring": "15.03.2024"
+    "heartbeatStatus": "error",
+    "deltaTransfer": "15.03.2024",
+    "fullTransfer": "15.03.2024"
   }
 ]
