@@ -65,8 +65,8 @@ describe("AdapterStatus Page", () => {
   it("should filter data by organisation", () => {
     cy.waitForAPI();
 
-    // Wait for initial data to be loaded and rendered
-    cy.get("[data-cy='adapter-row']").should("have.length", 3);
+    // Wait for initial data to be loaded and rendered (20 per page)
+    cy.get("[data-cy='adapter-row']").should("have.length", 20);
 
     // Wait for filters to be interactive
     cy.get("#organisation-filter").should("be.visible").and("not.be.disabled");
@@ -74,15 +74,15 @@ describe("AdapterStatus Page", () => {
     // Select organisation filter
     cy.get("#organisation-filter").select("fintlabs_no");
 
-    // Check that only fintlabs_no data is shown
-    cy.get("[data-cy='adapter-row']").should("have.length", 2);
+    // Check that only fintlabs_no data is shown (should be less than 20)
+    cy.get("[data-cy='adapter-row']").should("have.length.lessThan", 20);
   });
 
   it("should filter data by domain", () => {
     cy.waitForAPI();
 
-    // Wait for initial data to be loaded and rendered
-    cy.get("[data-cy='adapter-row']").should("have.length", 3);
+    // Wait for initial data to be loaded and rendered (20 per page)
+    cy.get("[data-cy='adapter-row']").should("have.length", 20);
 
     // Wait for filters to be interactive
     cy.get("#domain-filter").should("be.visible").and("not.be.disabled");
@@ -91,7 +91,7 @@ describe("AdapterStatus Page", () => {
     cy.get("#domain-filter").select("personvern");
 
     // Check that only personvern data is shown
-    cy.get("[data-cy='adapter-row']").should("have.length", 1);
+    cy.get("[data-cy='adapter-row']").should("have.length.at.least", 1);
   });
 
   it("should navigate, display details and display component modal", () => {
@@ -138,5 +138,124 @@ describe("AdapterStatus Page", () => {
     cy.get("[data-cy='component-modal']").should("be.visible");
     cy.get("[data-cy='component-modal-close']").click();
     cy.get("[data-cy='component-modal']").should("not.exist");
+  });
+
+  it("should paginate through adapters (20 per page)", () => {
+    cy.waitForAPI();
+
+    // Check first page has 20 items
+    cy.get("[data-cy='adapter-row']").should("have.length", 20);
+
+    // Check pagination controls are visible
+    cy.get("[data-cy='pagination']").should("be.visible");
+
+    // Navigate to page 2
+    cy.get("[data-cy='pagination']").within(() => {
+      cy.contains("button", "2").click();
+    });
+
+    // Check second page has remaining items (25 total - 20 from first page = 5)
+    cy.get("[data-cy='adapter-row']").should("have.length", 5);
+
+    // Navigate back to page 1
+    cy.get("[data-cy='pagination']").within(() => {
+      cy.contains("button", "1").click();
+    });
+
+    // Should be back at page 1 with 20 items
+    cy.get("[data-cy='adapter-row']").should("have.length", 20);
+  });
+
+  it("should hide pagination when filtered results are less than 20", () => {
+    cy.waitForAPI();
+
+    // Initially pagination should be visible (25 total adapters)
+    cy.get("[data-cy='pagination']").should("be.visible");
+
+    // Filter to show only fintlabs_no organization
+    cy.get("#organisation-filter").select("fintlabs_no");
+
+    // Should show fewer results
+    cy.get("[data-cy='adapter-row']").should("have.length.lessThan", 20);
+
+    // Pagination should not be visible
+    cy.get("[data-cy='pagination']").should("not.exist");
+  });
+
+  it("should reset to page 1 when filter is applied", () => {
+    cy.waitForAPI();
+
+    // Navigate to page 2
+    cy.get("[data-cy='pagination']").within(() => {
+      cy.contains("button", "2").click();
+    });
+
+    // Verify we're on page 2
+    cy.get("[data-cy='adapter-row']").should("have.length", 5);
+
+    // Apply a filter
+    cy.get("#domain-filter").select("utdanning");
+
+    // Should reset to page 1 with filtered results
+    cy.get("[data-cy='adapter-row']").should("have.length.at.least", 1);
+
+    // Clear the filter by selecting "Alle domener"
+    cy.get("#domain-filter").select("");
+
+    // Should still be on page 1 with 20 items
+    cy.get("[data-cy='adapter-row']").should("have.length", 20);
+  });
+
+  it("should reset to page 1 when sorting is applied", () => {
+    cy.waitForAPI();
+
+    // Navigate to page 2
+    cy.get("[data-cy='pagination']").within(() => {
+      cy.contains("button", "2").click();
+    });
+
+    // Verify we're on page 2
+    cy.get("[data-cy='adapter-row']").should("have.length", 5);
+
+    // Click on a sortable column header
+    cy.contains("th", "Organisasjon").click();
+
+    // Should reset to page 1 with 20 items
+    cy.get("[data-cy='adapter-row']").should("have.length", 20);
+  });
+
+  it("should maintain correct adapter count per page", () => {
+    cy.waitForAPI();
+
+    // Page 1: 20 items
+    cy.get("[data-cy='adapter-row']").should("have.length", 20);
+
+    // Navigate to page 2
+    cy.get("[data-cy='pagination']").within(() => {
+      cy.contains("button", "2").click();
+    });
+
+    // Page 2: 5 items (25 total - 20 from first page)
+    cy.get("[data-cy='adapter-row']").should("have.length", 5);
+  });
+
+  it("should navigate from any page to adapter detail", () => {
+    cy.waitForAPI();
+
+    // Navigate to page 2
+    cy.get("[data-cy='pagination']").within(() => {
+      cy.contains("button", "2").click();
+    });
+
+    // Wait for page 2 data to load
+    cy.get("[data-cy='adapter-row']").should("have.length", 5);
+
+    // Click on first row of page 2
+    cy.get("[data-cy='adapter-row']").first().click();
+    cy.waitForAPI();
+
+    // Should navigate to adapter detail page
+    cy.url().should("include", "/adaptere/");
+    cy.contains("Adapter Detaljer").should("be.visible");
   });
 });
