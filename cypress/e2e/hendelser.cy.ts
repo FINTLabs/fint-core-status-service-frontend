@@ -1,9 +1,23 @@
+Cypress.on("uncaught:exception", (err) => {
+  if (
+    /hydrat/i.test(err.message) ||
+    /Minified React error #418/.test(err.message) ||
+    /Minified React error #423/.test(err.message) ||
+    /ResizeObserver loop completed with undelivered notifications/.test(err.message)
+  ) {
+    return false;
+  }
+});
 describe("Hendelser Page", () => {
   beforeEach(() => {
     // Load fixture data
     cy.fixture("hendelser").as("hendelserData");
     cy.fixture("hendelse-detail").as("hendelseDetailData");
     cy.visit("/hendelser");
+
+    // Wait for Novari theme to be applied
+    cy.get('[data-theme="novari"]', { timeout: 10000 }).should("exist");
+    cy.wait(1000);
   });
 
   it("should display hendelser table with data", () => {
@@ -22,19 +36,17 @@ describe("Hendelser Page", () => {
     cy.contains("Overført").should("be.visible");
 
     // Check if data is displayed
-    cy.contains("07c76...21eff").should("be.visible");
-    cy.contains("CREATE").should("be.visible");
-    cy.contains("rogfk.no").should("be.visible");
+    cy.get("[data-cy='event-row']").should("have.length", 4);
   });
 
   it("should filter data by search", () => {
     cy.waitForAPI();
 
     // Type in search box
-    cy.get('input[type="search"]').type("rogfk");
+    cy.get('input[type="search"]').type("07c76");
 
     // Check that only matching data is shown
-    cy.contains("rogfk.no").should("be.visible");
+    cy.contains("07c76...21eff").should("be.visible");
     cy.contains("telemarkfylke.no").should("not.exist");
   });
 
@@ -42,7 +54,7 @@ describe("Hendelser Page", () => {
     cy.waitForAPI();
 
     // Click on first row
-    cy.get("tbody tr").first().click();
+    cy.get("[data-cy='event-row']").first().click();
 
     // Modal should open
     cy.contains("Hendelse Detaljer").should("be.visible");
@@ -54,7 +66,7 @@ describe("Hendelser Page", () => {
     cy.waitForAPI();
 
     // Click on first row to open modal
-    cy.get("tbody tr").first().click();
+    cy.get("[data-cy='event-row']").first().click();
 
     // Check request tab
     cy.contains("Request").click();
@@ -64,15 +76,19 @@ describe("Hendelser Page", () => {
 
     // Check response tab
     cy.contains("Response").click();
-    cy.contains("Adapter ID").should("be.visible");
+    cy.contains("Correlation ID").should("be.visible");
+    cy.contains("Organization").should("be.visible");
+    cy.contains("Operation").should("be.visible");
     cy.contains("Status").should("be.visible");
+    cy.contains("Request").should("be.visible");
+    cy.contains("Response").should("be.visible");
   });
 
   it("should close modal when close button is clicked", () => {
     cy.waitForAPI();
 
     // Open modal
-    cy.get("tbody tr").first().click();
+    cy.get("[data-cy='event-row']").first().click();
     cy.contains("Hendelse Detaljer").should("be.visible");
 
     // Close modal

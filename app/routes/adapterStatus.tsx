@@ -1,4 +1,4 @@
-import { AdapterePage } from "~/components/AdapterePage";
+import { AdapterePage } from "~/components/adapters/AdapterePage";
 import type { IAdaptereData } from "~/types";
 import { useLoaderData, type LoaderFunction } from "react-router";
 import AdaptereApi from "~/routes/api/AdaptereApi";

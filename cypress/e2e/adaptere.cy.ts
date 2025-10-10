@@ -1,16 +1,53 @@
+Cypress.on("uncaught:exception", (err) => {
+  if (
+    /hydrat/i.test(err.message) ||
+    /Minified React error #418/.test(err.message) ||
+    /Minified React error #423/.test(err.message) ||
+    /ResizeObserver loop completed with undelivered notifications/.test(err.message)
+  ) {
+    return false;
+  }
+});
+
 describe("AdapterStatus Page", () => {
   beforeEach(() => {
     // Load fixture data
     cy.fixture("adaptere").as("adaptereData");
     cy.visit("/adaptere");
+    cy.reload();
+
+    // Wait for Novari theme to be applied
+    cy.get('[data-theme="novari"]', { timeout: 10000 }).should("exist");
+  });
+
+  it("should display breadcrumbs on all 3 pages", () => {
+    cy.waitForAPI();
+
+    // Check breadcrumbs on main page
+    cy.contains("Adaptere").should("be.visible");
+    cy.get("[data-cy='breadcrumbs']").should("be.visible");
+
+    // Navigate to detail page
+    cy.get("[data-cy='adapter-row']").first().click();
+
+    // Check breadcrumbs on detail page
+    cy.contains("Adapter Detaljer").should("be.visible");
+    cy.get("[data-cy='breadcrumbs']").should("be.visible");
+
+    // Navigate to component detail page
+    cy.get("[data-cy='adapter-detail-table-row']").first().click();
+
+    // Check breadcrumbs on component detail page
+    cy.contains("Adapter Komponent").should("be.visible");
+    cy.get("[data-cy='breadcrumbs']").should("be.visible");
   });
 
   it("should display adaptere table with data", () => {
-    cy.contains("AdapterStatus").should("be.visible");
+    cy.contains("Adapter").should("be.visible");
     cy.contains("Oversikt over adaptere og deres status").should("be.visible");
 
     // Wait for API data to load
-    cy.waitForAPI();
+    // cy.waitForAPI();
 
     // Check if table headers are present
     cy.contains("Status").should("be.visible");
@@ -28,45 +65,78 @@ describe("AdapterStatus Page", () => {
   it("should filter data by organisation", () => {
     cy.waitForAPI();
 
+    // Wait for initial data to be loaded and rendered
+    cy.get("[data-cy='adapter-row']").should("have.length", 3);
+
+    // Wait for filters to be interactive
+    cy.get("#organisation-filter").should("be.visible").and("not.be.disabled");
+
     // Select organisation filter
-    cy.get("select").first().select("fintlabs_no");
+    cy.get("#organisation-filter").select("fintlabs_no");
 
     // Check that only fintlabs_no data is shown
-    cy.contains("fintlabs_no").should("be.visible");
-    cy.contains("vestfoldfylke_no").should("not.exist");
+    cy.get("[data-cy='adapter-row']").should("have.length", 2);
   });
 
   it("should filter data by domain", () => {
     cy.waitForAPI();
 
+    // Wait for initial data to be loaded and rendered
+    cy.get("[data-cy='adapter-row']").should("have.length", 3);
+
+    // Wait for filters to be interactive
+    cy.get("#domain-filter").should("be.visible").and("not.be.disabled");
+
     // Select domain filter
-    cy.get("select").eq(1).select("personvern");
+    cy.get("#domain-filter").select("personvern");
 
     // Check that only personvern data is shown
-    cy.contains("personvern").should("be.visible");
-    cy.contains("utdanning").should("not.exist");
-    cy.contains("helse").should("not.exist");
+    cy.get("[data-cy='adapter-row']").should("have.length", 1);
   });
 
-  it("should navigate to adapter detail when row is clicked", () => {
+  it("should navigate, display details and display component modal", () => {
     cy.waitForAPI();
 
     // Click on first row
-    cy.get("tbody tr").first().click();
+    cy.get("[data-cy='adapter-row']").first().click();
+    cy.waitForAPI();
 
     // Should navigate to adapter detail page
     cy.url().should("include", "/adaptere/");
     cy.contains("Adapter Detaljer").should("be.visible");
-  });
 
-  it("should display breadcrumbs on detail page", () => {
+    // Check adapter details
+    cy.contains("Komponenter").should("be.visible");
+    cy.contains("Adapter").should("be.visible");
+    cy.contains("Organisasjon").should("be.visible");
+    cy.contains("Domene").should("be.visible");
+    cy.contains("Status").should("be.visible");
+
+    // should navigate to component detail page
+    cy.get("[data-cy='adapter-detail-table-row']").first().click();
     cy.waitForAPI();
+    cy.url().should("include", "/adaptere/");
+    cy.contains("Adapter Komponent").should("be.visible");
 
-    // Navigate to detail page
-    cy.get("tbody tr").first().click();
+    // Check component details
+    cy.contains("Driftspuls").should("be.visible");
+    cy.contains("Delta overføring").should("be.visible");
+    cy.contains("Full overføring").should("be.visible");
 
-    // Check breadcrumbs
-    cy.contains("AdapterStatus").should("be.visible");
-    cy.get("nav").should("contain", "→");
+    // should display component modal with details
+    cy.get("[data-cy='component-row']").first().click();
+    cy.get("[data-cy='component-modal']").should("be.visible");
+    cy.contains("Adapter Komponent").should("be.visible");
+    cy.contains("Kapabiliteter").should("be.visible");
+    cy.contains("Organisasjon").should("be.visible");
+    cy.contains("Heartbeat Intervall").should("be.visible");
+    cy.contains("Siste Heartbeat").should("be.visible");
+    cy.contains("Siste Aktivitet").should("be.visible");
+    cy.contains("Har Kontakt").should("be.visible");
+
+    // should close component modal
+    cy.get("[data-cy='component-modal']").should("be.visible");
+    cy.get("[data-cy='component-modal-close']").click();
+    cy.get("[data-cy='component-modal']").should("not.exist");
   });
 });

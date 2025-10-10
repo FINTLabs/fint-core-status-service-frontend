@@ -49,6 +49,28 @@ export interface IAdapterComponentData {
   fullTransfer: string;
 }
 
+// Adapter Component Modal Data Structure
+export interface ICapability {
+  resourceName: string;
+  fullSyncIntervalInDays: number;
+  deltaSyncInterval: string;
+  followsContract: boolean;
+  lastFullSync: number | null;
+  lastFullSyncTime: string | null;
+}
+
+export interface IAdapterComponentModalData {
+  adapterId: string;
+  username: string;
+  orgId: string;
+  heartbeatIntervalInMinutes: number;
+  lastHeartbeat: number;
+  components: string[];
+  hasContact: boolean;
+  capabilities: ICapability[];
+  lastActivity: number;
+}
+
 // Events Data Structure
 export interface IEventData {
   eventId: string;

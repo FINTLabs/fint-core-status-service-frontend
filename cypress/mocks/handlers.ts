@@ -13,20 +13,20 @@ export const handlers = [
   }),
 
   // Adapter detail API
-  http.get("http://localhost:8080/api/adaptere/:adapterId", ({ params }) => {
+  http.get("http://localhost:8080/api/adapters/:adapterId", ({ params }) => {
     const { adapterId: _adapterId } = params;
     return HttpResponse.json(adapterDetailData);
   }),
 
   // Adapter component detail API
-  http.get("http://localhost:8080/api/adaptere/:adapterId/:componentId", ({ params }) => {
+  http.get("http://localhost:8080/api/adapters/:adapterId/:componentId", ({ params }) => {
     const { adapterId: _adapterId, componentId: _componentId } = params;
     return HttpResponse.json(adapterComponentDetailData);
   }),
 
   // Adapter component modal data API
   http.get(
-    "http://localhost:8080/api/adaptere/:adapterId/:componentId/:adapterName",
+    "http://localhost:8080/api/adapters/:adapterId/:componentId/:adapterName",
     ({ params }) => {
       const {
         adapterId: _adapterId,

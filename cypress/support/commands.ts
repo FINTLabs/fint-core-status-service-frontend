@@ -23,9 +23,8 @@ Cypress.Commands.add("dataCy", (value) => {
 });
 
 Cypress.Commands.add("waitForAPI", () => {
-  // Wait for any pending network requests to complete
-  cy.intercept("GET", "/api/**").as("apiCall");
-  cy.wait("@apiCall", { timeout: 10000 });
+  // Wait for MSW to be ready
+  cy.window().should("have.property", "__mswReady", true);
 });
 
 export {};

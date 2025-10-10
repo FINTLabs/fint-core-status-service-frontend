@@ -1,4 +1,4 @@
-import { EventsPage } from "~/components/EventsPage";
+import { EventsPage } from "~/components/events/EventsPage";
 import type { IEventData } from "~/types";
 import { useLoaderData, type LoaderFunction } from "react-router";
 import EventsApi from "~/routes/api/HendelserApi";

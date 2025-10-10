@@ -10,8 +10,8 @@ import {
   type LoaderFunctionArgs,
 } from "react-router";
 import { Box, Page } from "@navikt/ds-react";
-import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
+import { Header } from "./components/layout/Header";
+import { Footer } from "./components/layout/Footer";
 
 import type { Route } from "./+types/root";
 import "./app.css";
