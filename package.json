@@ -24,7 +24,7 @@
     "@react-router/node": "^7.9.2",
     "@react-router/serve": "^7.9.2",
     "isbot": "^5.1.31",
-    "msw": "^2.11.3",
+    "msw": "^2.11.5",
     "novari-frontend-components": "^3.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

@@ -6,4 +6,5 @@ export default [
   route("adaptere/:adapterId", "routes/adapterStatus.$adapterId.tsx"),
   route("adaptere/:adapterId/:componentId", "routes/adapterStatus.$adapterId.$componentId.tsx"),
   route("hendelser", "routes/events.tsx"),
+  route("sync", "routes/sync.tsx"),
 ] satisfies RouteConfig;

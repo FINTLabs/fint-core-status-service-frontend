@@ -5,52 +5,48 @@ import adapterComponentDetailData from "../fixtures/adapter-component-detail.jso
 import adapterComponentModalData from "../fixtures/adapter-component-modal.json";
 import eventsData from "../fixtures/events.json";
 import eventDetailData from "../fixtures/event-detail.json";
+import syncData from "../fixtures/sync.json";
+
+const BASE_URL = "http://localhost:8080";
 
 export const handlers = [
   // AdapterStatus API
-  http.get("http://localhost:8080/api/adapters", () => {
+  http.get(`${BASE_URL}/api/adapters`, () => {
     return HttpResponse.json(adaptereData);
   }),
 
   // Adapter detail API
-  http.get("http://localhost:8080/api/adapters/:adapterId", ({ params }) => {
-    const { adapterId: _adapterId } = params;
+  http.get(`${BASE_URL}/api/adapters/:adapterId`, () => {
     return HttpResponse.json(adapterDetailData);
   }),
 
   // Adapter component detail API
-  http.get("http://localhost:8080/api/adapters/:adapterId/:componentId", ({ params }) => {
-    const { adapterId: _adapterId, componentId: _componentId } = params;
+  http.get(`${BASE_URL}/api/adapters/:adapterId/:componentId`, () => {
     return HttpResponse.json(adapterComponentDetailData);
   }),
 
   // Adapter component modal data API
-  http.get(
-    "http://localhost:8080/api/adapters/:adapterId/:componentId/:adapterName",
-    ({ params }) => {
-      const {
-        adapterId: _adapterId,
-        componentId: _componentId,
-        adapterName: _adapterName,
-      } = params;
-      return HttpResponse.json(adapterComponentModalData);
-    }
-  ),
+  http.get(`${BASE_URL}/api/adapters/:adapterId/:componentId/:adapterName`, () => {
+    return HttpResponse.json(adapterComponentModalData);
+  }),
 
   // Events API
-  http.get("http://localhost:8080/api/events", () => {
+  http.get(`${BASE_URL}/api/events`, () => {
     return HttpResponse.json(eventsData);
   }),
 
   // Event detail API (for modal)
-  http.get("http://localhost:8080/api/events/:eventId", ({ params }) => {
-    const { eventId: _eventId } = params;
+  http.get(`${BASE_URL}/api/events/:eventId`, () => {
     return HttpResponse.json(eventDetailData);
   }),
 
   // Event detail API (new endpoint)
-  http.get("http://localhost:8080/api/events/:eventId/detail", ({ params }) => {
-    const { eventId: _eventId } = params;
+  http.get(`${BASE_URL}/api/events/:eventId/detail`, () => {
     return HttpResponse.json(eventDetailData);
+  }),
+
+  // Sync API
+  http.get(`${BASE_URL}/api/sync`, () => {
+    return HttpResponse.json(syncData);
   }),
 ];

@@ -31,7 +31,13 @@ async function initializeMSW() {
     if (import.meta.env.DEV) {
       if (typeof window !== "undefined") {
         const { worker } = await import("../cypress/mocks/browser");
-        await worker.start({ onUnhandledRequest: "bypass" });
+        await worker.start({
+          serviceWorker: {
+            url: "/mockServiceWorker.js",
+          },
+          onUnhandledRequest: "warn",
+        });
+        // console.log("[MSW] Worker started with handlers:", worker.listHandlers().length);
         // MSW worker started successfully
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).__mswReady = true;

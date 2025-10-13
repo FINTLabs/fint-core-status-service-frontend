@@ -113,8 +113,33 @@ export interface IEventDetail {
   response: IEventResponse;
 }
 
+// Sync Data Structure
+export interface ISyncPage {
+  pageNumber: number;
+  pageSize: number;
+  time: number;
+}
+
+export interface ISyncData {
+  corrId: string;
+  adapterId: string;
+  orgId: string;
+  domain: string;
+  package: string;
+  resource: string;
+  totalPages: number;
+  pagesAcquired: number;
+  totalEntities: number;
+  entitiesAquired: number;
+  syncType: "FULL" | "DELTA";
+  pages: ISyncPage[];
+  finished: boolean;
+  lastPageTime: number;
+}
+
 // Common types
 export type HealthStatus = "HEALTHY" | "UNHEALTHY";
 export type Status = "ok" | "error";
 export type HeartbeatStatus = "ok" | "error";
 export type OperationType = "CREATE" | "UPDATE" | "DELETE";
+export type SyncType = "FULL" | "DELTA";

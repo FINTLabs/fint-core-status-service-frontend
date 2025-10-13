@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
 import { Box, Heading, BodyLong, LinkCard } from "@navikt/ds-react";
-import { InformationSquareIcon, TasklistIcon } from "@navikt/aksel-icons";
+import { InformationSquareIcon, TasklistIcon, ArrowsCirclepathIcon } from "@navikt/aksel-icons";
 
 export function meta(_args: Route.MetaArgs) {
   return [
@@ -21,9 +21,9 @@ export default function Home() {
         </BodyLong>
       </Box>
 
-      <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 list-none p-0">
-        <li>
-          <LinkCard>
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0">
+        <li className="h-full">
+          <LinkCard className="h-full">
             <LinkCard.Icon>
               <TasklistIcon aria-hidden fontSize="2rem" />
             </LinkCard.Icon>
@@ -37,8 +37,8 @@ export default function Home() {
           </LinkCard>
         </li>
 
-        <li>
-          <LinkCard>
+        <li className="h-full">
+          <LinkCard className="h-full">
             <LinkCard.Icon>
               <InformationSquareIcon aria-hidden fontSize="2rem" />
             </LinkCard.Icon>
@@ -48,6 +48,21 @@ export default function Home() {
             <LinkCard.Description>
               Følg med på alle hendelser og operasjoner i systemet. Se detaljer om requests,
               responses og eventuelle feil.
+            </LinkCard.Description>
+          </LinkCard>
+        </li>
+
+        <li className="h-full">
+          <LinkCard className="h-full">
+            <LinkCard.Icon>
+              <ArrowsCirclepathIcon aria-hidden fontSize="2rem" />
+            </LinkCard.Icon>
+            <LinkCard.Title as="h2">
+              <LinkCard.Anchor href="/sync">Synkronisering</LinkCard.Anchor>
+            </LinkCard.Title>
+            <LinkCard.Description>
+              Overvåk synkroniseringer i sanntid. Se fremdrift, antall entiteter og sider som er
+              hentet for både full- og delta-synkroniseringer.
             </LinkCard.Description>
           </LinkCard>
         </li>

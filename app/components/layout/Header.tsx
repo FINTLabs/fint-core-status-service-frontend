@@ -27,12 +27,18 @@ export function Header() {
         displayBox: false,
         action: "/hendelser",
       },
+      {
+        label: "Synkronisering",
+        description: "Oversikt over synkroniseringer",
+        displayBox: false,
+        action: "/sync",
+      },
     ],
     isLoggedIn: true,
     onLogout: () => {},
     onLogin: () => {},
     onMenuClick: (action: string) => navigate(action),
-    user: null,
+    displayName: "Mock User",
     logo: null,
   };
 
