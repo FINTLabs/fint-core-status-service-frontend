@@ -5,12 +5,12 @@ import { AdapterTable } from "./AdapterTable";
 import { PageHeader } from "../layout/PageHeader";
 import type { IAdaptereData, IAdaptereTableRow } from "~/types";
 
-interface AdapterePageProps {
+interface AdapterPageProps {
   initialData: IAdaptereData[];
   env: string;
 }
 
-export function AdapterePage({ initialData, env }: AdapterePageProps) {
+export function AdapterPage({ initialData, env }: AdapterPageProps) {
   const [sortState, setSortState] = useState<
     { orderBy: string; direction: "ascending" | "descending" } | undefined
   >(undefined);
@@ -22,8 +22,8 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
     ok: boolean;
     error: boolean;
   }>({ ok: true, error: true });
-  const [organisasjonFilter, setOrganisasjonFilter] = useState<string>("");
-  const [domeneFilter, setDomeneFilter] = useState<string>("");
+  const [organisationFilter, setOrganisationFilter] = useState<string>("");
+  const [domainFilter, setDomainFilter] = useState<string>("");
 
   const handleSortChange = (sortKey: string) => {
     let newDirection: "ascending" | "descending" = "ascending";
@@ -46,20 +46,20 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
     setCurrentPage(1);
   };
 
-  const handleOrganisasjonFilterChange = (value: string) => {
-    setOrganisasjonFilter(value);
+  const handleOrganisationFilterChange = (value: string) => {
+    setOrganisationFilter(value);
     setCurrentPage(1);
   };
 
-  const handleDomeneFilterChange = (value: string) => {
-    setDomeneFilter(value);
+  const handleDomainFilterChange = (value: string) => {
+    setDomainFilter(value);
     setCurrentPage(1);
   };
 
   const handleClearFilters = () => {
     setStatusFilter({ ok: true, error: true });
-    setOrganisasjonFilter("");
-    setDomeneFilter("");
+    setOrganisationFilter("");
+    setDomainFilter("");
     setCurrentPage(1);
   };
 
@@ -80,17 +80,17 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
     }
 
     if (
-      organisasjonFilter &&
-      !item.organisation.toLowerCase().includes(organisasjonFilter.toLowerCase())
+      organisationFilter &&
+      !item.organisation.toLowerCase().includes(organisationFilter.toLowerCase())
     ) {
       return false;
     }
 
-    return !(domeneFilter && !item.domain.toLowerCase().includes(domeneFilter.toLowerCase()));
+    return !(domainFilter && !item.domain.toLowerCase().includes(domainFilter.toLowerCase()));
   });
 
-  const uniqueOrganisasjoner = [...new Set(tableData.map((item) => item.organisation))];
-  const uniqueDomener = [...new Set(tableData.map((item) => item.domain))];
+  const uniqueOrganisation = [...new Set(tableData.map((item) => item.organisation))];
+  const uniqueDomain = [...new Set(tableData.map((item) => item.domain))];
 
   const sortedFilteredData = [...filteredData].sort((a, b) => {
     if (!sortState) return 0;
@@ -123,13 +123,13 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
 
       <AdapterFilter
         statusFilter={statusFilter}
-        organisasjonFilter={organisasjonFilter}
-        domeneFilter={domeneFilter}
-        uniqueOrganisasjoner={uniqueOrganisasjoner}
-        uniqueDomener={uniqueDomener}
+        organisasjonFilter={organisationFilter}
+        domeneFilter={domainFilter}
+        uniqueOrganisasjoner={uniqueOrganisation}
+        uniqueDomener={uniqueDomain}
         onStatusFilterChange={handleStatusFilterChange}
-        onOrganisasjonFilterChange={handleOrganisasjonFilterChange}
-        onDomeneFilterChange={handleDomeneFilterChange}
+        onOrganisasjonFilterChange={handleOrganisationFilterChange}
+        onDomeneFilterChange={handleDomainFilterChange}
         onClearFilters={handleClearFilters}
       />
 
