@@ -84,6 +84,33 @@ describe("Hendelser Page", () => {
     cy.contains("Response").should("be.visible");
   });
 
+  it("should copy JSON data using copy button", () => {
+    cy.waitForAPI();
+
+    // Open modal
+    cy.get("[data-cy='event-row']").first().click();
+
+    // Check request tab has copy button
+    cy.contains("Request").click();
+    cy.contains("button", "Kopier JSON").should("be.visible");
+
+    // Click copy button for request
+    cy.contains("button", "Kopier JSON").click();
+
+    // Button text should change to "Kopiert!"
+    cy.contains("button", "Kopiert!").should("be.visible");
+
+    // Check response tab has copy button
+    cy.contains("Response").click();
+    cy.contains("button", "Kopier JSON").should("be.visible");
+
+    // Click copy button for response
+    cy.contains("button", "Kopier JSON").click();
+
+    // Button text should change to "Kopiert!"
+    cy.contains("button", "Kopiert!").should("be.visible");
+  });
+
   it("should close modal when close button is clicked", () => {
     cy.waitForAPI();
 

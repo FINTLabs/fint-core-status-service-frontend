@@ -1,4 +1,4 @@
-import { Modal, Button, Heading, Tabs } from "@navikt/ds-react";
+import { Modal, Button, Heading, Tabs, CopyButton } from "@navikt/ds-react";
 
 interface RequestData {
   corrId: string;
@@ -134,7 +134,15 @@ export function EventsModal({
                       </div>
                     </div>
                     <div className="mt-4">
-                      <span className="font-medium text-gray-600">Raw JSON:</span>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-gray-600">Raw JSON:</span>
+                        <CopyButton
+                          copyText={formatJson(requestData)}
+                          size="small"
+                          text="Kopier JSON"
+                          activeText="Kopiert!"
+                        />
+                      </div>
                       <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-xs overflow-x-auto">
                         {formatJson(requestData)}
                       </pre>
@@ -234,7 +242,15 @@ export function EventsModal({
                       )}
                     </div>
                     <div className="mt-4">
-                      <span className="font-medium text-gray-600">Raw JSON:</span>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-gray-600">Raw JSON:</span>
+                        <CopyButton
+                          copyText={formatJson(responseData)}
+                          size="small"
+                          text="Kopier JSON"
+                          activeText="Kopiert!"
+                        />
+                      </div>
                       <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-xs overflow-x-auto">
                         {formatJson(responseData)}
                       </pre>
