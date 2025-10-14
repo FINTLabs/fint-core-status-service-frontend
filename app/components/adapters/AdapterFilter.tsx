@@ -1,4 +1,4 @@
-import { Box, Checkbox, Select, Fieldset, HGrid } from "@navikt/ds-react";
+import { Box, Button, Checkbox, Select, Fieldset, HGrid } from "@navikt/ds-react";
 
 interface AdaptereFilterProps {
   statusFilter: { ok: boolean; error: boolean };
@@ -9,6 +9,7 @@ interface AdaptereFilterProps {
   onStatusFilterChange: (filter: { ok: boolean; error: boolean }) => void;
   onOrganisasjonFilterChange: (value: string) => void;
   onDomeneFilterChange: (value: string) => void;
+  onClearFilters: () => void;
 }
 
 export function AdapterFilter({
@@ -20,6 +21,7 @@ export function AdapterFilter({
   onStatusFilterChange,
   onOrganisasjonFilterChange,
   onDomeneFilterChange,
+  onClearFilters,
 }: AdaptereFilterProps) {
   return (
     <Box
@@ -84,6 +86,13 @@ export function AdapterFilter({
           ))}
         </Select>
       </HGrid>
+
+      {/* Clear Filters Button */}
+      <div className="mt-4">
+        <Button variant="tertiary" size="small" onClick={onClearFilters}>
+          Tøm filtre
+        </Button>
+      </div>
     </Box>
   );
 }

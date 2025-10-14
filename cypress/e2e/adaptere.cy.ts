@@ -258,4 +258,31 @@ describe("AdapterStatus Page", () => {
     cy.url().should("include", "/adaptere/");
     cy.contains("Adapter Detaljer").should("be.visible");
   });
+
+  it("should clear all filters", () => {
+    cy.waitForAPI();
+
+    // Apply multiple filters
+    cy.get("#organisation-filter").select("fintlabs_no");
+    cy.get("#domain-filter").select("utdanning");
+
+    // Wait for filters to apply
+    cy.wait(300);
+
+    // Should have filtered results
+    cy.get("[data-cy='adapter-row']").should("have.length.at.least", 1);
+
+    // Clear filters
+    cy.contains("Tøm filtre").click();
+
+    // Should show all data on page 1 (20 items)
+    cy.get("[data-cy='adapter-row']").should("have.length", 20);
+
+    // Verify checkboxes are checked
+    cy.get('input[type="checkbox"]').should("be.checked");
+
+    // Verify selects are reset
+    cy.get("#organisation-filter").should("have.value", "");
+    cy.get("#domain-filter").should("have.value", "");
+  });
 });

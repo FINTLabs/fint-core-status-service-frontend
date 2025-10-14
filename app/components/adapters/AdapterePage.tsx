@@ -60,6 +60,14 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
     setCurrentPage(1);
   };
 
+  // Clear all filters
+  const handleClearFilters = () => {
+    setStatusFilter({ ok: true, error: true });
+    setOrganisasjonFilter("");
+    setDomeneFilter("");
+    setCurrentPage(1);
+  };
+
   // Transform data for table display
   const tableData: IAdaptereTableRow[] = initialData.flatMap((adapterData) =>
     Object.entries(adapterData).flatMap(([organisation, orgData]) =>
@@ -134,6 +142,7 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
         onStatusFilterChange={handleStatusFilterChange}
         onOrganisasjonFilterChange={handleOrganisasjonFilterChange}
         onDomeneFilterChange={handleDomeneFilterChange}
+        onClearFilters={handleClearFilters}
       />
 
       <AdapterTable
