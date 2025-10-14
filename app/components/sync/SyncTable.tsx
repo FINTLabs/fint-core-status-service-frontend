@@ -7,9 +7,16 @@ interface SyncTableProps {
   currentPage: number;
   onPageChange: (page: number) => void;
   itemsPerPage: number;
+  onRowClick: (sync: ISyncData) => void;
 }
 
-export function SyncTable({ data, currentPage, onPageChange, itemsPerPage }: SyncTableProps) {
+export function SyncTable({
+  data,
+  currentPage,
+  onPageChange,
+  itemsPerPage,
+  onRowClick,
+}: SyncTableProps) {
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -49,7 +56,12 @@ export function SyncTable({ data, currentPage, onPageChange, itemsPerPage }: Syn
         </Table.Header>
         <Table.Body>
           {paginatedData.map((sync, index) => (
-            <Table.Row key={index} data-cy="sync-row">
+            <Table.Row
+              key={index}
+              data-cy="sync-row"
+              onRowClick={() => onRowClick(sync)}
+              shadeOnHover={true}
+            >
               <Table.DataCell>
                 {sync.finished ? (
                   <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">

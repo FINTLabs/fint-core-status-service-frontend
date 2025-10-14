@@ -196,4 +196,84 @@ describe("Sync Page", () => {
     cy.get(".bg-green-100").should("exist");
     cy.get(".text-green-600").should("exist");
   });
+
+  it("should open modal when row is clicked", () => {
+    cy.waitForAPI();
+
+    // Click on first row
+    cy.get("[data-cy='sync-row']").first().click();
+
+    // Modal should open
+    cy.get("[data-cy='sync-modal']").should("be.visible");
+    cy.contains("Synkronisering Detaljer").should("be.visible");
+    cy.contains("Oversikt").should("be.visible");
+    cy.contains("Correlation ID").should("be.visible");
+  });
+
+  it("should display correlation ID and page details in modal", () => {
+    cy.waitForAPI();
+
+    // Click on first row to open modal
+    cy.get("[data-cy='sync-row']").first().click();
+
+    // Check overview section
+    cy.contains("Correlation ID").should("be.visible");
+    cy.contains("c8491980-05ea-467b-bcdb-a381cb1be122").should("be.visible");
+    cy.contains("Adapter ID").should("be.visible");
+    cy.contains("Organisasjon").should("be.visible");
+    cy.contains("Domene").should("be.visible");
+    cy.contains("Pakke").should("be.visible");
+    cy.contains("Ressurs").should("be.visible");
+
+    // Check pages section
+    cy.contains("Sider (1)").should("be.visible");
+    cy.contains("Side Nr.").should("be.visible");
+    cy.contains("Størrelse").should("be.visible");
+    cy.contains("Tidspunkt").should("be.visible");
+
+    // Check page data is displayed
+    cy.contains("15 entiteter").should("be.visible");
+  });
+
+  it("should close modal when close button is clicked", () => {
+    cy.waitForAPI();
+
+    // Open modal
+    cy.get("[data-cy='sync-row']").first().click();
+    cy.get("[data-cy='sync-modal']").should("be.visible");
+
+    // Close modal
+    cy.get("[data-cy='sync-modal-close']").click();
+
+    // Modal should be closed
+    cy.get("[data-cy='sync-modal']").should("not.exist");
+  });
+
+  it("should show multiple pages in modal for multi-page sync", () => {
+    cy.waitForAPI();
+
+    // Click on second row (which has 3 pages)
+    cy.get("[data-cy='sync-row']").eq(1).click();
+
+    // Modal should show pages section with 3 pages
+    cy.contains("Sider (3)").should("be.visible");
+
+    // Should have 3 rows in the pages table (plus header)
+    cy.get("[data-cy='sync-modal']").within(() => {
+      cy.get("table tbody tr").should("have.length", 3);
+    });
+  });
+
+  it("should display progress information in modal", () => {
+    cy.waitForAPI();
+
+    // Click on first row
+    cy.get("[data-cy='sync-row']").first().click();
+
+    // Check progress information
+    cy.contains("Fremdrift").should("be.visible");
+    cy.contains("15 / 15 entiteter").should("be.visible");
+    cy.contains("1 / 1 sider").should("be.visible");
+    cy.contains("Varighet").should("be.visible");
+  });
 });

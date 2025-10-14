@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { SyncFilter } from "./SyncFilter";
 import { SyncTable } from "./SyncTable";
+import { SyncModal } from "./SyncModal";
 import { PageHeader } from "../layout/PageHeader";
 import type { ISyncData } from "~/types";
 
@@ -14,6 +15,10 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
+
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSync, setSelectedSync] = useState<ISyncData | null>(null);
 
   // Filter states
   const [syncTypeFilter, setSyncTypeFilter] = useState<{
@@ -60,6 +65,17 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
     setOrganisasjonFilter("");
     setDomeneFilter("");
     setCurrentPage(1);
+  };
+
+  // Modal handlers
+  const handleRowClick = (sync: ISyncData) => {
+    setSelectedSync(sync);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedSync(null);
   };
 
   // Filter the data based on current filters
@@ -129,7 +145,13 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
         currentPage={currentPage}
         onPageChange={handlePageChange}
         itemsPerPage={itemsPerPage}
+        onRowClick={handleRowClick}
       />
+
+      {/* Modal */}
+      {selectedSync && (
+        <SyncModal isOpen={isModalOpen} onClose={handleCloseModal} syncData={selectedSync} />
+      )}
     </Box>
   );
 }
