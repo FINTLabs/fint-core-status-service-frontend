@@ -30,7 +30,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   return { adapterData, env, adapterId };
 };
 
-export default function AdaptereDetail() {
+export default function AdapterDetail() {
   const navigate = useNavigate();
   const location = useLocation();
   const { adapterData, env, adapterId } = useLoaderData();
