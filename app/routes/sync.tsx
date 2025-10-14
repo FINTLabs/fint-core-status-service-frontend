@@ -1,26 +1,10 @@
-import { useLoaderData } from "react-router";
+import { type LoaderFunction, useLoaderData } from "react-router";
 import type { Route } from "./+types/sync";
 import SyncApi from "./api/SyncApi";
 import { SyncPage } from "~/components/sync/SyncPage";
 import type { ISyncData } from "~/types";
-import { useEnvironment } from "~/hooks/useEnvironment";
 import { useEnvironmentRefresh } from "~/hooks/useEnvironmentRefresh";
-
-// Wait for MSW to be ready before making API calls
-async function waitForMSW() {
-  if (import.meta.env.DEV && typeof window !== "undefined") {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    while (!(window as any).__mswReady) {
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    }
-  }
-}
-
-export async function clientLoader() {
-  await waitForMSW();
-  const response = await SyncApi.getAllSync();
-  return { syncData: response.data || [] };
-}
+import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 
 export function meta(_args: Route.MetaArgs) {
   return [
@@ -29,11 +13,21 @@ export function meta(_args: Route.MetaArgs) {
   ];
 }
 
+export const loader: LoaderFunction = async ({ request }) => {
+  // console.log('request', request);
+  const cookieHeader = request.headers.get("Cookie");
+  const env = parseEnvironmentFromCookieHeader(cookieHeader);
+  const response = await SyncApi.getAllSync();
+  return { syncData: response.data || [], env };
+};
+
 export default function Sync() {
-  const syncData = useLoaderData<{ syncData: ISyncData[] }>().syncData;
-  const currentEnvironment = useEnvironment();
+  const { syncData, env } = useLoaderData() as {
+    syncData: ISyncData[];
+    env: string;
+  };
 
-  useEnvironmentRefresh(); // This will revalidate when environment changes
+  useEnvironmentRefresh();
 
-  return <SyncPage initialData={syncData} env={currentEnvironment} />;
+  return <SyncPage initialData={syncData} env={env} />;
 }
