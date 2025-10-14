@@ -31,7 +31,7 @@ export function SyncTable({ data, currentPage, onPageChange, itemsPerPage }: Syn
   };
 
   return (
-    <Box padding="space-16" borderRadius="large" shadow="xsmall">
+    <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
       <Table>
         <Table.Header>
           <Table.Row>
