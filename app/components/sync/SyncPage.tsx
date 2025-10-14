@@ -12,15 +12,12 @@ interface SyncPageProps {
 }
 
 export function SyncPage({ initialData, env }: SyncPageProps) {
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSync, setSelectedSync] = useState<ISyncData | null>(null);
 
-  // Filter states
   const [syncTypeFilter, setSyncTypeFilter] = useState<{
     full: boolean;
     delta: boolean;
@@ -31,14 +28,13 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
     ongoing: boolean;
   }>({ finished: true, ongoing: true });
 
-  const [organisasjonFilter, setOrganisasjonFilter] = useState<string>("");
-  const [domeneFilter, setDomeneFilter] = useState<string>("");
+  const [orgFilter, setOrgFilter] = useState<string>("");
+  const [domainFilter, setDomainFilter] = useState<string>("");
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Reset to page 1 when filters change
   const handleSyncTypeFilterChange = (value: { full: boolean; delta: boolean }) => {
     setSyncTypeFilter(value);
     setCurrentPage(1);
@@ -49,25 +45,24 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
     setCurrentPage(1);
   };
 
-  const handleOrganisasjonFilterChange = (value: string) => {
-    setOrganisasjonFilter(value);
+  const handleOrgFilterChange = (value: string) => {
+    setOrgFilter(value);
     setCurrentPage(1);
   };
 
-  const handleDomeneFilterChange = (value: string) => {
-    setDomeneFilter(value);
+  const handleDomainFilterChange = (value: string) => {
+    setDomainFilter(value);
     setCurrentPage(1);
   };
 
   const handleClearFilters = () => {
     setSyncTypeFilter({ full: true, delta: true });
     setStatusFilter({ finished: true, ongoing: true });
-    setOrganisasjonFilter("");
-    setDomeneFilter("");
+    setOrgFilter("");
+    setDomainFilter("");
     setCurrentPage(1);
   };
 
-  // Modal handlers
   const handleRowClick = (sync: ISyncData) => {
     setSelectedSync(sync);
     setIsModalOpen(true);
@@ -78,9 +73,7 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
     setSelectedSync(null);
   };
 
-  // Filter the data based on current filters
   const filteredData = initialData.filter((sync) => {
-    // Sync type filter
     if (!syncTypeFilter.full && sync.syncType === "FULL") {
       return false;
     }
@@ -88,7 +81,6 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
       return false;
     }
 
-    // Status filter
     if (!statusFilter.finished && sync.finished) {
       return false;
     }
@@ -96,21 +88,15 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
       return false;
     }
 
-    // Organisation filter
-    if (
-      organisasjonFilter &&
-      !sync.orgId.toLowerCase().includes(organisasjonFilter.toLowerCase())
-    ) {
+    if (orgFilter && !sync.orgId.toLowerCase().includes(orgFilter.toLowerCase())) {
       return false;
     }
 
-    // Domain filter
-    return !(domeneFilter && !sync.domain.toLowerCase().includes(domeneFilter.toLowerCase()));
+    return !(domainFilter && !sync.domain.toLowerCase().includes(domainFilter.toLowerCase()));
   });
 
-  // Get unique values for select options
-  const uniqueOrganisasjoner = [...new Set(initialData.map((item) => item.orgId))];
-  const uniqueDomener = [...new Set(initialData.map((item) => item.domain))];
+  const uniqueOrg = [...new Set(initialData.map((item) => item.orgId))];
+  const uniqueDomain = [...new Set(initialData.map((item) => item.domain))];
 
   const breadcrumbItems = [
     { label: "Dashboard", href: "/" },
@@ -129,14 +115,14 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
       <SyncFilter
         syncTypeFilter={syncTypeFilter}
         statusFilter={statusFilter}
-        organisasjonFilter={organisasjonFilter}
-        domeneFilter={domeneFilter}
-        uniqueOrganisasjoner={uniqueOrganisasjoner}
-        uniqueDomener={uniqueDomener}
+        organisasjonFilter={orgFilter}
+        domeneFilter={domainFilter}
+        uniqueOrganisasjoner={uniqueOrg}
+        uniqueDomener={uniqueDomain}
         onSyncTypeFilterChange={handleSyncTypeFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
-        onOrganisasjonFilterChange={handleOrganisasjonFilterChange}
-        onDomeneFilterChange={handleDomeneFilterChange}
+        onOrganisasjonFilterChange={handleOrgFilterChange}
+        onDomeneFilterChange={handleDomainFilterChange}
         onClearFilters={handleClearFilters}
       />
 
@@ -148,7 +134,6 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
         onRowClick={handleRowClick}
       />
 
-      {/* Modal */}
       {selectedSync && (
         <SyncModal isOpen={isModalOpen} onClose={handleCloseModal} syncData={selectedSync} />
       )}

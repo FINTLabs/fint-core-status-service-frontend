@@ -23,10 +23,8 @@ export function meta({ params }: Route.MetaArgs) {
 }
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  // console.log('request', request);
   const cookieHeader = request.headers.get("Cookie");
   const env = parseEnvironmentFromCookieHeader(cookieHeader);
-  // console.log('env', env);
   const { adapterId, componentId } = params;
 
   const response = await AdapterApi.getAdapterComponentDetail(adapterId || "", componentId || "");
@@ -38,16 +36,13 @@ export default function AdapterComponent() {
   const location = useLocation();
   const [mounted, setMounted] = useState(false);
 
-  // Get the selected component and adapter data from navigation state
   const selectedComponent = location.state?.selectedComponent as IAdapterDetailData | undefined;
   const selectedAdapter = location.state?.selectedAdapter as IAdaptereTableRow | undefined;
 
-  // Ensure hydration consistency by only showing state-dependent content after mount
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAdapterName, setSelectedAdapterName] = useState<string | null>(null);
   const [modalData, setModalData] = useState<IAdapterComponentModalData | null>(null);
@@ -55,7 +50,6 @@ export default function AdapterComponent() {
 
   const { adapterData, env, adapterId, componentId } = useLoaderData();
 
-  // Fetch modal data when an adapter is selected
   useEffect(() => {
     if (selectedAdapterName) {
       const fetchModalData = async () => {
@@ -77,17 +71,14 @@ export default function AdapterComponent() {
     }
   }, [selectedAdapterName, adapterId, componentId]);
 
-  // Decode the component ID to get adapter and component info
   const domain = adapterId.charAt(0).toUpperCase() + adapterId.slice(1).replace(/-/g, " ");
 
-  // Create breadcrumb items
   const breadcrumbItems = [
     { label: "AdapterStatus", href: "/adaptere" },
     { label: domain, href: `/adaptere/${adapterId}` },
     { label: componentId, href: `/adaptere/${adapterId}/${componentId}` },
   ];
 
-  // Modal handlers
   const handleRowClick = (adapterName: string) => {
     setSelectedAdapterName(adapterName);
     setIsModalOpen(true);
@@ -118,7 +109,6 @@ export default function AdapterComponent() {
 
       <AdapterComponentTable data={adapterData} onRowClick={handleRowClick} />
 
-      {/* Modal */}
       {selectedAdapterName && (
         <AdapterComponentModal
           isOpen={isModalOpen}

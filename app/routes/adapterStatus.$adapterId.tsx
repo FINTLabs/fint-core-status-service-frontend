@@ -19,10 +19,8 @@ export function meta({ params }: Route.MetaArgs) {
 }
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  // console.log('request', request);
   const cookieHeader = request.headers.get("Cookie");
   const env = parseEnvironmentFromCookieHeader(cookieHeader);
-  // console.log('env', env);
   const { adapterId } = params;
 
   const response = await AdapterApi.getAdapterDetail(adapterId || "");
@@ -36,16 +34,13 @@ export default function AdapterDetail() {
   const { adapterData, env, adapterId } = useLoaderData();
   const [mounted, setMounted] = useState(false);
 
-  // Get the selected adapter data from navigation state
   const selectedAdapter = location.state?.selectedAdapter as IAdaptereTableRow | undefined;
 
-  // Ensure hydration consistency by only showing state-dependent content after mount
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const handleRowClick = (component: IAdapterDetailData) => {
-    // Pass both the component data and selected adapter data via state
     navigate(`/adaptere/${adapterId}/${component.adapterId}`, {
       state: {
         selectedComponent: component,
@@ -54,10 +49,8 @@ export default function AdapterDetail() {
     });
   };
 
-  // Decode the adapter ID to get domain name
   const domain = adapterId.charAt(0).toUpperCase() + adapterId.slice(1).replace(/-/g, " ");
 
-  // Create breadcrumb items
   const breadcrumbItems = [
     { label: "Adapter", href: "/adaptere" },
     { label: domain, href: `/adaptere/${adapterId}` },

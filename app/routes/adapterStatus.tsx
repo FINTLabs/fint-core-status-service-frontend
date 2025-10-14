@@ -14,10 +14,8 @@ export function meta() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  // console.log('request', request);
   const cookieHeader = request.headers.get("Cookie");
   const env = parseEnvironmentFromCookieHeader(cookieHeader);
-  // console.log('env', env);
 
   const response = await AdaptereApi.getAllAdapters();
   const adapterData = response.data || [];
@@ -30,8 +28,7 @@ export default function AdapterStatus() {
     env: string;
   };
 
-  useEnvironmentRefresh(); // This will revalidate when environment changes
-  // console.log('env', env);
+  useEnvironmentRefresh();
   if (!adapterData || adapterData.length === 0) {
     return (
       <Box padding="8" paddingBlock="2">

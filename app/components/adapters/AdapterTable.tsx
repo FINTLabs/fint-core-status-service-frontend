@@ -27,9 +27,7 @@ export function AdapterTable({
   const paginatedData = data.slice(startIndex, endIndex);
 
   const handleRowClick = (adapter: IAdaptereTableRow) => {
-    // Create a URL-safe identifier from domain
     const adapterId = adapter.domain.toLowerCase().replace(/\s+/g, "-");
-    // Pass the adapter data via state
     navigate(`/adaptere/${adapterId}`, {
       state: {
         selectedAdapter: adapter,

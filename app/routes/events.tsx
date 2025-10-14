@@ -13,13 +13,10 @@ export function meta() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  // console.log('request', request);
   const cookieHeader = request.headers.get("Cookie");
   const env = parseEnvironmentFromCookieHeader(cookieHeader);
-  // console.log('env', env);
 
   const response = await EventsApi.getAllEvents();
-  // Extract the data from the ApiResponse wrapper
   const eventsData = response.data || [];
   return { eventsData, env };
 };
@@ -29,7 +26,7 @@ export default function Events() {
     eventsData: IEventData[];
     env: string;
   };
-  useEnvironmentRefresh(); // This will revalidate when environment changes
+  useEnvironmentRefresh();
 
   return <EventsPage initialData={eventsData} env={env} />;
 }

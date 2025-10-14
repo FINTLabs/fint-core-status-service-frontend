@@ -11,16 +11,13 @@ interface AdapterePageProps {
 }
 
 export function AdapterePage({ initialData, env }: AdapterePageProps) {
-  // Sort state
   const [sortState, setSortState] = useState<
     { orderBy: string; direction: "ascending" | "descending" } | undefined
   >(undefined);
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  // Filter states
   const [statusFilter, setStatusFilter] = useState<{
     ok: boolean;
     error: boolean;
@@ -37,14 +34,13 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
 
     const newSortState = { orderBy: sortKey, direction: newDirection };
     setSortState(newSortState);
-    setCurrentPage(1); // Reset to page 1 when sorting
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Reset to page 1 when filters change
   const handleStatusFilterChange = (value: { ok: boolean; error: boolean }) => {
     setStatusFilter(value);
     setCurrentPage(1);
@@ -60,7 +56,6 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
     setCurrentPage(1);
   };
 
-  // Clear all filters
   const handleClearFilters = () => {
     setStatusFilter({ ok: true, error: true });
     setOrganisasjonFilter("");
@@ -68,7 +63,6 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
     setCurrentPage(1);
   };
 
-  // Transform data for table display
   const tableData: IAdaptereTableRow[] = initialData.flatMap((adapterData) =>
     Object.entries(adapterData).flatMap(([organisation, orgData]) =>
       Object.entries(orgData).map(([domain, domainData]) => ({
@@ -80,14 +74,11 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
     )
   );
 
-  // Filter the data based on current filters
   const filteredData = tableData.filter((item) => {
-    // Status filter
     if (!statusFilter[item.status as keyof typeof statusFilter]) {
       return false;
     }
 
-    // Organisation filter
     if (
       organisasjonFilter &&
       !item.organisation.toLowerCase().includes(organisasjonFilter.toLowerCase())
@@ -95,15 +86,12 @@ export function AdapterePage({ initialData, env }: AdapterePageProps) {
       return false;
     }
 
-    // Domain filter
     return !(domeneFilter && !item.domain.toLowerCase().includes(domeneFilter.toLowerCase()));
   });
 
-  // Get unique values for select options
   const uniqueOrganisasjoner = [...new Set(tableData.map((item) => item.organisation))];
   const uniqueDomener = [...new Set(tableData.map((item) => item.domain))];
 
-  // Apply sorting to filtered data
   const sortedFilteredData = [...filteredData].sort((a, b) => {
     if (!sortState) return 0;
 

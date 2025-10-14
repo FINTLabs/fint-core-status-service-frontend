@@ -14,7 +14,6 @@ export function meta(_args: Route.MetaArgs) {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  // console.log('request', request);
   const cookieHeader = request.headers.get("Cookie");
   const env = parseEnvironmentFromCookieHeader(cookieHeader);
   const response = await SyncApi.getAllSync();

@@ -32,11 +32,9 @@ export function EventsFilter({
     defaultSelected: dateRange ? { from: dateRange.from, to: dateRange.to } : undefined,
   });
 
-  // Clear filters including datepicker state
   const handleClearFilters = () => {
     onSearchFilterChange("");
     onDateRangeChange(undefined);
-    // Reset the datepicker inputs
     fromInputProps.onChange?.({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
     toInputProps.onChange?.({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
   };
@@ -50,7 +48,6 @@ export function EventsFilter({
       marginBlock="space-32"
     >
       <HStack gap="space-16" align="center" wrap={false}>
-        {/* Search */}
         <div className="flex-shrink-0">
           <Search
             label="Søk hendelser"
@@ -65,7 +62,6 @@ export function EventsFilter({
 
         <Spacer />
 
-        {/* Date Range */}
         <div className="flex-shrink-0">
           <Fieldset legend="Tidsperiode" size="small" hideLegend={true}>
             <Provider>
@@ -89,7 +85,6 @@ export function EventsFilter({
           </Fieldset>
         </div>
 
-        {/* Clear Button */}
         <div className="flex-shrink-0">
           <Button variant="tertiary" size="small" onClick={handleClearFilters}>
             Tøm filtre

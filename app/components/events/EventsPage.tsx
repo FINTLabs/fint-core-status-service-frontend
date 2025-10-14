@@ -13,31 +13,25 @@ interface FilterPageProps {
 }
 
 export function EventsPage({ initialData, env }: FilterPageProps) {
-  // Filter states
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEventData | null>(null);
 
-  // Clear all filters
   const handleClearFilters = () => {
     setSearchFilter("");
     setDateRange(undefined);
-    setCurrentPage(1); // Reset to first page when clearing filters
+    setCurrentPage(1);
   };
 
-  // Handle page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Modal handlers
   const handleRowClick = (event: IEventData) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
@@ -49,7 +43,6 @@ export function EventsPage({ initialData, env }: FilterPageProps) {
     setSelectedEvent(null);
   };
 
-  // Fetch event detail data from API
   const [eventDetailData, setEventDetailData] = useState<IEventDetail | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
@@ -59,18 +52,13 @@ export function EventsPage({ initialData, env }: FilterPageProps) {
       const response = await EventsApi.getEventDetail(eventId);
       setEventDetailData(response.data || null);
     } catch {
-      // Handle error silently or use proper error logging
-      // console.error("Failed to fetch event detail:", err);
-      // Set null on error
       setEventDetailData(null);
     } finally {
       setLoadingDetail(false);
     }
   };
 
-  // Filter the data based on current filters
   const filteredData = initialData.filter((event) => {
-    // Search filter - searches both ID and resources
     if (searchFilter) {
       const searchTerm = searchFilter.toLowerCase();
       const matchesId = event.eventId.toLowerCase().includes(searchTerm);
@@ -81,7 +69,6 @@ export function EventsPage({ initialData, env }: FilterPageProps) {
       }
     }
 
-    // Date range filter
     if (dateRange?.from || dateRange?.to) {
       const eventDate = new Date(event.transferred);
 
@@ -97,7 +84,6 @@ export function EventsPage({ initialData, env }: FilterPageProps) {
     return true;
   });
 
-  // Reset to page 1 when filter changes
   const handleSearchFilterChange = (value: string) => {
     setSearchFilter(value);
     setCurrentPage(1);
@@ -139,7 +125,6 @@ export function EventsPage({ initialData, env }: FilterPageProps) {
         itemsPerPage={itemsPerPage}
       />
 
-      {/* Modal */}
       {selectedEvent && eventDetailData && (
         <EventsModal
           isOpen={isModalOpen}
