@@ -29,7 +29,7 @@ let server: any;
 
 async function initializeMSW() {
   try {
-    const enableMocking = import.meta.env.VITE_ENABLE_MOCKING === "true";
+    const enableMocking = import.meta.env.VITE_MOCK_CYPRESS === "true";
 
     if (enableMocking) {
       if (typeof window !== "undefined") {

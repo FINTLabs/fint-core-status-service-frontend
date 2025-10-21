@@ -17,7 +17,7 @@ class ContactApi {
     const token = AuthProperties.getToken();
     return await apiManager.call<IAdaptereData[]>({
       method: "GET",
-      endpoint: `/contract`,
+      endpoint: `/api/adapters`,
       functionName: "getAllAdapters",
       customErrorMessage: "Kunne ikke hente adaptere",
       customSuccessMessage: "Hentet adaptere vellykket",
