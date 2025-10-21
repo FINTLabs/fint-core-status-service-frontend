@@ -5,6 +5,7 @@ import type {
   IAdaptereData,
   IAdapterComponentModalData,
 } from "~/types";
+import { AuthProperties } from "~/utils/auth";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 const apiManager = new NovariApiManager({
@@ -13,22 +14,30 @@ const apiManager = new NovariApiManager({
 
 class ContactApi {
   static async getAllAdapters(): Promise<ApiResponse<IAdaptereData[]>> {
+    const token = AuthProperties.getToken();
     return await apiManager.call<IAdaptereData[]>({
       method: "GET",
-      endpoint: "/api/adapters",
+      endpoint: `/contract`,
       functionName: "getAllAdapters",
-      customErrorMessage: "Kunne ikke hente en liste",
-      customSuccessMessage: "Hentet vellykket",
+      customErrorMessage: "Kunne ikke hente adaptere",
+      customSuccessMessage: "Hentet adaptere vellykket",
+      additionalHeaders: {
+        Authorization: token,
+      },
     });
   }
 
   static async getAdapterDetail(adapterId: string): Promise<ApiResponse<IAdapterDetailData[]>> {
+    const token = AuthProperties.getToken();
     return await apiManager.call<IAdapterDetailData[]>({
       method: "GET",
       endpoint: `/api/adapters/${adapterId}`,
       functionName: "getAdapterDetail",
       customErrorMessage: "Kunne ikke hente detaljene",
       customSuccessMessage: "Hentet vellykket",
+      additionalHeaders: {
+        Authorization: token,
+      },
     });
   }
 
@@ -50,12 +59,16 @@ class ContactApi {
     componentId: string,
     adapterName: string
   ): Promise<ApiResponse<IAdapterComponentModalData>> {
+    const token = AuthProperties.getToken();
     return await apiManager.call<IAdapterComponentModalData>({
       method: "GET",
       endpoint: `/api/adapters/${adapterId}/${componentId}/${adapterName}`,
       functionName: "getAdapterComponentModalData",
       customErrorMessage: "Kunne ikke hente adapter detaljer",
       customSuccessMessage: "Hentet vellykket",
+      additionalHeaders: {
+        Authorization: token,
+      },
     });
   }
 }

@@ -22,13 +22,16 @@ import {
   parseEnvironmentFromCookieHeader,
   setEnvironmentCookie,
 } from "~/utils/cookies";
+import { AuthProperties } from "~/utils/auth";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let server: any;
 
 async function initializeMSW() {
   try {
-    if (import.meta.env.DEV) {
+    const enableMocking = import.meta.env.VITE_ENABLE_MOCKING === "true";
+
+    if (enableMocking) {
       if (typeof window !== "undefined") {
         const { worker } = await import("../cypress/mocks/browser");
         await worker.start({
@@ -84,6 +87,9 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  // Set auth properties from request
+  AuthProperties.setProperties(request);
+
   const cookieHeader = request.headers.get("Cookie");
   const cookieValue = parseEnvironmentFromCookieHeader(cookieHeader);
 

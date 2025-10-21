@@ -1,7 +1,12 @@
 import type { Route } from "./+types/adapterStatus.$adapterId.$componentId";
 import { useState, useEffect } from "react";
 import { useLoaderData, useLocation, type LoaderFunction } from "react-router";
-import type { IAdapterDetailData, IAdaptereTableRow, IAdapterComponentModalData } from "~/types";
+import type {
+  IAdapterDetailData,
+  IAdaptereTableRow,
+  IAdapterComponentModalData,
+  IAdapterComponentData,
+} from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterComponentModal } from "~/components/adapters/AdapterComponentModal";
 import { AdapterComponentAlert } from "~/components/adapters/AdapterComponentAlert";
@@ -9,6 +14,7 @@ import { AdapterComponentTable } from "~/components/adapters/AdapterComponentTab
 import AdapterApi from "./api/AdapterApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 import { Box } from "@navikt/ds-react";
+import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
@@ -29,7 +35,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const response = await AdapterApi.getAdapterComponentDetail(adapterId || "", componentId || "");
   const adapterData = response.data || [];
-  return { adapterData, env, adapterId, componentId };
+  return {
+    adapterData,
+    env,
+    adapterId,
+    componentId,
+    success: response.success,
+    customErrorMessage: response.message || "Kunne ikke hente adapter komponent detaljer",
+  };
 };
 
 export default function AdapterComponent() {
@@ -48,7 +61,30 @@ export default function AdapterComponent() {
   const [modalData, setModalData] = useState<IAdapterComponentModalData | null>(null);
   const [loadingModal, setLoadingModal] = useState(false);
 
-  const { adapterData, env, adapterId, componentId } = useLoaderData();
+  const { adapterData, env, adapterId, componentId, success, customErrorMessage } =
+    useLoaderData() as {
+      adapterData: IAdapterComponentData[];
+      env: string;
+      adapterId: string;
+      componentId: string;
+      success: boolean;
+      customErrorMessage: string;
+    };
+
+  const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
+
+  useEffect(() => {
+    if (!success) {
+      setAlerts([
+        {
+          id: `component-error-${Date.now()}`,
+          variant: "error",
+          message: customErrorMessage,
+          header: "Connection Feil",
+        },
+      ]);
+    }
+  }, [customErrorMessage, success]);
 
   useEffect(() => {
     if (selectedAdapterName) {
@@ -91,33 +127,36 @@ export default function AdapterComponent() {
   };
 
   return (
-    <Box padding="8" paddingBlock="2">
-      <PageHeader
-        title="Adapter Komponent"
-        description={`${componentId} for ${domain}`}
-        env={env}
-        breadcrumbItems={breadcrumbItems}
-      />
-
-      {mounted && (
-        <AdapterComponentAlert
-          componentName={componentId}
-          selectedComponent={selectedComponent}
-          selectedAdapter={selectedAdapter}
+    <>
+      <Box padding="8" paddingBlock="2">
+        <PageHeader
+          title="Adapter Komponent"
+          description={`${componentId} for ${domain}`}
+          env={env}
+          breadcrumbItems={breadcrumbItems}
         />
-      )}
 
-      <AdapterComponentTable data={adapterData} onRowClick={handleRowClick} />
+        {mounted && (
+          <AdapterComponentAlert
+            componentName={componentId}
+            selectedComponent={selectedComponent}
+            selectedAdapter={selectedAdapter}
+          />
+        )}
 
-      {selectedAdapterName && (
-        <AdapterComponentModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          data={modalData}
-          adapterName={selectedAdapterName}
-          loading={loadingModal}
-        />
-      )}
-    </Box>
+        <AdapterComponentTable data={adapterData} onRowClick={handleRowClick} />
+
+        {selectedAdapterName && (
+          <AdapterComponentModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            data={modalData}
+            adapterName={selectedAdapterName}
+            loading={loadingModal}
+          />
+        )}
+      </Box>
+      <NovariSnackbar items={alerts} />
+    </>
   );
 }
