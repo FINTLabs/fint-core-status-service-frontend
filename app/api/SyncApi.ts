@@ -12,7 +12,7 @@ class SyncApi {
     const token = AuthProperties.getToken();
     return await apiManager.call<ISyncData[]>({
       method: "GET",
-      endpoint: "/api/sync",
+      endpoint: "/page-metadata",
       functionName: "getAllSync",
       customErrorMessage: "Kunne ikke hente synkroniseringer",
       customSuccessMessage: "Synkroniseringer hentet vellykket",

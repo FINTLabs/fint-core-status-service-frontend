@@ -1,6 +1,6 @@
 import { type LoaderFunction, useLoaderData } from "react-router";
 import type { Route } from "./+types/sync";
-import SyncApi from "./api/SyncApi";
+import SyncApi from "~/api/SyncApi";
 import { SyncPage } from "~/components/sync/SyncPage";
 import type { ISyncData } from "~/types";
 import { useEnvironmentRefresh } from "~/hooks/useEnvironmentRefresh";

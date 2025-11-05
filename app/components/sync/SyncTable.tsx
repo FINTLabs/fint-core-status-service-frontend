@@ -1,6 +1,7 @@
 import { Box, Pagination, Table, ProgressBar } from "@navikt/ds-react";
 import { CheckmarkCircleFillIcon, ArrowCirclepathIcon } from "@navikt/aksel-icons";
 import type { ISyncData } from "~/types";
+import { useState, useMemo } from "react";
 
 interface SyncTableProps {
   data: ISyncData[];
@@ -17,10 +18,38 @@ export function SyncTable({
   itemsPerPage,
   onRowClick,
 }: SyncTableProps) {
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const [sort, setSort] = useState<
+    { orderBy: string; direction: "ascending" | "descending" } | undefined
+  >();
+
+  const sortedData = useMemo(() => {
+    if (!sort) return data;
+
+    return [...data].sort((a, b) => {
+      if (sort.orderBy === "date") {
+        const comparison = a.lastPageTime - b.lastPageTime;
+        return sort.direction === "ascending" ? comparison : -comparison;
+      }
+      return 0;
+    });
+  }, [data, sort]);
+
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedData = data.slice(startIndex, endIndex);
+  const paginatedData = sortedData.slice(startIndex, endIndex);
+
+  const handleSort = (sortKey: string) => {
+    setSort((currentSort) => {
+      if (!currentSort || currentSort.orderBy !== sortKey) {
+        return { orderBy: sortKey, direction: "descending" };
+      }
+      if (currentSort.direction === "descending") {
+        return { orderBy: sortKey, direction: "ascending" };
+      }
+      return undefined;
+    });
+  };
 
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -39,7 +68,7 @@ export function SyncTable({
 
   return (
     <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
-      <Table>
+      <Table sort={sort} onSortChange={handleSort}>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Status</Table.HeaderCell>
@@ -51,7 +80,9 @@ export function SyncTable({
             <Table.HeaderCell>Entiteter</Table.HeaderCell>
             <Table.HeaderCell>Sider</Table.HeaderCell>
             <Table.HeaderCell>Fremdrift</Table.HeaderCell>
-            <Table.HeaderCell>Sist oppdatert</Table.HeaderCell>
+            <Table.ColumnHeader sortKey="date" sortable>
+              Sist oppdatert
+            </Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>

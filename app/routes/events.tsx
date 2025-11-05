@@ -1,7 +1,7 @@
 import { EventsPage } from "~/components/events/EventsPage";
 import type { IEventData } from "~/types";
 import { useLoaderData, type LoaderFunction } from "react-router";
-import EventsApi from "~/routes/api/EventsApi";
+import EventsApi from "~/api/EventsApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 import { useEnvironmentRefresh } from "~/hooks/useEnvironmentRefresh";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";

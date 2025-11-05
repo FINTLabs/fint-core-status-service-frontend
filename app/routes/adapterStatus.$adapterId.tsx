@@ -5,7 +5,7 @@ import type { IAdapterDetailData, IAdaptereTableRow } from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterDetailAlert } from "~/components/adapters/AdapterDetailAlert";
 import { AdapterDetailTable } from "~/components/adapters/AdapterDetailTable";
-import AdapterApi from "./api/AdapterApi";
+import AdapterApi from "~/api/AdapterApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 import { Box } from "@navikt/ds-react";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";

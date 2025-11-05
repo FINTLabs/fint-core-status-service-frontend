@@ -1,7 +1,7 @@
 import { AdapterPage } from "~/components/adapters/AdapterPage";
 import type { IAdaptereData } from "~/types";
 import { useLoaderData, type LoaderFunction } from "react-router";
-import AdaptereApi from "~/routes/api/AdapterApi";
+import AdaptereApi from "~/api/AdapterApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 import { useEnvironmentRefresh } from "~/hooks/useEnvironmentRefresh";
 import { Heading, BodyLong, Box } from "@navikt/ds-react";

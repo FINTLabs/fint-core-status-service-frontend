@@ -11,7 +11,7 @@ import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterComponentModal } from "~/components/adapters/AdapterComponentModal";
 import { AdapterComponentAlert } from "~/components/adapters/AdapterComponentAlert";
 import { AdapterComponentTable } from "~/components/adapters/AdapterComponentTable";
-import AdapterApi from "./api/AdapterApi";
+import AdapterApi from "~/api/AdapterApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 import { Box } from "@navikt/ds-react";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";

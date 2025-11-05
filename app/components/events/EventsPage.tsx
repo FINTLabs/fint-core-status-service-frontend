@@ -5,7 +5,7 @@ import { EventsModal } from "./EventsModal";
 import { PageHeader } from "../layout/PageHeader";
 import type { IEventData, IEventDetail } from "~/types";
 import { EventsTable } from "./EventsTable";
-import EventsApi from "~/routes/api/EventsApi";
+import EventsApi from "~/api/EventsApi";
 
 interface FilterPageProps {
   initialData: IEventData[];

@@ -30,6 +30,10 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
 
   const [orgFilter, setOrgFilter] = useState<string>("");
   const [domainFilter, setDomainFilter] = useState<string>("");
+  const [dateRange, setDateRange] = useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({ from: undefined, to: undefined });
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -55,11 +59,17 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
     setCurrentPage(1);
   };
 
+  const handleDateRangeChange = (value: { from: Date | undefined; to: Date | undefined }) => {
+    setDateRange(value);
+    setCurrentPage(1);
+  };
+
   const handleClearFilters = () => {
     setSyncTypeFilter({ full: true, delta: true });
     setStatusFilter({ finished: true, ongoing: true });
     setOrgFilter("");
     setDomainFilter("");
+    setDateRange({ from: undefined, to: undefined });
     setCurrentPage(1);
   };
 
@@ -92,7 +102,38 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
       return false;
     }
 
-    return !(domainFilter && !sync.domain.toLowerCase().includes(domainFilter.toLowerCase()));
+    if (domainFilter && !sync.domain.toLowerCase().includes(domainFilter.toLowerCase())) {
+      return false;
+    }
+
+    // Date range filter
+    if (dateRange.from || dateRange.to) {
+      const syncDate = new Date(sync.lastPageTime);
+      if (dateRange.from && dateRange.to) {
+        // Set time to start of day for 'from' and end of day for 'to'
+        const fromDate = new Date(dateRange.from);
+        fromDate.setHours(0, 0, 0, 0);
+        const toDate = new Date(dateRange.to);
+        toDate.setHours(23, 59, 59, 999);
+        if (syncDate < fromDate || syncDate > toDate) {
+          return false;
+        }
+      } else if (dateRange.from) {
+        const fromDate = new Date(dateRange.from);
+        fromDate.setHours(0, 0, 0, 0);
+        if (syncDate < fromDate) {
+          return false;
+        }
+      } else if (dateRange.to) {
+        const toDate = new Date(dateRange.to);
+        toDate.setHours(23, 59, 59, 999);
+        if (syncDate > toDate) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   });
 
   const uniqueOrg = [...new Set(initialData.map((item) => item.orgId))];
@@ -117,12 +158,14 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
         statusFilter={statusFilter}
         organisasjonFilter={orgFilter}
         domeneFilter={domainFilter}
+        dateRange={dateRange}
         uniqueOrganisasjoner={uniqueOrg}
         uniqueDomener={uniqueDomain}
         onSyncTypeFilterChange={handleSyncTypeFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
         onOrganisasjonFilterChange={handleOrgFilterChange}
         onDomeneFilterChange={handleDomainFilterChange}
+        onDateRangeChange={handleDateRangeChange}
         onClearFilters={handleClearFilters}
       />
 
