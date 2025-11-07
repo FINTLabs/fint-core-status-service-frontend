@@ -17,51 +17,36 @@ const apiManagerAlpha = new NovariApiManager({
   baseUrl: API_URL,
 });
 
+const apiManagers = {
+  beta: apiManagerBeta,
+  api: apiManagerApi,
+  alpha: apiManagerAlpha,
+} as const;
+
 class SyncApi {
   static async getAllSync(env: "beta" | "api" | "alpha"): Promise<ApiResponse<ISyncData[]>> {
     const token = AuthProperties.getToken();
-    switch (env) {
-      case "beta":
-        return await apiManagerBeta.call<ISyncData[]>({
-          method: "GET",
-          endpoint: "/page-metadata",
-          functionName: "getAllSync",
-          customErrorMessage: "Kunne ikke hente synkroniseringer",
-          customSuccessMessage: "Synkroniseringer hentet vellykket",
-          additionalHeaders: {
-            Authorization: token,
-          },
-        });
-      case "api":
-        return await apiManagerApi.call<ISyncData[]>({
-          method: "GET",
-          endpoint: "/page-metadata",
-          functionName: "getAllSync",
-          customErrorMessage: "Kunne ikke hente synkroniseringer",
-          customSuccessMessage: "Synkroniseringer hentet vellykket",
-          additionalHeaders: {
-            Authorization: token,
-          },
-        });
-      case "alpha":
-        return await apiManagerAlpha.call<ISyncData[]>({
-          method: "GET",
-          endpoint: "/page-metadata",
-          functionName: "getAllSync",
-          customErrorMessage: "Kunne ikke hente synkroniseringer",
-          customSuccessMessage: "Synkroniseringer hentet vellykket",
-          additionalHeaders: {
-            Authorization: token,
-          },
-        });
-      default:
-        return {
-          success: false,
-          message: "Ukjent miljø",
-          data: [],
-          variant: "error",
-        };
+    const apiManager = apiManagers[env];
+
+    if (!apiManager) {
+      return {
+        success: false,
+        message: "Ukjent miljø",
+        data: [],
+        variant: "error",
+      };
     }
+
+    return await apiManager.call<ISyncData[]>({
+      method: "GET",
+      endpoint: "/page-metadata",
+      functionName: "getAllSync",
+      customErrorMessage: "Kunne ikke hente synkroniseringer",
+      customSuccessMessage: "Synkroniseringer hentet vellykket",
+      additionalHeaders: {
+        Authorization: token,
+      },
+    });
   }
 }
 

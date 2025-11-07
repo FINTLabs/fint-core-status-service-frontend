@@ -1,4 +1,4 @@
-import { Heading, BodyLong, Box, HStack } from "@navikt/ds-react";
+import { BodyLong, Box, Heading, HStack } from "@navikt/ds-react";
 import { Breadcrumbs } from "./Breadcrumbs";
 
 interface BreadcrumbItem {

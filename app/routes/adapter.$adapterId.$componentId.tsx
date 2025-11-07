@@ -1,18 +1,18 @@
-import type { Route } from "./+types/adapterStatus.$adapterId.$componentId";
-import { useState, useEffect } from "react";
-import { useLoaderData, useLocation, type LoaderFunction } from "react-router";
+import type { Route } from "./+types/adapter.$adapterId.$componentId";
+import { useEffect, useState } from "react";
+import { type LoaderFunction, useLoaderData, useLocation } from "react-router";
 import type {
+  IAdapterComponentData,
+  IAdapterComponentModalData,
   IAdapterDetailData,
   IAdaptereTableRow,
-  IAdapterComponentModalData,
-  IAdapterComponentData,
 } from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterComponentModal } from "~/components/adapters/AdapterComponentModal";
 import { AdapterComponentAlert } from "~/components/adapters/AdapterComponentAlert";
 import { AdapterComponentTable } from "~/components/adapters/AdapterComponentTable";
 import AdapterApi from "~/api/AdapterApi";
-import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
+import { selectedEnvCookie } from "~/utils/cookies";
 import { Box } from "@navikt/ds-react";
 import { InformationSquareIcon } from "@navikt/aksel-icons";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
@@ -31,10 +31,14 @@ export function meta({ params }: Route.MetaArgs) {
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const cookieHeader = request.headers.get("Cookie");
-  const env = parseEnvironmentFromCookieHeader(cookieHeader);
+  const env = (await selectedEnvCookie.parse(cookieHeader)) || "api";
   const { adapterId, componentId } = params;
 
-  const response = await AdapterApi.getAdapterComponentDetail(adapterId || "", componentId || "");
+  const response = await AdapterApi.getAdapterComponentDetail(
+    adapterId || "",
+    componentId || "",
+    env
+  );
   const adapterData = response.data || [];
   return {
     adapterData,
@@ -95,7 +99,8 @@ export default function AdapterComponent() {
           const response = await AdapterApi.getAdapterComponentModalData(
             adapterId,
             componentId,
-            selectedAdapterName
+            selectedAdapterName,
+            env as "beta" | "api" | "alpha"
           );
           setModalData(response.data || null);
         } catch {
@@ -106,12 +111,12 @@ export default function AdapterComponent() {
       };
       fetchModalData();
     }
-  }, [selectedAdapterName, adapterId, componentId]);
+  }, [selectedAdapterName, adapterId, componentId, env]);
 
   const domain = adapterId.charAt(0).toUpperCase() + adapterId.slice(1).replace(/-/g, " ");
 
   const breadcrumbItems = [
-    { label: "AdapterStatus", href: "/adaptere" },
+    { label: "Adapter", href: "/adaptere" },
     { label: domain, href: `/adaptere/${adapterId}` },
     { label: componentId, href: `/adaptere/${adapterId}/${componentId}` },
   ];
@@ -135,7 +140,7 @@ export default function AdapterComponent() {
           description={`${componentId} for ${domain}`}
           env={env}
           breadcrumbItems={breadcrumbItems}
-          icon={<InformationSquareIcon aria-hidden />}
+          icon={InformationSquareIcon}
         />
 
         {mounted && (

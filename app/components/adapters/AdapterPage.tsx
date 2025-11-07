@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Box } from "@navikt/ds-react";
-import { ComponentIcon } from "@navikt/aksel-icons";
 import { AdapterFilter } from "./AdapterFilter";
 import { AdapterTable } from "./AdapterTable";
-import { PageHeader } from "../layout/PageHeader";
 import type { IAdaptereData, IAdaptereTableRow } from "~/types";
 
 interface AdapterPageProps {
@@ -11,7 +9,7 @@ interface AdapterPageProps {
   env: string;
 }
 
-export function AdapterPage({ initialData, env }: AdapterPageProps) {
+export function AdapterPage({ initialData }: AdapterPageProps) {
   const [sortState, setSortState] = useState<
     { orderBy: string; direction: "ascending" | "descending" } | undefined
   >(undefined);
@@ -108,21 +106,8 @@ export function AdapterPage({ initialData, env }: AdapterPageProps) {
     return 0;
   });
 
-  const breadcrumbItems = [
-    { label: "Dashboard", href: "/" },
-    { label: "Adaptere", href: "/adaptere" },
-  ];
-
   return (
     <Box padding="8" paddingBlock="2">
-      <PageHeader
-        title="Adaptere"
-        description="Oversikt over adaptere og deres status i Fint Core systemet."
-        env={env}
-        breadcrumbItems={breadcrumbItems}
-        icon={<ComponentIcon aria-hidden />}
-      />
-
       <AdapterFilter
         statusFilter={statusFilter}
         organisasjonFilter={organisationFilter}

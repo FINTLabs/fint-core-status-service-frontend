@@ -6,19 +6,21 @@ import { Heading, BodyLong, Box } from "@navikt/ds-react";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 import { useEffect, useState } from "react";
 import { selectedEnvCookie } from "~/utils/cookies";
+import { ComponentIcon } from "@navikt/aksel-icons";
+import { PageHeader } from "~/components/layout/PageHeader";
 
 export function meta() {
   return [
-    { title: "AdapterStatus - Fint Core Status Service" },
+    { title: "Adapter - Fint Core Status Service" },
     { name: "description", content: "View adapter status and configuration" },
   ];
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
-  const env = cookieHeader ? selectedEnvCookie.parse(cookieHeader) : "api";
+  const env = cookieHeader ? await selectedEnvCookie.parse(cookieHeader) : "api";
 
-  const response = await AdaptereApi.getAllAdapters();
+  const response = await AdaptereApi.getAllAdapters(env);
   const adapterData = response.data || [];
   return {
     adapterData,
@@ -28,7 +30,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   };
 };
 
-export default function AdapterStatus() {
+export default function Adapter() {
   const { adapterData, env, success, customErrorMessage } = useLoaderData() as {
     adapterData: IAdaptereData[];
     env: string;
@@ -51,6 +53,10 @@ export default function AdapterStatus() {
     }
   }, [customErrorMessage, success]);
 
+  const breadcrumbItems = [
+    { label: "Dashboard", href: "/" },
+    { label: "Adaptere", href: "/adaptere" },
+  ];
   if (!adapterData || adapterData.length === 0) {
     return (
       <>
@@ -71,6 +77,13 @@ export default function AdapterStatus() {
 
   return (
     <>
+      <PageHeader
+        title="Adaptere"
+        description="Oversikt over adaptere og deres status i Fint Core systemet."
+        env={env}
+        breadcrumbItems={breadcrumbItems}
+        icon={ComponentIcon}
+      />
       <AdapterPage initialData={adapterData} env={env} />
       <NovariSnackbar items={alerts} />
     </>

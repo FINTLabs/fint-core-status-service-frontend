@@ -6,6 +6,8 @@ import { selectedEnvCookie } from "~/utils/cookies";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 import { useEffect, useState } from "react";
 import { Box, Heading, BodyLong } from "@navikt/ds-react";
+import { PageHeader } from "~/components/layout/PageHeader";
+import { BellIcon } from "@navikt/aksel-icons";
 
 export function meta() {
   return [
@@ -16,9 +18,9 @@ export function meta() {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
-  const env = selectedEnvCookie.parse(cookieHeader);
+  const env = (await selectedEnvCookie.parse(cookieHeader)) || "api";
 
-  const response = await EventsApi.getAllEvents();
+  const response = await EventsApi.getAllEvents(env);
   const eventsData = response.data || [];
   return {
     eventsData,
@@ -68,8 +70,19 @@ export default function Events() {
       </>
     );
   }
+  const breadcrumbItems = [
+    { label: "Dashboard", href: "/" },
+    { label: "Hendelser", href: "/hendelser" },
+  ];
   return (
     <>
+      <PageHeader
+        title="Hendelser"
+        description="Oversikt over hendelser og deres status i Fint Core systemet."
+        env={env}
+        breadcrumbItems={breadcrumbItems}
+        icon={BellIcon}
+      />
       <EventsPage initialData={eventsData} env={env} />
       <NovariSnackbar items={alerts} />
     </>

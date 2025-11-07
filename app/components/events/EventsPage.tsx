@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Box } from "@navikt/ds-react";
-import { BellIcon } from "@navikt/aksel-icons";
 import { EventsFilter } from "./EventsFilter";
 import { EventsModal } from "./EventsModal";
-import { PageHeader } from "../layout/PageHeader";
 import type { IEventData, IEventDetail } from "~/types";
 import { EventsTable } from "./EventsTable";
 import EventsApi from "~/api/EventsApi";
@@ -13,7 +11,7 @@ interface FilterPageProps {
   env: string;
 }
 
-export function EventsPage({ initialData, env }: FilterPageProps) {
+export function EventsPage({ initialData }: FilterPageProps) {
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
 
@@ -95,21 +93,8 @@ export function EventsPage({ initialData, env }: FilterPageProps) {
     setCurrentPage(1);
   };
 
-  const breadcrumbItems = [
-    { label: "Dashboard", href: "/" },
-    { label: "Hendelser", href: "/hendelser" },
-  ];
-
   return (
     <Box padding="8" paddingBlock="2">
-      <PageHeader
-        title="Hendelser"
-        description="Oversikt over hendelser og operasjoner i Fint Core systemet."
-        env={env}
-        breadcrumbItems={breadcrumbItems}
-        icon={<BellIcon aria-hidden />}
-      />
-
       <EventsFilter
         searchFilter={searchFilter}
         dateRange={dateRange}

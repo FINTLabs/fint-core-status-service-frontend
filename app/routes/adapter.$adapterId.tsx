@@ -1,4 +1,4 @@
-import type { Route } from "./+types/adapterStatus.$adapterId";
+import type { Route } from "./+types/adapter.$adapterId";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, type LoaderFunction, useLoaderData } from "react-router";
 import type { IAdapterDetailData, IAdaptereTableRow } from "~/types";
@@ -6,7 +6,7 @@ import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterDetailAlert } from "~/components/adapters/AdapterDetailAlert";
 import { AdapterDetailTable } from "~/components/adapters/AdapterDetailTable";
 import AdapterApi from "~/api/AdapterApi";
-import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
+import { selectedEnvCookie } from "~/utils/cookies";
 import { Box } from "@navikt/ds-react";
 import { LayersIcon } from "@navikt/aksel-icons";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
@@ -22,10 +22,10 @@ export function meta({ params }: Route.MetaArgs) {
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const cookieHeader = request.headers.get("Cookie");
-  const env = parseEnvironmentFromCookieHeader(cookieHeader);
+  const env = (await selectedEnvCookie.parse(cookieHeader)) || "api";
   const { adapterId } = params;
 
-  const response = await AdapterApi.getAdapterDetail(adapterId || "");
+  const response = await AdapterApi.getAdapterDetail(adapterId || "", env);
   const adapterData = response.data || [];
   return {
     adapterData,
@@ -91,7 +91,7 @@ export default function AdapterDetail() {
           description={`Komponenter for ${domain}`}
           env={env}
           breadcrumbItems={breadcrumbItems}
-          icon={<LayersIcon aria-hidden />}
+          icon={LayersIcon}
         />
 
         {mounted && selectedAdapter && <AdapterDetailAlert adapter={selectedAdapter} />}

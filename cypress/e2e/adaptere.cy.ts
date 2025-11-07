@@ -9,10 +9,10 @@ Cypress.on("uncaught:exception", (err) => {
   }
 });
 
-describe("AdapterStatus Page", () => {
+describe("Adapter Page", () => {
   beforeEach(() => {
     // Load fixture data
-    cy.fixture("adaptere").as("adaptereData");
+    // cy.fixture("adaptere").as("adaptereData");
     cy.visit("/adaptere");
     cy.reload();
 

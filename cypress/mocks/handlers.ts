@@ -12,7 +12,7 @@ const BASE_URL = "http://localhost:8080";
 const BETA_API_URL = "http://localhost:8081";
 
 export const handlers = [
-  // AdapterStatus API
+  // Adapter API
   http.get(`${BASE_URL}/api/adapters`, () => {
     return HttpResponse.json(adaptereData);
   }),
