@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Box } from "@navikt/ds-react";
+import { BellIcon } from "@navikt/aksel-icons";
 import { EventsFilter } from "./EventsFilter";
 import { EventsModal } from "./EventsModal";
 import { PageHeader } from "../layout/PageHeader";
@@ -106,6 +107,7 @@ export function EventsPage({ initialData, env }: FilterPageProps) {
         description="Oversikt over hendelser og operasjoner i Fint Core systemet."
         env={env}
         breadcrumbItems={breadcrumbItems}
+        icon={<BellIcon aria-hidden />}
       />
 
       <EventsFilter

@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, delay } from "msw";
 import adaptereData from "../fixtures/adaptere.json";
 import adapterDetailData from "../fixtures/adapter-detail.json";
 import adapterComponentDetailData from "../fixtures/adapter-component-detail.json";
@@ -6,8 +6,10 @@ import adapterComponentModalData from "../fixtures/adapter-component-modal.json"
 import eventsData from "../fixtures/events.json";
 import eventDetailData from "../fixtures/event-detail.json";
 import syncData from "../fixtures/sync.json";
+import syncDataApi from "../fixtures/sync-api.json";
 
 const BASE_URL = "http://localhost:8080";
+const BETA_API_URL = "http://localhost:8081";
 
 export const handlers = [
   // AdapterStatus API
@@ -46,7 +48,13 @@ export const handlers = [
   }),
 
   // Sync API
-  http.get(`${BASE_URL}/api/sync`, () => {
+  http.get(`${BASE_URL}/page-metadata`, async () => {
+    await delay(5000);
     return HttpResponse.json(syncData);
+  }),
+
+  http.get(`${BETA_API_URL}/page-metadata`, async () => {
+    await delay(5000);
+    return HttpResponse.json(syncDataApi);
   }),
 ];

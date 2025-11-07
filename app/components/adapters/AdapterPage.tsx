@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Box } from "@navikt/ds-react";
+import { ComponentIcon } from "@navikt/aksel-icons";
 import { AdapterFilter } from "./AdapterFilter";
 import { AdapterTable } from "./AdapterTable";
 import { PageHeader } from "../layout/PageHeader";
@@ -119,6 +120,7 @@ export function AdapterPage({ initialData, env }: AdapterPageProps) {
         description="Oversikt over adaptere og deres status i Fint Core systemet."
         env={env}
         breadcrumbItems={breadcrumbItems}
+        icon={<ComponentIcon aria-hidden />}
       />
 
       <AdapterFilter

@@ -1,28 +1,29 @@
 import {
+  type ActionFunctionArgs,
   data,
   isRouteErrorResponse,
   Links,
+  type LoaderFunctionArgs,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  type LoaderFunctionArgs,
+  useLocation,
+  useNavigate,
 } from "react-router";
 import { Box, Page } from "@navikt/ds-react";
-import { Header } from "./components/layout/Header";
 import { Footer } from "./components/layout/Footer";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import themeHref from "./styles/novari-theme.css?url";
 import akselHref from "@navikt/ds-css?url";
-import {
-  ENVIRONMENT_COOKIE_NAME,
-  parseEnvironmentFromCookieHeader,
-  setEnvironmentCookie,
-} from "~/utils/cookies";
+import { selectedEnvCookie } from "~/utils/cookies";
 import { AuthProperties } from "~/utils/auth";
+import type { IUserSession } from "~/types";
+import { NovariHeader } from "novari-frontend-components";
+import { EnvironmentSelector } from "~/components/common/EnvironmentSelector";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let server: any;
@@ -91,26 +92,33 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   AuthProperties.setProperties(request);
 
   const cookieHeader = request.headers.get("Cookie");
-  const cookieValue = parseEnvironmentFromCookieHeader(cookieHeader);
+  const cookieValue = await selectedEnvCookie.parse(cookieHeader);
+
+  let selectedEnv = cookieValue;
+  if (!selectedEnv) {
+    selectedEnv = "api";
+  }
+
+  const userSession: IUserSession = {
+    selectedEnv: selectedEnv as "beta" | "api" | "alpha",
+  };
 
   if (!cookieValue) {
-    setEnvironmentCookie("API");
+    const newCookieHeader = await selectedEnvCookie.serialize(selectedEnv);
     return data(
-      { cookieValue },
+      { userSession },
       {
         headers: {
-          "Set-Cookie": `${ENVIRONMENT_COOKIE_NAME}=API; path=/; SameSite=Lax`,
+          "Set-Cookie": newCookieHeader,
         },
       }
     );
   }
 
-  return new Response(JSON.stringify({ selectedEnv: cookieValue }), {
+  return new Response(JSON.stringify({ userSession }), {
     headers: { "Content-Type": "application/json" },
   });
 };
-
-//TODO: add logging and clean eslint errors
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -132,9 +140,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { selectedEnv } = useLoaderData<{
-    selectedEnv: string;
+  const { userSession } = useLoaderData<{
+    userSession: IUserSession;
   }>();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <Page
@@ -147,12 +157,41 @@ export default function App() {
       }
     >
       <Box background={"bg-default"} as="nav" data-cy="novari-header">
-        <Header />
+        <Page.Block as="header">
+          <NovariHeader
+            appName="Fint Core Status Service"
+            menu={[
+              {
+                label: "Dashboard",
+                action: "/",
+              },
+              {
+                label: "Adaptere",
+                action: "/adaptere",
+              },
+              {
+                label: "Hendelser",
+                action: "/hendelser",
+              },
+              {
+                label: "Synkronisering",
+                action: "/sync",
+              },
+            ]}
+            isLoggedIn={true}
+            onLogout={() => {}}
+            onLogin={() => {}}
+            onMenuClick={(action) => navigate(action)}
+            displayName={"Mock User"}
+          >
+            <EnvironmentSelector userSession={userSession} navigateTo={location.pathname} />
+          </NovariHeader>
+        </Page.Block>
       </Box>
 
       <Box padding="8" paddingBlock="2" as="main">
         <Page.Block gutters width="2xl">
-          <Outlet context={selectedEnv} />
+          <Outlet context={userSession} />
         </Page.Block>
       </Box>
     </Page>
@@ -173,7 +212,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
     <Page>
-      <Header />
+      {/*<Header />*/}
       <Page.Block as="main" width="xl" gutters>
         <div className="py-8">
           <h1 className="text-3xl font-bold mb-4">{message}</h1>
@@ -183,4 +222,29 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       <Footer />
     </Page>
   );
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const actionType = formData.get("actionType") as string;
+
+  if (actionType === "UPDATE_SELECTED_ENVIRONMENT") {
+    const selectedEnv = formData.get("selectedEnv") as string;
+    const navigateTo = (formData.get("navigateTo") as string) || "/";
+
+    const newCookieHeader = await selectedEnvCookie.serialize(selectedEnv);
+
+    // Redirect to the specified path after setting the cookie
+    return new Response(null, {
+      status: 302,
+      headers: {
+        "Set-Cookie": newCookieHeader,
+        Location: navigateTo,
+      },
+    });
+  }
+
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { "Content-Type": "application/json" },
+  });
 }

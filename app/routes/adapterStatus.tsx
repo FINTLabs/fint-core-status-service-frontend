@@ -2,11 +2,10 @@ import { AdapterPage } from "~/components/adapters/AdapterPage";
 import type { IAdaptereData } from "~/types";
 import { useLoaderData, type LoaderFunction } from "react-router";
 import AdaptereApi from "~/api/AdapterApi";
-import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
-import { useEnvironmentRefresh } from "~/hooks/useEnvironmentRefresh";
 import { Heading, BodyLong, Box } from "@navikt/ds-react";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 import { useEffect, useState } from "react";
+import { selectedEnvCookie } from "~/utils/cookies";
 
 export function meta() {
   return [
@@ -17,7 +16,7 @@ export function meta() {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
-  const env = parseEnvironmentFromCookieHeader(cookieHeader);
+  const env = cookieHeader ? selectedEnvCookie.parse(cookieHeader) : "api";
 
   const response = await AdaptereApi.getAllAdapters();
   const adapterData = response.data || [];
@@ -37,7 +36,6 @@ export default function AdapterStatus() {
     customErrorMessage: string;
   };
 
-  useEnvironmentRefresh();
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
   useEffect(() => {

@@ -3,7 +3,6 @@ import { Box } from "@navikt/ds-react";
 import { SyncFilter } from "./SyncFilter";
 import { SyncTable } from "./SyncTable";
 import { SyncModal } from "./SyncModal";
-import { PageHeader } from "../layout/PageHeader";
 import type { ISyncData } from "~/types";
 
 interface SyncPageProps {
@@ -11,7 +10,7 @@ interface SyncPageProps {
   env: string;
 }
 
-export function SyncPage({ initialData, env }: SyncPageProps) {
+export function SyncPage({ initialData }: SyncPageProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
@@ -139,19 +138,20 @@ export function SyncPage({ initialData, env }: SyncPageProps) {
   const uniqueOrg = [...new Set(initialData.map((item) => item.orgId))];
   const uniqueDomain = [...new Set(initialData.map((item) => item.domain))];
 
-  const breadcrumbItems = [
-    { label: "Dashboard", href: "/" },
-    { label: "Synkronisering", href: "/sync" },
-  ];
+  // const breadcrumbItems = [
+  //   { label: "Dashboard", href: "/" },
+  //   { label: "Synkronisering", href: "/sync" },
+  // ];
 
   return (
     <Box padding="8" paddingBlock="2">
-      <PageHeader
-        title="Synkronisering"
-        description="Oversikt over synkroniseringer og status i Fint Core systemet."
-        env={env}
-        breadcrumbItems={breadcrumbItems}
-      />
+      {/*<PageHeader*/}
+      {/*  title="Synkronisering"*/}
+      {/*  description="Oversikt over synkroniseringer og status i Fint Core systemet."*/}
+      {/*  env={env}*/}
+      {/*  breadcrumbItems={breadcrumbItems}*/}
+      {/*  icon={<ArrowsSquarepathIcon aria-hidden />}*/}
+      {/*/>*/}
 
       <SyncFilter
         syncTypeFilter={syncTypeFilter}

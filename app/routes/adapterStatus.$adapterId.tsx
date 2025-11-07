@@ -8,6 +8,7 @@ import { AdapterDetailTable } from "~/components/adapters/AdapterDetailTable";
 import AdapterApi from "~/api/AdapterApi";
 import { parseEnvironmentFromCookieHeader } from "~/utils/cookies";
 import { Box } from "@navikt/ds-react";
+import { LayersIcon } from "@navikt/aksel-icons";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 
 export function meta({ params }: Route.MetaArgs) {
@@ -90,6 +91,7 @@ export default function AdapterDetail() {
           description={`Komponenter for ${domain}`}
           env={env}
           breadcrumbItems={breadcrumbItems}
+          icon={<LayersIcon aria-hidden />}
         />
 
         {mounted && selectedAdapter && <AdapterDetailAlert adapter={selectedAdapter} />}

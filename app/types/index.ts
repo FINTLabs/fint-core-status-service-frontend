@@ -1,4 +1,7 @@
-// Table 1 - Main AdapterStatus List Data Structure
+export interface IUserSession {
+  selectedEnv: "beta" | "api" | "alpha";
+}
+
 export interface IComponentData {
   packageName: string;
   healthy: "HEALTHY" | "UNHEALTHY";
