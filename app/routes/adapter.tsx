@@ -16,6 +16,7 @@ export function meta() {
   ];
 }
 
+//TODO: set up this page like sync with suspense and await
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
   const env = cookieHeader ? await selectedEnvCookie.parse(cookieHeader) : "api";

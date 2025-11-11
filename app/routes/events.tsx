@@ -1,11 +1,18 @@
 import { EventsPage } from "~/components/events/EventsPage";
-import type { IEventData } from "~/types";
-import { useLoaderData, type LoaderFunction } from "react-router";
+import type { IEventData, ISyncData } from "~/types";
+import {
+  Await,
+  type LoaderFunction,
+  useAsyncValue,
+  useLoaderData,
+  useNavigation,
+} from "react-router";
 import EventsApi from "~/api/EventsApi";
 import { selectedEnvCookie } from "~/utils/cookies";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
-import { useEffect, useState } from "react";
-import { Box, Heading, BodyLong } from "@navikt/ds-react";
+import * as React from "react";
+import { Suspense, useEffect, useState } from "react";
+import { Alert, Loader } from "@navikt/ds-react";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { BellIcon } from "@navikt/aksel-icons";
 
@@ -16,64 +23,36 @@ export function meta() {
   ];
 }
 
+//TODO: find out why two alerts are shown on api error
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
-  const env = (await selectedEnvCookie.parse(cookieHeader)) || "api";
+  const env = await selectedEnvCookie.parse(cookieHeader);
 
-  const response = await EventsApi.getAllEvents(env);
-  const eventsData = response.data || [];
-  return {
-    eventsData,
-    env,
-    success: response.success,
-    customErrorMessage: response.message || "Kunne ikke hente hendelser",
-  };
+  const eventResponse = EventsApi.getAllEvents(env);
+
+  return { env, eventResponse };
 };
 
 export default function Events() {
-  const { eventsData, env, success, customErrorMessage } = useLoaderData() as {
-    eventsData: IEventData[];
+  const { env, eventResponse } = useLoaderData() as {
     env: string;
-    success: boolean;
-    customErrorMessage: string;
+    eventResponse: Promise<{ success: boolean; message?: string; data?: ISyncData[] }>;
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
-  useEffect(() => {
-    if (!success) {
-      setAlerts([
-        {
-          id: `events-error-${Date.now()}`,
-          variant: success ? "success" : "error",
-          message: customErrorMessage,
-          header: "Connection Feil",
-        },
-      ]);
-    }
-  }, [customErrorMessage, success]);
-
-  if (!eventsData || eventsData.length === 0) {
-    return (
-      <>
-        <Box padding="8" paddingBlock="2">
-          <Box marginBlock="8">
-            <Heading size="xlarge" spacing>
-              Hendelser {env}
-            </Heading>
-            <BodyLong size="large" textColor="subtle">
-              Loading events data...
-            </BodyLong>
-          </Box>
-        </Box>
-        <NovariSnackbar items={alerts} />
-      </>
-    );
-  }
   const breadcrumbItems = [
     { label: "Dashboard", href: "/" },
     { label: "Hendelser", href: "/hendelser" },
   ];
+
+  const navigation = useNavigation();
+  const isNavigating = Boolean(navigation.location);
+
+  if (isNavigating) {
+    return <div>Loading stuff...</div>;
+  }
+
   return (
     <>
       <PageHeader
@@ -83,7 +62,63 @@ export default function Events() {
         breadcrumbItems={breadcrumbItems}
         icon={BellIcon}
       />
-      <EventsPage initialData={eventsData} env={env} />
+      <Suspense
+        fallback={
+          <div className="p-6 flex justify-center">
+            <Loader size="3xlarge" title="Laster hendelser ..." />
+          </div>
+        }
+      >
+        <Await
+          resolve={eventResponse}
+          errorElement={
+            <div className="p-6">
+              <Alert variant="error" className="mb-4">
+                Kunne ikke hente synkroniseringer.
+              </Alert>
+            </div>
+          }
+        >
+          <SyncResolved env={env} alerts={alerts} setAlerts={setAlerts} />
+        </Await>
+      </Suspense>
+    </>
+  );
+}
+
+// ---------- Child component used inside <Await> ----------
+function SyncResolved({
+  env,
+  alerts,
+  setAlerts,
+}: {
+  env: string;
+  alerts: NovariSnackbarItem[];
+  setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
+}) {
+  const response = useAsyncValue() as {
+    success: boolean;
+    message?: string;
+    data?: IEventData[];
+  };
+
+  useEffect(() => {
+    if (!response?.success) {
+      setAlerts((prev) => [
+        ...prev,
+        {
+          id: `sync-error-${Date.now()}`,
+          variant: "error",
+          message: response?.message || "Kunne ikke hente hendelser.",
+          header: "Connection Feil",
+        },
+      ]);
+    }
+  }, [response?.success, response?.message, setAlerts]);
+
+  return (
+    <>
+      <EventsPage initialData={response.data || []} env={env} />
       <NovariSnackbar items={alerts} />
     </>
   );

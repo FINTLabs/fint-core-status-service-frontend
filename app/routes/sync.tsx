@@ -80,7 +80,6 @@ export default function Sync() {
 }
 
 // ---------- Child component used inside <Await> ----------
-
 function SyncResolved({
   env,
   alerts,
@@ -90,7 +89,6 @@ function SyncResolved({
   alerts: NovariSnackbarItem[];
   setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
 }) {
-  // ✅ Safe: this runs inside a normal component, not the render callback
   const response = useAsyncValue() as {
     success: boolean;
     message?: string;
