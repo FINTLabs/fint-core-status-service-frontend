@@ -1,4 +1,4 @@
-import { BodyLong, Box, Button, Heading, HStack, Modal, Table } from "@navikt/ds-react";
+import { BodyLong, Box, Button, Heading, HStack, Modal, Table, VStack, BodyShort } from "@navikt/ds-react";
 import type { ISyncData } from "~/types";
 
 interface SyncModalProps {
@@ -39,17 +39,31 @@ export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
   };
 
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      width="medium"
-      data-cy="sync-modal"
-      aria-label="Synkronisering Detaljer"
-    >
+    <Modal open={isOpen} onClose={onClose} width="medium" data-cy="sync-modal" aria-label="Synkronisering Detaljer">
       <Modal.Header>
-        <Heading level="2" size="medium">
-          Synkronisering Detaljer
-        </Heading>
+        <VStack gap="2">
+          <Heading level="2" size="medium">
+            Synkronisering Detaljer
+          </Heading>
+          <VStack gap="1">
+            <Box>
+              <BodyShort size="small" textColor="subtle">
+                Correlation ID
+              </BodyShort>
+              <BodyShort size="small" className="font-mono break-all">
+                {syncData.corrId}
+              </BodyShort>
+            </Box>
+            <Box>
+              <BodyShort size="small" textColor="subtle">
+                Adapter ID
+              </BodyShort>
+              <BodyShort size="small" className="break-all">
+                {syncData.adapterId}
+              </BodyShort>
+            </Box>
+          </VStack>
+        </VStack>
       </Modal.Header>
 
       <Modal.Body>
@@ -60,120 +74,97 @@ export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
               Oversikt
             </Heading>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <BodyLong size="small" className="text-gray-500">
-                  Correlation ID
-                </BodyLong>
-                <BodyLong size="small" className="font-mono break-all">
-                  {syncData.corrId}
-                </BodyLong>
-              </div>
-
-              <div>
-                <BodyLong size="small" className="text-gray-500">
-                  Adapter ID
-                </BodyLong>
-                <BodyLong size="small" className="break-all">
-                  {syncData.adapterId}
-                </BodyLong>
-              </div>
-
-              <div>
+            <Box className="grid grid-cols-2 gap-4">
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Organisasjon
                 </BodyLong>
                 <BodyLong size="small">{syncData.orgId}</BodyLong>
-              </div>
+              </Box>
 
-              <div>
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Domene
                 </BodyLong>
                 <BodyLong size="small">{syncData.domain}</BodyLong>
-              </div>
+              </Box>
 
-              <div>
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Pakke
                 </BodyLong>
                 <BodyLong size="small">{syncData.package}</BodyLong>
-              </div>
+              </Box>
 
-              <div>
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Ressurs
                 </BodyLong>
                 <BodyLong size="small">{syncData.resource}</BodyLong>
-              </div>
+              </Box>
 
-              <div>
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Type
                 </BodyLong>
                 <BodyLong size="small">
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      syncData.syncType === "FULL"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-purple-100 text-purple-800"
+                      syncData.syncType === "FULL" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"
                     }`}
                   >
                     {syncData.syncType}
                   </span>
                 </BodyLong>
-              </div>
+              </Box>
 
-              <div>
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Status
                 </BodyLong>
                 <BodyLong size="small">
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      syncData.finished
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
+                      syncData.finished ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
                     }`}
                   >
                     {syncData.finished ? "Fullført" : "Pågår"}
                   </span>
                 </BodyLong>
-              </div>
+              </Box>
 
-              <div>
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Fremdrift
                 </BodyLong>
                 <BodyLong size="small">
-                  {syncData.entitiesAquired} / {syncData.totalEntities} entiteter (
-                  {calculateProgress()}%)
+                  {syncData.entitiesAquired} / {syncData.totalEntities} entiteter ({calculateProgress()}%)
                 </BodyLong>
-              </div>
+              </Box>
 
-              <div>
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Sider
                 </BodyLong>
                 <BodyLong size="small">
                   {syncData.pagesAcquired} / {syncData.totalPages} sider
                 </BodyLong>
-              </div>
+              </Box>
 
-              <div>
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Varighet
                 </BodyLong>
                 <BodyLong size="small">{calculateDuration(syncData.pages)}</BodyLong>
-              </div>
+              </Box>
 
-              <div>
+              <Box>
                 <BodyLong size="small" className="text-gray-500">
                   Sist oppdatert
                 </BodyLong>
                 <BodyLong size="small">{formatTime(syncData.lastPageTime)}</BodyLong>
-              </div>
-            </div>
+              </Box>
+            </Box>
           </Box>
 
           {/* Pages Table */}

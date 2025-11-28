@@ -182,7 +182,7 @@ export default function App() {
             onLogout={() => {}}
             onLogin={() => {}}
             onMenuClick={(action) => navigate(action)}
-            displayName={"Mock User"}
+            displayName={""}
           >
             <EnvironmentSelector userSession={userSession} navigateTo={location.pathname} />
           </NovariHeader>

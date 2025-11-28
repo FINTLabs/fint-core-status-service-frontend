@@ -2,28 +2,40 @@ import { useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { EventsFilter } from "./EventsFilter";
 import { EventsModal } from "./EventsModal";
-import type { IEventData, IEventDetail } from "~/types";
+
 import { EventsTable } from "./EventsTable";
 import EventsApi from "~/api/EventsApi";
+import type { IEvent } from "~/types/Event";
 
 interface FilterPageProps {
-  initialData: IEventData[];
+  initialData: IEvent[];
   env: string;
 }
 
 export function EventsPage({ initialData }: FilterPageProps) {
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
+  const [operationFilter, setOperationFilter] = useState<string>("");
+  const [organisasjonFilter, setOrganisasjonFilter] = useState<string>("");
+  const [ressursFilter, setRessursFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<{
+    ok: boolean;
+    error: boolean;
+  }>({ ok: true, error: true });
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<IEventData | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
 
   const handleClearFilters = () => {
     setSearchFilter("");
     setDateRange(undefined);
+    setOperationFilter("");
+    setOrganisasjonFilter("");
+    setRessursFilter("");
+    setStatusFilter({ ok: true, error: true });
     setCurrentPage(1);
   };
 
@@ -31,10 +43,10 @@ export function EventsPage({ initialData }: FilterPageProps) {
     setCurrentPage(page);
   };
 
-  const handleRowClick = (event: IEventData) => {
+  const handleRowClick = (event: IEvent) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
-    fetchEventDetail(event.eventId);
+    // fetchEventDetail(event.eventId);
   };
 
   const handleCloseModal = () => {
@@ -42,41 +54,82 @@ export function EventsPage({ initialData }: FilterPageProps) {
     setSelectedEvent(null);
   };
 
-  const [eventDetailData, setEventDetailData] = useState<IEventDetail | null>(null);
-  const [loadingDetail, setLoadingDetail] = useState(false);
+  // const [eventDetailData, setEventDetailData] = useState<IEventDetail | null>(null);
+  // const [loadingDetail, setLoadingDetail] = useState(false);
 
-  const fetchEventDetail = async (eventId: string) => {
-    try {
-      setLoadingDetail(true);
-      const response = await EventsApi.getEventDetail(eventId);
-      setEventDetailData(response.data || null);
-    } catch {
-      setEventDetailData(null);
-    } finally {
-      setLoadingDetail(false);
-    }
-  };
+  // const fetchEventDetail = async (eventId: string) => {
+  //   try {
+  //     setLoadingDetail(true);
+  //     const response = await EventsApi.getEventDetail(eventId);
+  //     setEventDetailData(response.data || null);
+  //   } catch {
+  //     setEventDetailData(null);
+  //   } finally {
+  //     setLoadingDetail(false);
+  //   }
+  // };
 
   const filteredData = initialData.filter((event) => {
+    // Search filter
     if (searchFilter) {
       const searchTerm = searchFilter.toLowerCase();
-      const matchesId = event.eventId.toLowerCase().includes(searchTerm);
-      const matchesResources = event.resources.toLowerCase().includes(searchTerm);
+      const matchesCorrId = event.corrId?.toLowerCase().includes(searchTerm);
+      const matchesOrgId = event.orgId?.toLowerCase().includes(searchTerm);
+      const matchesResource = event.requestEvent.resourceName?.toLowerCase().includes(searchTerm);
+      const matchesTopic = event.topic?.toLowerCase().includes(searchTerm);
 
-      if (!matchesId && !matchesResources) {
+      if (!matchesCorrId && !matchesOrgId && !matchesResource && !matchesTopic) {
         return false;
       }
     }
 
+    // Operation filter
+    if (operationFilter && event.requestEvent.operationType !== operationFilter) {
+      return false;
+    }
+
+    // Organisation filter
+    if (organisasjonFilter && event.orgId !== organisasjonFilter) {
+      return false;
+    }
+
+    // Resource filter
+    if (ressursFilter && event.requestEvent.resourceName !== ressursFilter) {
+      return false;
+    }
+
+    // Status filter
+    if (!statusFilter.ok && !event.hasError) {
+      return false;
+    }
+    if (!statusFilter.error && event.hasError) {
+      return false;
+    }
+
+    // Date range filter
     if (dateRange?.from || dateRange?.to) {
-      const eventDate = new Date(event.transferred);
+      const eventDate = new Date(event.requestEvent.created);
 
-      if (dateRange.from && eventDate < dateRange.from) {
-        return false;
-      }
-
-      if (dateRange.to && eventDate > dateRange.to) {
-        return false;
+      if (dateRange.from && dateRange.to) {
+        const fromDate = new Date(dateRange.from);
+        fromDate.setHours(0, 0, 0, 0);
+        const toDate = new Date(dateRange.to);
+        toDate.setHours(23, 59, 59, 999);
+        if (eventDate < fromDate || eventDate > toDate) {
+          return false;
+        }
+      } else if (dateRange.from) {
+        const fromDate = new Date(dateRange.from);
+        fromDate.setHours(0, 0, 0, 0);
+        if (eventDate < fromDate) {
+          return false;
+        }
+      } else if (dateRange.to) {
+        const toDate = new Date(dateRange.to);
+        toDate.setHours(23, 59, 59, 999);
+        if (eventDate > toDate) {
+          return false;
+        }
       }
     }
 
@@ -93,13 +146,50 @@ export function EventsPage({ initialData }: FilterPageProps) {
     setCurrentPage(1);
   };
 
+  const handleOperationFilterChange = (value: string) => {
+    setOperationFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleOrganisasjonFilterChange = (value: string) => {
+    setOrganisasjonFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleRessursFilterChange = (value: string) => {
+    setRessursFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilterChange = (value: { ok: boolean; error: boolean }) => {
+    setStatusFilter(value);
+    setCurrentPage(1);
+  };
+
+  // Extract unique values for filters
+  const uniqueOperations = [...new Set(initialData.map((event) => event.requestEvent.operationType).filter(Boolean))].sort();
+  const uniqueOrganisasjoner = [...new Set(initialData.map((event) => event.orgId).filter(Boolean))].sort();
+  const uniqueRessurser = [...new Set(initialData.map((event) => event.requestEvent.resourceName).filter(Boolean))].sort();
+
+  const loadingDetail = false;
   return (
     <Box padding="8" paddingBlock="2">
       <EventsFilter
         searchFilter={searchFilter}
         dateRange={dateRange}
+        operationFilter={operationFilter}
+        organisasjonFilter={organisasjonFilter}
+        ressursFilter={ressursFilter}
+        statusFilter={statusFilter}
+        uniqueOperations={uniqueOperations}
+        uniqueOrganisasjoner={uniqueOrganisasjoner}
+        uniqueRessurser={uniqueRessurser}
         onSearchFilterChange={handleSearchFilterChange}
         onDateRangeChange={handleDateRangeChange}
+        onOperationFilterChange={handleOperationFilterChange}
+        onOrganisasjonFilterChange={handleOrganisasjonFilterChange}
+        onRessursFilterChange={handleRessursFilterChange}
+        onStatusFilterChange={handleStatusFilterChange}
         onClearFilters={handleClearFilters}
       />
 
@@ -112,13 +202,13 @@ export function EventsPage({ initialData }: FilterPageProps) {
         itemsPerPage={itemsPerPage}
       />
 
-      {selectedEvent && eventDetailData && (
+      {selectedEvent && (
         <EventsModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          requestData={eventDetailData.request}
-          responseData={eventDetailData.response}
-          hendelseId={selectedEvent.eventId}
+          requestData={selectedEvent.requestEvent}
+          responseData={selectedEvent.responseEvent}
+          corrId={selectedEvent.corrId}
         />
       )}
     </Box>

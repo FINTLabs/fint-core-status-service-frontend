@@ -1,12 +1,12 @@
 import { Modal, Button, Heading, Tabs, CopyButton } from "@navikt/ds-react";
-import type { IEventRequest, IEventResponse } from "~/types";
+import type { IRequestEvent, IResponseEvent } from "~/types/Event";
 
 interface HendelserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  requestData: IEventRequest | null;
-  responseData: IEventResponse | null;
-  hendelseId: string;
+  requestData: IRequestEvent | null;
+  responseData: IResponseEvent | null;
+  corrId: string;
 }
 
 export function EventsModal({
@@ -14,9 +14,13 @@ export function EventsModal({
   onClose,
   requestData,
   responseData,
-  hendelseId,
+  corrId,
 }: HendelserModalProps) {
-  const formatTimestamp = (timestamp: number) => {
+  const formatTimestamp = (timestamp?: number | null) => {
+    if (!timestamp) {
+      return "Ikke tilgjengelig";
+    }
+
     return new Date(timestamp).toLocaleString("no-NO", {
       year: "numeric",
       month: "2-digit",
@@ -29,6 +33,22 @@ export function EventsModal({
 
   const formatJson = (data: unknown) => {
     return JSON.stringify(data, null, 2);
+  };
+
+  const renderOperationBadge = (operation?: string | null) => {
+    if (!operation) {
+      return <span className="text-gray-500">Ikke tilgjengelig</span>;
+    }
+
+    const baseClasses = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium";
+    const colorClass =
+      operation === "CREATE"
+        ? "bg-green-100 text-green-800"
+        : operation === "UPDATE"
+          ? "bg-blue-100 text-blue-800"
+          : "bg-red-100 text-red-800";
+
+    return <span className={`${baseClasses} ${colorClass}`}>{operation}</span>;
   };
 
   return (
@@ -44,7 +64,7 @@ export function EventsModal({
           Hendelse Detaljer:
         </Heading>
         <Heading id="hendelser-modal-title" size="medium">
-          {hendelseId}
+          {corrId}
         </Heading>
       </Modal.Header>
 
@@ -79,17 +99,7 @@ export function EventsModal({
                       <div>
                         <span className="font-medium text-gray-600">Operation:</span>
                         <div className="mt-1">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              requestData.operationType === "CREATE"
-                                ? "bg-green-100 text-green-800"
-                                : requestData.operationType === "UPDATE"
-                                  ? "bg-blue-100 text-blue-800"
-                                  : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {requestData.operationType}
-                          </span>
+                          {renderOperationBadge(requestData.operationType)}
                         </div>
                       </div>
                       <div>
@@ -176,22 +186,10 @@ export function EventsModal({
                           {responseData.adapterId}
                         </div>
                       </div> */}
-                      <div>
-                        <span className="font-medium text-gray-600">Operation:</span>
-                        <div className="mt-1">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              responseData.operationType === "CREATE"
-                                ? "bg-green-100 text-green-800"
-                                : responseData.operationType === "UPDATE"
-                                  ? "bg-blue-100 text-blue-800"
-                                  : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {responseData.operationType}
-                          </span>
-                        </div>
-                      </div>
+                      {/*<div>*/}
+                      {/*  <span className="font-medium text-gray-600">Operation:</span>*/}
+                      {/*  <div className="mt-1">{renderOperationBadge(responseData.operationType)}</div>*/}
+                      {/*</div>*/}
                       {responseData.errorMessage && (
                         <div className="col-span-2">
                           <span className="font-medium text-gray-600">Error Message:</span>

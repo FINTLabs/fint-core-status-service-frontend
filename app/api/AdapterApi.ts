@@ -1,11 +1,6 @@
 import { type ApiResponse, NovariApiManager } from "novari-frontend-components";
-import type {
-  IAdapterComponentData,
-  IAdapterDetailData,
-  IAdaptereData,
-  IAdapterComponentModalData,
-} from "~/types";
 import { AuthProperties } from "~/utils/auth";
+import type { IAdapter } from "~/types";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 const BETA_API_URL = import.meta.env.VITE_BETA_URL || "";
@@ -28,10 +23,9 @@ const apiManagers = {
   alpha: apiManagerAlpha,
 } as const;
 
+//Note that endpoint is called component
 class AdapterApi {
-  static async getAllAdapters(
-    env: "beta" | "api" | "alpha" = "api"
-  ): Promise<ApiResponse<IAdaptereData[]>> {
+  static async getAllAdapters(env: "beta" | "api" | "alpha" = "api"): Promise<ApiResponse<IAdapter>> {
     const token = AuthProperties.getToken();
     const apiManager = apiManagers[env];
 
@@ -39,109 +33,19 @@ class AdapterApi {
       return {
         success: false,
         message: "Ukjent miljø",
-        data: [],
+        data: {},
         variant: "error",
       };
     }
 
-    return await apiManager.call<IAdaptereData[]>({
+    return await apiManager.call<IAdapter>({
       method: "GET",
-      endpoint: `/api/adapters`,
+      endpoint: `/component`,
       functionName: "getAllAdapters",
-      customErrorMessage: "Kunne ikke hente adaptere",
-      customSuccessMessage: "Hentet adaptere vellykket",
-      additionalHeaders: {
-        Authorization: token,
-      },
-    });
-  }
-
-  static async getAdapterDetail(
-    adapterId: string,
-    env: "beta" | "api" | "alpha" = "api"
-  ): Promise<ApiResponse<IAdapterDetailData[]>> {
-    const token = AuthProperties.getToken();
-    const apiManager = apiManagers[env];
-
-    if (!apiManager) {
-      return {
-        success: false,
-        message: "Ukjent miljø",
-        data: [],
-        variant: "error",
-      };
-    }
-
-    return await apiManager.call<IAdapterDetailData[]>({
-      method: "GET",
-      endpoint: `/api/adapters/${adapterId}`,
-      functionName: "getAdapterDetail",
-      customErrorMessage: "Kunne ikke hente detaljene",
-      customSuccessMessage: "Hentet vellykket",
-      additionalHeaders: {
-        Authorization: token,
-      },
-    });
-  }
-
-  static async getAdapterComponentDetail(
-    adapterId: string,
-    componentId: string,
-    env: "beta" | "api" | "alpha" = "api"
-  ): Promise<ApiResponse<IAdapterComponentData[]>> {
-    const token = AuthProperties.getToken();
-    const apiManager = apiManagers[env];
-
-    if (!apiManager) {
-      return {
-        success: false,
-        message: "Ukjent miljø",
-        data: [],
-        variant: "error",
-      };
-    }
-
-    return await apiManager.call<IAdapterComponentData[]>({
-      method: "GET",
-      endpoint: `/api/adapters/${adapterId}/${componentId}`,
-      functionName: "getAdapterComponentDetail",
-      customErrorMessage: "Kunne ikke hente detaljene",
-      customSuccessMessage: "Hentet vellykket",
-      additionalHeaders: {
-        Authorization: token,
-      },
-    });
-  }
-
-  static async getAdapterComponentModalData(
-    adapterId: string,
-    componentId: string,
-    adapterName: string,
-    env: "beta" | "api" | "alpha" = "api"
-  ): Promise<ApiResponse<IAdapterComponentModalData>> {
-    const token = AuthProperties.getToken();
-    const apiManager = apiManagers[env];
-
-    if (!apiManager) {
-      return {
-        success: false,
-        message: "Ukjent miljø",
-        data: undefined,
-        variant: "error",
-      };
-    }
-
-    return await apiManager.call<IAdapterComponentModalData>({
-      method: "GET",
-      endpoint: `/api/adapters/${adapterId}/${componentId}/${adapterName}`,
-      functionName: "getAdapterComponentModalData",
-      customErrorMessage: "Kunne ikke hente adapter detaljer",
-      customSuccessMessage: "Hentet vellykket",
       additionalHeaders: {
         Authorization: token,
       },
     });
   }
 }
-
 export default AdapterApi;

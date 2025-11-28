@@ -1,6 +1,7 @@
 import { type ApiResponse, NovariApiManager } from "novari-frontend-components";
-import type { IEventData, IEventDetail } from "~/types";
+
 import { AuthProperties } from "~/utils/auth";
+import type { IEvent } from "~/types/Event";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 const BETA_API_URL = import.meta.env.VITE_BETA_URL || "";
@@ -24,9 +25,7 @@ const apiManagers = {
 } as const;
 
 class EventsApi {
-  static async getAllEvents(
-    env: "beta" | "api" | "alpha" = "api"
-  ): Promise<ApiResponse<IEventData[]>> {
+  static async getAllEvents(env: "beta" | "api" | "alpha" = "api"): Promise<ApiResponse<IEvent[]>> {
     const token = AuthProperties.getToken();
     const apiManager = apiManagers[env];
 
@@ -39,9 +38,9 @@ class EventsApi {
       };
     }
 
-    return await apiManager.call<IEventData[]>({
+    return await apiManager.call<IEvent[]>({
       method: "GET",
-      endpoint: "/api/events",
+      endpoint: "/event",
       functionName: "getAllEvents",
       customErrorMessage: "Kunne ikke hente hendelser",
       customSuccessMessage: "Hendelser hentet vellykket",
@@ -51,33 +50,33 @@ class EventsApi {
     });
   }
 
-  static async getEventDetail(
-    eventId: string,
-    env: "beta" | "api" | "alpha" = "api"
-  ): Promise<ApiResponse<IEventDetail>> {
-    const token = AuthProperties.getToken();
-    const apiManager = apiManagers[env];
-
-    if (!apiManager) {
-      return {
-        success: false,
-        message: "Ukjent miljø",
-        data: undefined,
-        variant: "error",
-      };
-    }
-
-    return await apiManager.call<IEventDetail>({
-      method: "GET",
-      endpoint: `/api/events/${eventId}/detail`,
-      functionName: "getEventDetail",
-      customErrorMessage: "Kunne ikke hente hendelse detaljer",
-      customSuccessMessage: "Hendelse detaljer hentet vellykket",
-      additionalHeaders: {
-        Authorization: token,
-      },
-    });
-  }
+  // static async getEventDetail(
+  //   eventId: string,
+  //   env: "beta" | "api" | "alpha" = "api"
+  // ): Promise<ApiResponse<IEventDetail>> {
+  //   const token = AuthProperties.getToken();
+  //   const apiManager = apiManagers[env];
+  //
+  //   if (!apiManager) {
+  //     return {
+  //       success: false,
+  //       message: "Ukjent miljø",
+  //       data: undefined,
+  //       variant: "error",
+  //     };
+  //   }
+  //
+  //   return await apiManager.call<IEventDetail>({
+  //     method: "GET",
+  //     endpoint: `/event/${eventId}/detail`,
+  //     functionName: "getEventDetail",
+  //     customErrorMessage: "Kunne ikke hente hendelse detaljer",
+  //     customSuccessMessage: "Hendelse detaljer hentet vellykket",
+  //     additionalHeaders: {
+  //       Authorization: token,
+  //     },
+  //   });
+  // }
 }
 
 export default EventsApi;

@@ -1,19 +1,17 @@
 import { AdapterPage } from "~/components/adapters/AdapterPage";
-import type { IAdaptereData } from "~/types";
+
 import { useLoaderData, type LoaderFunction } from "react-router";
-import AdaptereApi from "~/api/AdapterApi";
+import AdapterApi from "~/api/AdapterApi";
 import { Heading, BodyLong, Box } from "@navikt/ds-react";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 import { useEffect, useState } from "react";
 import { selectedEnvCookie } from "~/utils/cookies";
 import { ComponentIcon } from "@navikt/aksel-icons";
 import { PageHeader } from "~/components/layout/PageHeader";
+import type { IAdapter } from "~/types";
 
 export function meta() {
-  return [
-    { title: "Adapter - Fint Core Status Service" },
-    { name: "description", content: "View adapter status and configuration" },
-  ];
+  return [{ title: "Adapter - Fint Core Status Service" }, { name: "description", content: "View adapter status and configuration" }];
 }
 
 //TODO: set up this page like sync with suspense and await
@@ -21,8 +19,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
   const env = cookieHeader ? await selectedEnvCookie.parse(cookieHeader) : "api";
 
-  const response = await AdaptereApi.getAllAdapters(env);
-  const adapterData = response.data || [];
+  const response = await AdapterApi.getAllAdapters(env);
+  const adapterData = response.data || {};
   return {
     adapterData,
     env,
@@ -33,7 +31,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Adapter() {
   const { adapterData, env, success, customErrorMessage } = useLoaderData() as {
-    adapterData: IAdaptereData[];
+    adapterData: IAdapter;
     env: string;
     success: boolean;
     customErrorMessage: string;
@@ -58,7 +56,7 @@ export default function Adapter() {
     { label: "Dashboard", href: "/" },
     { label: "Adaptere", href: "/adaptere" },
   ];
-  if (!adapterData || adapterData.length === 0) {
+  if (!adapterData || Object.keys(adapterData).length === 0) {
     return (
       <>
         <Box padding="8" paddingBlock="2">
@@ -78,13 +76,7 @@ export default function Adapter() {
 
   return (
     <>
-      <PageHeader
-        title="Adaptere"
-        description="Oversikt over adaptere og deres status i Fint Core systemet."
-        env={env}
-        breadcrumbItems={breadcrumbItems}
-        icon={ComponentIcon}
-      />
+      <PageHeader title="Adaptere" description="Oversikt over adaptere og deres status i Fint Core systemet." env={env} breadcrumbItems={breadcrumbItems} icon={ComponentIcon} />
       <AdapterPage initialData={adapterData} env={env} />
       <NovariSnackbar items={alerts} />
     </>

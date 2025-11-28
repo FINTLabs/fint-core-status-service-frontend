@@ -1,98 +1,144 @@
-import { Box, Button, Checkbox, Select, Fieldset, HGrid } from "@navikt/ds-react";
+import { Box, Button, Checkbox, CheckboxGroup, DatePicker, ExpansionCard, HStack, Select, useRangeDatepicker } from "@navikt/ds-react";
+import { FunnelIcon } from "@navikt/aksel-icons";
+import React from "react";
 
 interface AdaptereFilterProps {
-  statusFilter: { ok: boolean; error: boolean };
-  organisasjonFilter: string;
-  domeneFilter: string;
-  uniqueOrganisasjoner: string[];
-  uniqueDomener: string[];
+  // statusFilter: { ok: boolean; error: boolean };
+  heartbeatFilter: { active: boolean; inactive: boolean };
+  organisationFilter: string;
+  domainFilter: string;
+  dateRange: { from?: Date; to?: Date } | undefined;
+  uniqueOrganisations: string[];
+  uniqueDomains: string[];
   onStatusFilterChange: (filter: { ok: boolean; error: boolean }) => void;
-  onOrganisasjonFilterChange: (value: string) => void;
-  onDomeneFilterChange: (value: string) => void;
+  onHeartbeatFilterChange: (filter: { active: boolean; inactive: boolean }) => void;
+  onOrganisationFilterChange: (value: string) => void;
+  onDomainFilterChange: (value: string) => void;
+  onDateRangeChange: (dateRange: { from?: Date; to?: Date } | undefined) => void;
   onClearFilters: () => void;
 }
 
 export function AdapterFilter({
-  statusFilter,
-  organisasjonFilter,
-  domeneFilter,
-  uniqueOrganisasjoner,
-  uniqueDomener,
+  // statusFilter,
+  heartbeatFilter,
+  organisationFilter,
+  domainFilter,
+  dateRange,
+  uniqueOrganisations,
+  uniqueDomains,
   onStatusFilterChange,
-  onOrganisasjonFilterChange,
-  onDomeneFilterChange,
+  onHeartbeatFilterChange,
+  onOrganisationFilterChange,
+  onDomainFilterChange,
+  onDateRangeChange,
   onClearFilters,
 }: AdaptereFilterProps) {
+  const { datepickerProps, toInputProps, fromInputProps } = useRangeDatepicker({
+    fromDate: new Date("2020-01-01"),
+    toDate: new Date("2030-12-31"),
+    onRangeChange: (value) => {
+      onDateRangeChange({
+        from: value?.from,
+        to: value?.to,
+      });
+    },
+    defaultSelected: dateRange ? { from: dateRange.from, to: dateRange.to } : undefined,
+  });
+
+  const handleClearFilters = () => {
+    // Clear date picker inputs
+    fromInputProps.onChange?.({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
+    toInputProps.onChange?.({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
+    // Let parent handle clearing all filter state
+    onClearFilters();
+  };
   return (
-    <Box
-      background="surface-default"
-      padding="space-16"
-      borderRadius="medium"
-      shadow="xsmall"
-      marginBlock="space-32"
-    >
-      <HGrid columns={{ sm: 1, md: 3 }} gap="space-16">
-        {/* Status Filter */}
-        <Fieldset legend="Status" size="small">
-          <HGrid columns={{ sm: 1, md: 2 }} gap="space-16">
-            <Checkbox
-              size="small"
-              checked={statusFilter.ok}
-              onChange={(e) => onStatusFilterChange({ ...statusFilter, ok: e.target.checked })}
-            >
-              Aktiv
-            </Checkbox>
-            <Checkbox
-              size="small"
-              checked={statusFilter.error}
-              onChange={(e) => onStatusFilterChange({ ...statusFilter, error: e.target.checked })}
-            >
-              Inaktiv
-            </Checkbox>
-          </HGrid>
-        </Fieldset>
+    <Box marginBlock="space-16">
+      <ExpansionCard aria-label="Filtrer adaptere" size="small">
+        <ExpansionCard.Header>
+          <Box className="flex items-center gap-2">
+            <FunnelIcon aria-hidden fontSize="1.5rem" />
+            <Box>
+              <ExpansionCard.Title size="small">Filtrer</ExpansionCard.Title>
+            </Box>
+          </Box>
+        </ExpansionCard.Header>
+        <ExpansionCard.Content>
+          <Box className="space-y-6">
+            {/* Select Filters Row */}
+            <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Organisation Filter */}
+              <Box>
+                <Select
+                  size="small"
+                  label="Organisasjon"
+                  value={organisationFilter}
+                  onChange={(e) => onOrganisationFilterChange(e.target.value)}
+                  id="organisation-filter"
+                  data-cy="organisation-filter"
+                >
+                  <option value="">Alle organisasjoner</option>
+                  {uniqueOrganisations.map((org) => (
+                    <option key={org} value={org}>
+                      {org}
+                    </option>
+                  ))}
+                </Select>
+              </Box>
 
-        {/* Organisasjon Filter */}
-        <Select
-          size="small"
-          label="Organisasjon"
-          value={organisasjonFilter}
-          onChange={(e) => onOrganisasjonFilterChange(e.target.value)}
-          id="organisation-filter"
-          data-cy="organisation-filter"
-        >
-          <option value="">Alle organisasjoner</option>
-          {uniqueOrganisasjoner.map((org) => (
-            <option key={org} value={org}>
-              {org}
-            </option>
-          ))}
-        </Select>
+              {/* Domain Filter */}
+              <Box>
+                <Select size="small" label="Domene" value={domainFilter} onChange={(e) => onDomainFilterChange(e.target.value)} id="domain-filter" data-cy="domain-filter">
+                  <option value="">Alle domener</option>
+                  {uniqueDomains.map((domain) => (
+                    <option key={domain} value={domain}>
+                      {domain}
+                    </option>
+                  ))}
+                </Select>
+              </Box>
+            </Box>
 
-        {/* Domene Filter */}
-        <Select
-          size="small"
-          label="Domene"
-          value={domeneFilter}
-          onChange={(e) => onDomeneFilterChange(e.target.value)}
-          id="domain-filter"
-          data-cy="domain-filter"
-        >
-          <option value="">Alle domener</option>
-          {uniqueDomener.map((domene) => (
-            <option key={domene} value={domene}>
-              {domene}
-            </option>
-          ))}
-        </Select>
-      </HGrid>
+            {/* Date Range and Heartbeat Filters Row */}
+            <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Box>
+                <DatePicker {...datepickerProps}>
+                  <HStack gap="4">
+                    <DatePicker.Input {...fromInputProps} label="full synk fra dato" size="small" />
+                    <DatePicker.Input {...toInputProps} label="til dato" size="small" />
+                  </HStack>
+                </DatePicker>
+              </Box>
+              {/* Heartbeat Filter */}
+              <Box>
+                <CheckboxGroup
+                  legend="Heartbeat"
+                  size="small"
+                  value={Object.entries(heartbeatFilter)
+                    .filter(([, value]) => value)
+                    .map(([key]) => key)}
+                  onChange={(values: string[]) => {
+                    onHeartbeatFilterChange({
+                      active: values.includes("active"),
+                      inactive: values.includes("inactive"),
+                    });
+                  }}
+                >
+                  <Checkbox value="active">Aktiv</Checkbox>
+                  <Checkbox value="inactive">Inaktiv</Checkbox>
+                </CheckboxGroup>
+              </Box>
+            </Box>
 
-      {/* Clear Filters Button */}
-      <div className="mt-4">
-        <Button variant="tertiary" size="small" onClick={onClearFilters}>
-          Tøm filtre
-        </Button>
-      </div>
+            {/* Clear Filters Button */}
+            <Box>
+              <Button variant="tertiary" size="small" onClick={handleClearFilters}>
+                Tøm filtre
+              </Button>
+            </Box>
+          </Box>
+        </ExpansionCard.Content>
+      </ExpansionCard>
     </Box>
   );
 }

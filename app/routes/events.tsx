@@ -1,5 +1,4 @@
 import { EventsPage } from "~/components/events/EventsPage";
-import type { IEventData, ISyncData } from "~/types";
 import {
   Await,
   type LoaderFunction,
@@ -15,6 +14,7 @@ import { Suspense, useEffect, useState } from "react";
 import { Alert, Loader } from "@navikt/ds-react";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { BellIcon } from "@navikt/aksel-icons";
+import type { IEvent } from "~/types/Event";
 
 export function meta() {
   return [
@@ -23,7 +23,7 @@ export function meta() {
   ];
 }
 
-//TODO: find out why two alerts are shown on api error
+//TODO: add metrics
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
   const env = await selectedEnvCookie.parse(cookieHeader);
@@ -36,7 +36,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Events() {
   const { env, eventResponse } = useLoaderData() as {
     env: string;
-    eventResponse: Promise<{ success: boolean; message?: string; data?: ISyncData[] }>;
+    eventResponse: Promise<{ success: boolean; message?: string; data?: IEvent[] }>;
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
@@ -99,7 +99,7 @@ function SyncResolved({
   const response = useAsyncValue() as {
     success: boolean;
     message?: string;
-    data?: IEventData[];
+    data?: IEvent[];
   };
 
   useEffect(() => {

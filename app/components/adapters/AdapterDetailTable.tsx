@@ -8,6 +8,7 @@ interface AdapterDetailTableProps {
 }
 
 export function AdapterDetailTable({ data, onRowClick }: AdapterDetailTableProps) {
+  console.log(data);
   return (
     <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
       <Table>

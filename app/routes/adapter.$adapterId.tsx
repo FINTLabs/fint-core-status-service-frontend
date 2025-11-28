@@ -83,16 +83,11 @@ export default function AdapterDetail() {
     { label: domain, href: `/adaptere/${adapterId}` },
   ];
 
+  console.log(adapterData);
   return (
     <>
       <Box padding="8" paddingBlock="2">
-        <PageHeader
-          title="Adapter Detaljer"
-          description={`Komponenter for ${domain}`}
-          env={env}
-          breadcrumbItems={breadcrumbItems}
-          icon={LayersIcon}
-        />
+        <PageHeader title="Adapter Detaljer" description={`Komponenter for ${domain}`} env={env} breadcrumbItems={breadcrumbItems} icon={LayersIcon} />
 
         {mounted && selectedAdapter && <AdapterDetailAlert adapter={selectedAdapter} />}
 

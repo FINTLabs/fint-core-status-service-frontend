@@ -1,12 +1,7 @@
 import type { Route } from "./+types/adapter.$adapterId.$componentId";
 import { useEffect, useState } from "react";
 import { type LoaderFunction, useLoaderData, useLocation } from "react-router";
-import type {
-  IAdapterComponentData,
-  IAdapterComponentModalData,
-  IAdapterDetailData,
-  IAdaptereTableRow,
-} from "~/types";
+import type { IAdapterComponentData, IAdapterComponentModalData, IAdapterDetailData, IAdaptereTableRow } from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterComponentModal } from "~/components/adapters/AdapterComponentModal";
 import { AdapterComponentAlert } from "~/components/adapters/AdapterComponentAlert";
@@ -34,11 +29,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const env = (await selectedEnvCookie.parse(cookieHeader)) || "api";
   const { adapterId, componentId } = params;
 
-  const response = await AdapterApi.getAdapterComponentDetail(
-    adapterId || "",
-    componentId || "",
-    env
-  );
+  const response = await AdapterApi.getAdapterComponentDetail(adapterId || "", componentId || "", env);
   const adapterData = response.data || [];
   return {
     adapterData,
@@ -66,15 +57,14 @@ export default function AdapterComponent() {
   const [modalData, setModalData] = useState<IAdapterComponentModalData | null>(null);
   const [loadingModal, setLoadingModal] = useState(false);
 
-  const { adapterData, env, adapterId, componentId, success, customErrorMessage } =
-    useLoaderData() as {
-      adapterData: IAdapterComponentData[];
-      env: string;
-      adapterId: string;
-      componentId: string;
-      success: boolean;
-      customErrorMessage: string;
-    };
+  const { adapterData, env, adapterId, componentId, success, customErrorMessage } = useLoaderData() as {
+    adapterData: IAdapterComponentData[];
+    env: string;
+    adapterId: string;
+    componentId: string;
+    success: boolean;
+    customErrorMessage: string;
+  };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
@@ -96,12 +86,7 @@ export default function AdapterComponent() {
       const fetchModalData = async () => {
         try {
           setLoadingModal(true);
-          const response = await AdapterApi.getAdapterComponentModalData(
-            adapterId,
-            componentId,
-            selectedAdapterName,
-            env as "beta" | "api" | "alpha"
-          );
+          const response = await AdapterApi.getAdapterComponentModalData(adapterId, componentId, selectedAdapterName, env as "beta" | "api" | "alpha");
           setModalData(response.data || null);
         } catch {
           setModalData(null);
@@ -135,33 +120,13 @@ export default function AdapterComponent() {
   return (
     <>
       <Box padding="8" paddingBlock="2">
-        <PageHeader
-          title="Adapter Komponent"
-          description={`${componentId} for ${domain}`}
-          env={env}
-          breadcrumbItems={breadcrumbItems}
-          icon={InformationSquareIcon}
-        />
+        <PageHeader title="Adapter Komponent" description={`${componentId} for ${domain}`} env={env} breadcrumbItems={breadcrumbItems} icon={InformationSquareIcon} />
 
-        {mounted && (
-          <AdapterComponentAlert
-            componentName={componentId}
-            selectedComponent={selectedComponent}
-            selectedAdapter={selectedAdapter}
-          />
-        )}
+        {mounted && <AdapterComponentAlert componentName={componentId} selectedComponent={selectedComponent} selectedAdapter={selectedAdapter} />}
 
         <AdapterComponentTable data={adapterData} onRowClick={handleRowClick} />
 
-        {selectedAdapterName && (
-          <AdapterComponentModal
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            data={modalData}
-            adapterName={selectedAdapterName}
-            loading={loadingModal}
-          />
-        )}
+        {selectedAdapterName && <AdapterComponentModal isOpen={isModalOpen} onClose={handleCloseModal} data={modalData} adapterName={selectedAdapterName} loading={loadingModal} />}
       </Box>
       <NovariSnackbar items={alerts} />
     </>
