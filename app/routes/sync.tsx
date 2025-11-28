@@ -59,11 +59,9 @@ export default function Sync() {
         <Await
           resolve={syncResponse}
           errorElement={
-            <div className="p-6">
-              <Alert variant="error" className="mb-4">
-                Kunne ikke hente synkroniseringer.
-              </Alert>
-            </div>
+            <Alert variant="error" className="mb-4 p-6">
+              Kunne ikke hente synkroniseringer.
+            </Alert>
           }
         >
           <SyncResolved env={env} alerts={alerts} setAlerts={setAlerts} />

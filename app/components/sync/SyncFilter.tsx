@@ -1,4 +1,4 @@
-import { Button, Checkbox, CheckboxGroup, Select, DatePicker, useRangeDatepicker, ExpansionCard, HStack } from "@navikt/ds-react";
+import { Checkbox, CheckboxGroup, DatePicker, ExpansionCard, HGrid, HStack, Select, useRangeDatepicker, VStack } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
 
 interface SyncFilterProps {
@@ -12,13 +12,16 @@ interface SyncFilterProps {
   };
   organisasjonFilter: string;
   domeneFilter: string;
+  pakkeFilter: string;
   dateRange: { from: Date | undefined; to: Date | undefined };
   uniqueOrganisasjoner: string[];
   uniqueDomener: string[];
+  uniquePakker: string[];
   onSyncTypeFilterChange: (value: { full: boolean; delta: boolean }) => void;
   onStatusFilterChange: (value: { finished: boolean; ongoing: boolean }) => void;
   onOrganisasjonFilterChange: (value: string) => void;
   onDomeneFilterChange: (value: string) => void;
+  onPakkeFilterChange: (value: string) => void;
   onDateRangeChange: (value: { from: Date | undefined; to: Date | undefined }) => void;
   onClearFilters: () => void;
 }
@@ -28,15 +31,18 @@ export function SyncFilter({
   statusFilter,
   organisasjonFilter,
   domeneFilter,
+  pakkeFilter,
   dateRange,
   uniqueOrganisasjoner,
   uniqueDomener,
+  uniquePakker,
   onSyncTypeFilterChange,
   onStatusFilterChange,
   onOrganisasjonFilterChange,
   onDomeneFilterChange,
+  onPakkeFilterChange,
   onDateRangeChange,
-  onClearFilters,
+  onClearFilters: _onClearFilters,
 }: SyncFilterProps) {
   const { datepickerProps, toInputProps, fromInputProps } = useRangeDatepicker({
     onRangeChange: (value) => {
@@ -48,103 +54,87 @@ export function SyncFilter({
     defaultSelected: dateRange.from && dateRange.to ? dateRange : undefined,
   });
 
-  //TODO: Fix from div to box
   return (
-    <div className="mb-4">
-      <ExpansionCard aria-label="Filtrer synkroniseringer" size="small">
-        <ExpansionCard.Header>
-          <HStack gap="2">
-            <FunnelIcon aria-hidden fontSize="1.5rem" />
-            <ExpansionCard.Title size="small">Filtrer</ExpansionCard.Title>
-          </HStack>
-        </ExpansionCard.Header>
-        <ExpansionCard.Content>
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Sync Type Filter */}
-              <div>
-                <CheckboxGroup
-                  legend="Synkroniseringstype"
-                  size="small"
-                  value={Object.entries(syncTypeFilter)
-                    .filter(([, value]) => value)
-                    .map(([key]) => key)}
-                  onChange={(values: string[]) => {
-                    onSyncTypeFilterChange({
-                      full: values.includes("full"),
-                      delta: values.includes("delta"),
-                    });
-                  }}
-                >
-                  <Checkbox value="full">Full</Checkbox>
-                  <Checkbox value="delta">Delta</Checkbox>
-                </CheckboxGroup>
-              </div>
+    // <Box className="mb-4">
+    <ExpansionCard aria-label="Filtrer synkroniseringer" size="small" className="mb-4">
+      <ExpansionCard.Header>
+        <HStack gap="2">
+          <FunnelIcon aria-hidden fontSize="1.5rem" />
+          <ExpansionCard.Title size="small">Filtrer</ExpansionCard.Title>
+        </HStack>
+      </ExpansionCard.Header>
+      <ExpansionCard.Content>
+        <VStack gap="4">
+          <HGrid columns={3} gap="space-24">
+            <Select label="Organisasjon" size="small" value={organisasjonFilter} onChange={(e) => onOrganisasjonFilterChange(e.target.value)} id="organisation-filter">
+              <option value="">Alle organisasjoner</option>
+              {uniqueOrganisasjoner.map((org) => (
+                <option key={org} value={org}>
+                  {org}
+                </option>
+              ))}
+            </Select>
 
-              {/* Status Filter */}
-              <div>
-                <CheckboxGroup
-                  legend="Status"
-                  size="small"
-                  value={Object.entries(statusFilter)
-                    .filter(([, value]) => value)
-                    .map(([key]) => key)}
-                  onChange={(values: string[]) => {
-                    onStatusFilterChange({
-                      finished: values.includes("finished"),
-                      ongoing: values.includes("ongoing"),
-                    });
-                  }}
-                >
-                  <Checkbox value="finished">Fullført</Checkbox>
-                  <Checkbox value="ongoing">Pågår</Checkbox>
-                </CheckboxGroup>
-              </div>
+            <Select label="Domene" size="small" value={domeneFilter} onChange={(e) => onDomeneFilterChange(e.target.value)} id="domain-filter">
+              <option value="">Alle domener</option>
+              {uniqueDomener.map((domain) => (
+                <option key={domain} value={domain}>
+                  {domain}
+                </option>
+              ))}
+            </Select>
 
-              {/* Organisation Filter */}
-              <div>
-                <Select label="Organisasjon" size="small" value={organisasjonFilter} onChange={(e) => onOrganisasjonFilterChange(e.target.value)} id="organisation-filter">
-                  <option value="">Alle organisasjoner</option>
-                  {uniqueOrganisasjoner.map((org) => (
-                    <option key={org} value={org}>
-                      {org}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-
-              {/* Domain Filter */}
-              <div>
-                <Select label="Domene" size="small" value={domeneFilter} onChange={(e) => onDomeneFilterChange(e.target.value)} id="domain-filter">
-                  <option value="">Alle domener</option>
-                  {uniqueDomener.map((domain) => (
-                    <option key={domain} value={domain}>
-                      {domain}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            </div>
-
-            {/* Date Range Filter */}
-            <div>
-              <DatePicker {...datepickerProps}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <DatePicker.Input {...fromInputProps} label="Fra dato" size="small" />
-                  <DatePicker.Input {...toInputProps} label="Til dato" size="small" />
-                </div>
-              </DatePicker>
-            </div>
-
-            {/* Clear Filters Button */}
-            <div>
-              <Button variant="tertiary" size="small" onClick={onClearFilters}>
-                Tøm filtre
-              </Button>
-            </div>
-          </div>
-        </ExpansionCard.Content>
-      </ExpansionCard>
-    </div>
+            <Select label="Pakke" size="small" value={pakkeFilter} onChange={(e) => onPakkeFilterChange(e.target.value)} id="package-filter">
+              <option value="">Alle pakker</option>
+              {uniquePakker.map((pakke) => (
+                <option key={pakke} value={pakke}>
+                  {pakke}
+                </option>
+              ))}
+            </Select>
+          </HGrid>
+          <HGrid columns={3} gap="space-24">
+            {" "}
+            <CheckboxGroup
+              legend="Synkroniseringstype"
+              size="small"
+              value={Object.entries(syncTypeFilter)
+                .filter(([, value]) => value)
+                .map(([key]) => key)}
+              onChange={(values: string[]) => {
+                onSyncTypeFilterChange({
+                  full: values.includes("full"),
+                  delta: values.includes("delta"),
+                });
+              }}
+            >
+              <Checkbox value="full">Full</Checkbox>
+              <Checkbox value="delta">Delta</Checkbox>
+            </CheckboxGroup>
+            <CheckboxGroup
+              legend="Status"
+              size="small"
+              value={Object.entries(statusFilter)
+                .filter(([, value]) => value)
+                .map(([key]) => key)}
+              onChange={(values: string[]) => {
+                onStatusFilterChange({
+                  finished: values.includes("finished"),
+                  ongoing: values.includes("ongoing"),
+                });
+              }}
+            >
+              <Checkbox value="finished">Fullført</Checkbox>
+              <Checkbox value="ongoing">Pågår</Checkbox>
+            </CheckboxGroup>
+            <DatePicker {...datepickerProps}>
+              <DatePicker.Input {...fromInputProps} label="Fra dato" size="small" />
+              <DatePicker.Input {...toInputProps} label="Til dato" size="small" />
+            </DatePicker>
+          </HGrid>
+        </VStack>
+      </ExpansionCard.Content>
+    </ExpansionCard>
+    // </Box>
   );
 }

@@ -29,6 +29,7 @@ export function SyncPage({ initialData }: SyncPageProps) {
 
   const [orgFilter, setOrgFilter] = useState<string>("");
   const [domainFilter, setDomainFilter] = useState<string>("");
+  const [pakkeFilter, setPakkeFilter] = useState<string>("");
   const [dateRange, setDateRange] = useState<{
     from: Date | undefined;
     to: Date | undefined;
@@ -58,6 +59,11 @@ export function SyncPage({ initialData }: SyncPageProps) {
     setCurrentPage(1);
   };
 
+  const handlePakkeFilterChange = (value: string) => {
+    setPakkeFilter(value);
+    setCurrentPage(1);
+  };
+
   const handleDateRangeChange = (value: { from: Date | undefined; to: Date | undefined }) => {
     setDateRange(value);
     setCurrentPage(1);
@@ -68,6 +74,7 @@ export function SyncPage({ initialData }: SyncPageProps) {
     setStatusFilter({ finished: true, ongoing: true });
     setOrgFilter("");
     setDomainFilter("");
+    setPakkeFilter("");
     setDateRange({ from: undefined, to: undefined });
     setCurrentPage(1);
   };
@@ -105,6 +112,10 @@ export function SyncPage({ initialData }: SyncPageProps) {
       return false;
     }
 
+    if (pakkeFilter && !sync.package.toLowerCase().includes(pakkeFilter.toLowerCase())) {
+      return false;
+    }
+
     // Date range filter
     if (dateRange.from || dateRange.to) {
       const syncDate = new Date(sync.lastPageTime);
@@ -137,6 +148,7 @@ export function SyncPage({ initialData }: SyncPageProps) {
 
   const uniqueOrg = [...new Set(initialData.map((item) => item.orgId))];
   const uniqueDomain = [...new Set(initialData.map((item) => item.domain))];
+  const uniquePakke = [...new Set(initialData.map((item) => item.package))];
 
   // const breadcrumbItems = [
   //   { label: "Dashboard", href: "/" },
@@ -158,28 +170,23 @@ export function SyncPage({ initialData }: SyncPageProps) {
         statusFilter={statusFilter}
         organisasjonFilter={orgFilter}
         domeneFilter={domainFilter}
+        pakkeFilter={pakkeFilter}
         dateRange={dateRange}
         uniqueOrganisasjoner={uniqueOrg}
         uniqueDomener={uniqueDomain}
+        uniquePakker={uniquePakke}
         onSyncTypeFilterChange={handleSyncTypeFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
         onOrganisasjonFilterChange={handleOrgFilterChange}
         onDomeneFilterChange={handleDomainFilterChange}
+        onPakkeFilterChange={handlePakkeFilterChange}
         onDateRangeChange={handleDateRangeChange}
         onClearFilters={handleClearFilters}
       />
 
-      <SyncTable
-        data={filteredData}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-        itemsPerPage={itemsPerPage}
-        onRowClick={handleRowClick}
-      />
+      <SyncTable data={filteredData} currentPage={currentPage} onPageChange={handlePageChange} itemsPerPage={itemsPerPage} onRowClick={handleRowClick} />
 
-      {selectedSync && (
-        <SyncModal isOpen={isModalOpen} onClose={handleCloseModal} syncData={selectedSync} />
-      )}
+      {selectedSync && <SyncModal isOpen={isModalOpen} onClose={handleCloseModal} syncData={selectedSync} />}
     </Box>
   );
 }
