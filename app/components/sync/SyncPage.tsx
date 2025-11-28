@@ -168,18 +168,18 @@ export function SyncPage({ initialData }: SyncPageProps) {
       <SyncFilter
         syncTypeFilter={syncTypeFilter}
         statusFilter={statusFilter}
-        organisasjonFilter={orgFilter}
-        domeneFilter={domainFilter}
-        pakkeFilter={pakkeFilter}
+        orgFilter={orgFilter}
+        domainFilter={domainFilter}
+        packageFilter={pakkeFilter}
         dateRange={dateRange}
-        uniqueOrganisasjoner={uniqueOrg}
-        uniqueDomener={uniqueDomain}
-        uniquePakker={uniquePakke}
+        uniqueOrg={uniqueOrg}
+        uniqueDomain={uniqueDomain}
+        uniquePacker={uniquePakke}
         onSyncTypeFilterChange={handleSyncTypeFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
-        onOrganisasjonFilterChange={handleOrgFilterChange}
-        onDomeneFilterChange={handleDomainFilterChange}
-        onPakkeFilterChange={handlePakkeFilterChange}
+        onOrgFilterChange={handleOrgFilterChange}
+        onDomainFilterChange={handleDomainFilterChange}
+        onPackageFilterChange={handlePakkeFilterChange}
         onDateRangeChange={handleDateRangeChange}
         onClearFilters={handleClearFilters}
       />

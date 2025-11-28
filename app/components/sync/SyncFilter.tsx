@@ -10,18 +10,18 @@ interface SyncFilterProps {
     finished: boolean;
     ongoing: boolean;
   };
-  organisasjonFilter: string;
-  domeneFilter: string;
-  pakkeFilter: string;
+  orgFilter: string;
+  domainFilter: string;
+  packageFilter: string;
   dateRange: { from: Date | undefined; to: Date | undefined };
-  uniqueOrganisasjoner: string[];
-  uniqueDomener: string[];
-  uniquePakker: string[];
+  uniqueOrg: string[];
+  uniqueDomain: string[];
+  uniquePacker: string[];
   onSyncTypeFilterChange: (value: { full: boolean; delta: boolean }) => void;
   onStatusFilterChange: (value: { finished: boolean; ongoing: boolean }) => void;
-  onOrganisasjonFilterChange: (value: string) => void;
-  onDomeneFilterChange: (value: string) => void;
-  onPakkeFilterChange: (value: string) => void;
+  onOrgFilterChange: (value: string) => void;
+  onDomainFilterChange: (value: string) => void;
+  onPackageFilterChange: (value: string) => void;
   onDateRangeChange: (value: { from: Date | undefined; to: Date | undefined }) => void;
   onClearFilters: () => void;
 }
@@ -29,18 +29,18 @@ interface SyncFilterProps {
 export function SyncFilter({
   syncTypeFilter,
   statusFilter,
-  organisasjonFilter,
-  domeneFilter,
-  pakkeFilter,
+  orgFilter,
+  domainFilter,
+  packageFilter,
   dateRange,
-  uniqueOrganisasjoner,
-  uniqueDomener,
-  uniquePakker,
+  uniqueOrg,
+  uniqueDomain,
+  uniquePacker,
   onSyncTypeFilterChange,
   onStatusFilterChange,
-  onOrganisasjonFilterChange,
-  onDomeneFilterChange,
-  onPakkeFilterChange,
+  onOrgFilterChange,
+  onDomainFilterChange,
+  onPackageFilterChange,
   onDateRangeChange,
   onClearFilters: _onClearFilters,
 }: SyncFilterProps) {
@@ -66,27 +66,27 @@ export function SyncFilter({
       <ExpansionCard.Content>
         <VStack gap="4">
           <HGrid columns={3} gap="space-24">
-            <Select label="Organisasjon" size="small" value={organisasjonFilter} onChange={(e) => onOrganisasjonFilterChange(e.target.value)} id="organisation-filter">
+            <Select label="Organisasjon" size="small" value={orgFilter} onChange={(e) => onOrgFilterChange(e.target.value)} id="organisation-filter">
               <option value="">Alle organisasjoner</option>
-              {uniqueOrganisasjoner.map((org) => (
+              {uniqueOrg.map((org) => (
                 <option key={org} value={org}>
                   {org}
                 </option>
               ))}
             </Select>
 
-            <Select label="Domene" size="small" value={domeneFilter} onChange={(e) => onDomeneFilterChange(e.target.value)} id="domain-filter">
+            <Select label="Domene" size="small" value={domainFilter} onChange={(e) => onDomainFilterChange(e.target.value)} id="domain-filter">
               <option value="">Alle domener</option>
-              {uniqueDomener.map((domain) => (
+              {uniqueDomain.map((domain) => (
                 <option key={domain} value={domain}>
                   {domain}
                 </option>
               ))}
             </Select>
 
-            <Select label="Pakke" size="small" value={pakkeFilter} onChange={(e) => onPakkeFilterChange(e.target.value)} id="package-filter">
+            <Select label="Pakke" size="small" value={packageFilter} onChange={(e) => onPackageFilterChange(e.target.value)} id="package-filter">
               <option value="">Alle pakker</option>
-              {uniquePakker.map((pakke) => (
+              {uniquePacker.map((pakke) => (
                 <option key={pakke} value={pakke}>
                   {pakke}
                 </option>
