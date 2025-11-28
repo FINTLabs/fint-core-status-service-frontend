@@ -1,4 +1,4 @@
-import { Box, Loader, Pagination, Table } from "@navikt/ds-react";
+import { Box, CopyButton, HStack, Loader, Pagination, Table } from "@navikt/ds-react";
 import { CheckmarkCircleFillIcon, XMarkIcon } from "@navikt/aksel-icons";
 import type { IEvent } from "~/types/Event";
 
@@ -11,14 +11,7 @@ interface HendelserTableProps {
   itemsPerPage: number;
 }
 
-export function EventsTable({
-  data,
-  onRowClick,
-  loading,
-  currentPage,
-  onPageChange,
-  itemsPerPage,
-}: HendelserTableProps) {
+export function EventsTable({ data, onRowClick, loading, currentPage, onPageChange, itemsPerPage }: HendelserTableProps) {
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -39,18 +32,12 @@ export function EventsTable({
         </Table.Header>
         <Table.Body>
           {paginatedData.map((event, index) => (
-            <Table.Row
-              key={index}
-              onRowClick={() => onRowClick(event)}
-              shadeOnHover={true}
-              data-cy="event-row"
-            >
+            <Table.Row key={index} onRowClick={() => onRowClick(event)} shadeOnHover={true} data-cy="event-row">
               <Table.DataCell>
-                <span className="font-mono text-sm">
-                  {event.corrId
-                    ? `${event.corrId.substring(0, 5)}...${event.corrId.substring(event.corrId.length - 5)}`
-                    : "N/A"}
-                </span>
+                <HStack align="center" gap="2">
+                  <CopyButton copyText={event.corrId} size={"small"} />
+                  {event.corrId ? `${event.corrId.substring(0, 5)}...${event.corrId.substring(event.corrId.length - 5)}` : "N/A"}
+                </HStack>
               </Table.DataCell>
               <Table.DataCell>
                 {(() => {
@@ -70,9 +57,7 @@ export function EventsTable({
                   }
 
                   return (
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bgColor} ${textColor}`}
-                    >
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bgColor} ${textColor}`}>
                       {event.requestEvent.operationType || "N/A"}
                     </span>
                   );
@@ -87,11 +72,7 @@ export function EventsTable({
               <Table.DataCell>
                 {!event.hasError ? (
                   <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                    <CheckmarkCircleFillIcon
-                      className="text-green-600"
-                      title="OK"
-                      fontSize="1.25rem"
-                    />
+                    <CheckmarkCircleFillIcon className="text-green-600" title="OK" fontSize="1.25rem" />
                   </div>
                 ) : (
                   <div className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
@@ -106,15 +87,7 @@ export function EventsTable({
 
       {totalPages > 1 && (
         <Box paddingBlock="4" className="flex justify-center">
-          <Pagination
-            page={currentPage}
-            onPageChange={onPageChange}
-            count={totalPages}
-            size="small"
-            boundaryCount={1}
-            siblingCount={1}
-            data-cy="pagination"
-          />
+          <Pagination page={currentPage} onPageChange={onPageChange} count={totalPages} size="small" boundaryCount={1} siblingCount={1} data-cy="pagination" />
         </Box>
       )}
     </Box>

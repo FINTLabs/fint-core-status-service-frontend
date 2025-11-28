@@ -1,4 +1,4 @@
-import { BodyLong, Box, Button, Heading, HStack, Modal, Table, VStack, BodyShort } from "@navikt/ds-react";
+import { BodyLong, Box, Button, Heading, HStack, Modal, Table, VStack, BodyShort, CopyButton } from "@navikt/ds-react";
 import type { ISyncData } from "~/types";
 
 interface SyncModalProps {
@@ -50,9 +50,12 @@ export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
               <BodyShort size="small" textColor="subtle">
                 Correlation ID
               </BodyShort>
-              <BodyShort size="small" className="font-mono break-all">
-                {syncData.corrId}
-              </BodyShort>
+              <HStack align="center" gap="2">
+                <BodyShort size="small" className="font-mono ">
+                  {syncData.corrId}
+                </BodyShort>
+                <CopyButton copyText={syncData.corrId} size={"small"} />
+              </HStack>
             </Box>
             <Box>
               <BodyShort size="small" textColor="subtle">

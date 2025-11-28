@@ -55,13 +55,13 @@ export function AdapterTable({ data, sortState, onSortChange, currentPage, onPag
               <Table.Row key={`${row.organisation}-${row.packageName}-${index}`} onRowClick={() => handleRowClick(row)} shadeOnHover={true} data-cy="adapter-row">
                 <Table.DataCell>
                   {heartbeatActive ? (
-                    <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
+                    <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
                       <HeartIcon className="text-green-600" title="Heartbeat Active" fontSize="1.25rem" />
-                    </div>
+                    </Box>
                   ) : (
-                    <div className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
+                    <Box className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
                       <HeartBrokenIcon className="text-red-600" title="Heartbeat Inactive" fontSize="1.25rem" />
-                    </div>
+                    </Box>
                   )}
                 </Table.DataCell>
                 <Table.DataCell>{row.organisation}</Table.DataCell>

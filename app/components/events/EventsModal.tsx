@@ -1,4 +1,4 @@
-import { Modal, Button, Heading, Tabs, CopyButton } from "@navikt/ds-react";
+import { Modal, Button, Heading, Tabs, CopyButton, Box, HStack, Detail, VStack, Label } from "@navikt/ds-react";
 import type { IRequestEvent, IResponseEvent } from "~/types/Event";
 
 interface HendelserModalProps {
@@ -6,16 +6,9 @@ interface HendelserModalProps {
   onClose: () => void;
   requestData: IRequestEvent | null;
   responseData: IResponseEvent | null;
-  corrId: string;
 }
 
-export function EventsModal({
-  isOpen,
-  onClose,
-  requestData,
-  responseData,
-  corrId,
-}: HendelserModalProps) {
+export function EventsModal({ isOpen, onClose, requestData, responseData }: HendelserModalProps) {
   const formatTimestamp = (timestamp?: number | null) => {
     if (!timestamp) {
       return "Ikke tilgjengelig";
@@ -41,35 +34,24 @@ export function EventsModal({
     }
 
     const baseClasses = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium";
-    const colorClass =
-      operation === "CREATE"
-        ? "bg-green-100 text-green-800"
-        : operation === "UPDATE"
-          ? "bg-blue-100 text-blue-800"
-          : "bg-red-100 text-red-800";
+    const colorClass = operation === "CREATE" ? "bg-green-100 text-green-800" : operation === "UPDATE" ? "bg-blue-100 text-blue-800" : "bg-red-100 text-red-800";
 
     return <span className={`${baseClasses} ${colorClass}`}>{operation}</span>;
   };
 
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      aria-labelledby="hendelser-modal-title"
-      aria-describedby="hendelser-modal-description"
-      placement="top"
-    >
+    <Modal open={isOpen} onClose={onClose} aria-labelledby="hendelser-modal-title" aria-describedby="hendelser-modal-description" placement="top">
       <Modal.Header>
         <Heading id="hendelser-modal-title" size="medium">
           Hendelse Detaljer:
         </Heading>
-        <Heading id="hendelser-modal-title" size="medium">
-          {corrId}
-        </Heading>
+        {/*<Heading id="hendelser-modal-title" size="medium">*/}
+        {/*  {corrId}*/}
+        {/*</Heading>*/}
       </Modal.Header>
 
       <Modal.Body>
-        <div id="hendelser-modal-description">
+        <Box id="hendelser-modal-description">
           <Tabs defaultValue="request" size="small">
             <Tabs.List>
               <Tabs.Tab value="request" label="Request" />
@@ -77,166 +59,104 @@ export function EventsModal({
             </Tabs.List>
 
             <Tabs.Panel value="request">
-              <div className="mt-4">
-                <h3 className="text-lg font-semibold mb-3">Request Data</h3>
+              <Box className="mt-4">
+                <h2 className="mb-3">Request Data</h2>
                 {requestData ? (
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium text-gray-600">Correlation ID:</span>
-                        <div className="font-mono text-xs bg-gray-100 p-2 rounded mt-1">
-                          {requestData.corrId}
-                        </div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Created:</span>
-                        <div className="mt-1">{formatTimestamp(requestData.created)}</div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Organization:</span>
-                        <div className="mt-1">{requestData.orgId}</div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Operation:</span>
-                        <div className="mt-1">
-                          {renderOperationBadge(requestData.operationType)}
-                        </div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Domain:</span>
-                        <div className="mt-1">{requestData.domainName}</div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Package:</span>
-                        <div className="mt-1">{requestData.packageName}</div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Resource:</span>
-                        <div className="mt-1">{requestData.resourceName}</div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Time to Live:</span>
-                        <div className="mt-1">{requestData.timeToLive}</div>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-gray-600">Raw JSON:</span>
-                        <CopyButton
-                          copyText={formatJson(requestData)}
-                          size="small"
-                          text="Kopier JSON"
-                          activeText="Kopiert!"
-                        />
-                      </div>
-                      <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-xs overflow-x-auto">
-                        {formatJson(requestData)}
-                      </pre>
-                    </div>
-                  </div>
+                  <HStack gap="4" justify="space-around">
+                    <VStack gap="2">
+                      <Label size="small">Correlation ID:</Label>
+                      <Detail className={"bg-gray-100  p-2"}>{requestData.corrId}</Detail>
+                      <Label size="small">Organization:</Label>
+                      <Detail>{requestData.orgId}</Detail>
+                      <Label size="small">Domain:</Label>
+                      <Detail>{requestData.domainName}</Detail>
+                      <Label size="small">Package:</Label>
+                      <Detail>{requestData.packageName}</Detail>
+                    </VStack>
+                    <VStack gap="2">
+                      <Label size="small">Operation:</Label>
+                      <Detail weight="semibold">{renderOperationBadge(requestData.operationType)}</Detail>
+                      <Label size="small">Created:</Label>
+                      <Detail>{formatTimestamp(requestData.created)}</Detail>
+                      <Label size="small">Time to Live:</Label>
+                      <Detail>{requestData.timeToLive}</Detail>
+                    </VStack>
+                  </HStack>
                 ) : (
                   <p className="text-gray-500">No request data available</p>
                 )}
-              </div>
+              </Box>
+              <Box className="mt-4">
+                <HStack gap="4" justify="space-between" align="center" className="mb-2">
+                  <span className="font-medium text-gray-600">Raw JSON:</span>
+                  <CopyButton copyText={formatJson(requestData)} size="small" text="Kopier JSON" activeText="Kopiert!" />
+                </HStack>
+                <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-[6px] overflow-x-auto overflow-y-auto">{formatJson(requestData)}</pre>
+              </Box>
             </Tabs.Panel>
 
             <Tabs.Panel value="response">
-              <div className="mt-4">
-                <h3 className="text-lg font-semibold mb-3">Response Data</h3>
+              <Box className="mt-4">
+                <h2 className="mb-3">Response Data</h2>
                 {responseData ? (
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium text-gray-600">Correlation ID:</span>
-                        <div className="font-mono text-xs bg-gray-100 p-2 rounded mt-1">
-                          {responseData.corrId}
-                        </div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Handled At:</span>
-                        <div className="mt-1">{formatTimestamp(responseData.handledAt)}</div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Organization:</span>
-                        <div className="mt-1">{responseData.orgId}</div>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Status:</span>
-                        <div className="mt-1">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              !responseData.failed &&
-                              !responseData.rejected &&
-                              !responseData.conflicted
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {!responseData.failed &&
-                            !responseData.rejected &&
-                            !responseData.conflicted
-                              ? "Success"
-                              : "Failed"}
-                          </span>
-                        </div>
-                      </div>
-                      {/* <div>
-                        <span className="font-medium text-gray-600">Adapter ID:</span>
-                        <div className="font-mono text-xs bg-gray-100 p-2 rounded mt-1">
-                          {responseData.adapterId}
-                        </div>
-                      </div> */}
-                      {/*<div>*/}
-                      {/*  <span className="font-medium text-gray-600">Operation:</span>*/}
-                      {/*  <div className="mt-1">{renderOperationBadge(responseData.operationType)}</div>*/}
-                      {/*</div>*/}
+                  <HStack gap="4" justify="space-around">
+                    <VStack gap="2">
+                      <Label size="small">Correlation ID:</Label>
+                      <Detail className={"bg-gray-100  p-2"}>{responseData.corrId}</Detail>
+                      <Label size="small">Adapter ID:</Label>
+                      <Detail>{responseData.adapterId}</Detail>
+                      <Label size="small">Organization:</Label>
+                      <Detail>{responseData.orgId}</Detail>
+                    </VStack>
+                    <VStack gap="2">
+                      <Label size="small">Status:</Label>
+                      <Detail weight="semibold">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            !responseData.failed && !responseData.rejected && !responseData.conflicted ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {!responseData.failed && !responseData.rejected && !responseData.conflicted ? "Success" : "Failed"}
+                        </span>
+                      </Detail>
+                      <Label size="small">Handled At:</Label>
+                      <Detail>{formatTimestamp(responseData.handledAt)}</Detail>
+                    </VStack>
+                    <VStack gap="2">
                       {responseData.errorMessage && (
-                        <div className="col-span-2">
+                        <Box className="col-span-2">
                           <span className="font-medium text-gray-600">Error Message:</span>
-                          <div className="mt-1 p-2 bg-red-50 border border-red-200 rounded text-red-800">
-                            {responseData.errorMessage}
-                          </div>
-                        </div>
+                          <Box className="mt-1 p-2 bg-red-50 border border-red-200 rounded text-red-800">{responseData.errorMessage}</Box>
+                        </Box>
                       )}
                       {responseData.rejectReason && (
-                        <div className="col-span-2">
+                        <Box className="col-span-2">
                           <span className="font-medium text-gray-600">Reject Reason:</span>
-                          <div className="mt-1 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">
-                            {responseData.rejectReason}
-                          </div>
-                        </div>
+                          <Box className="mt-1 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">{responseData.rejectReason}</Box>
+                        </Box>
                       )}
                       {responseData.conflictReason && (
-                        <div className="col-span-2">
+                        <Box className="col-span-2">
                           <span className="font-medium text-gray-600">Conflict Reason:</span>
-                          <div className="mt-1 p-2 bg-orange-50 border border-orange-200 rounded text-orange-800">
-                            {responseData.conflictReason}
-                          </div>
-                        </div>
+                          <Box className="mt-1 p-2 bg-orange-50 border border-orange-200 rounded text-orange-800">{responseData.conflictReason}</Box>
+                        </Box>
                       )}
-                    </div>
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between mb-2">
+                    </VStack>
+                    <Box className="mt-4">
+                      <HStack gap="4" justify="space-between" align="center" className="mb-2">
                         <span className="font-medium text-gray-600">Raw JSON:</span>
-                        <CopyButton
-                          copyText={formatJson(responseData)}
-                          size="small"
-                          text="Kopier JSON"
-                          activeText="Kopiert!"
-                        />
-                      </div>
-                      <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-xs overflow-x-auto">
-                        {formatJson(responseData)}
-                      </pre>
-                    </div>
-                  </div>
+                        <CopyButton copyText={formatJson(responseData)} size="small" text="Kopier JSON" activeText="Kopiert!" />
+                      </HStack>
+                      <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-[10px] overflow-x-auto overflow-y-auto max-h-96 max-w-150">{formatJson(responseData)}</pre>
+                    </Box>
+                  </HStack>
                 ) : (
                   <p className="text-gray-500">No response data available</p>
                 )}
-              </div>
+              </Box>
             </Tabs.Panel>
           </Tabs>
-        </div>
+        </Box>
       </Modal.Body>
 
       <Modal.Footer>
