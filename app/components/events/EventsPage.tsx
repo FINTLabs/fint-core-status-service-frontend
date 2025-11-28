@@ -4,7 +4,6 @@ import { EventsFilter } from "./EventsFilter";
 import { EventsModal } from "./EventsModal";
 
 import { EventsTable } from "./EventsTable";
-import EventsApi from "~/api/EventsApi";
 import type { IEvent } from "~/types/Event";
 
 interface FilterPageProps {
@@ -193,24 +192,9 @@ export function EventsPage({ initialData }: FilterPageProps) {
         onClearFilters={handleClearFilters}
       />
 
-      <EventsTable
-        data={filteredData}
-        onRowClick={handleRowClick}
-        loading={loadingDetail}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-        itemsPerPage={itemsPerPage}
-      />
+      <EventsTable data={filteredData} onRowClick={handleRowClick} loading={loadingDetail} currentPage={currentPage} onPageChange={handlePageChange} itemsPerPage={itemsPerPage} />
 
-      {selectedEvent && (
-        <EventsModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          requestData={selectedEvent.requestEvent}
-          responseData={selectedEvent.responseEvent}
-          corrId={selectedEvent.corrId}
-        />
-      )}
+      {selectedEvent && <EventsModal isOpen={isModalOpen} onClose={handleCloseModal} requestData={selectedEvent.requestEvent} responseData={selectedEvent.responseEvent} />}
     </Box>
   );
 }

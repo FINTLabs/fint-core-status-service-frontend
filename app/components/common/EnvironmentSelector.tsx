@@ -1,15 +1,9 @@
-import { Select } from "@navikt/ds-react";
+import { Box, Select } from "@navikt/ds-react";
 import { type ChangeEvent, useState } from "react";
 import { useSubmit } from "react-router";
 import type { IUserSession } from "~/types";
 
-export const EnvironmentSelector = ({
-  userSession,
-  navigateTo,
-}: {
-  userSession: IUserSession;
-  navigateTo: string;
-}) => {
+export const EnvironmentSelector = ({ userSession, navigateTo }: { userSession: IUserSession; navigateTo: string }) => {
   const submit = useSubmit();
 
   const [envName, setEnvName] = useState(userSession.selectedEnv);
@@ -32,20 +26,13 @@ export const EnvironmentSelector = ({
   };
 
   return (
-    <div>
-      <Select
-        size={"small"}
-        label="Velg environment"
-        hideLabel
-        onChange={handleEnvChange}
-        value={envName}
-        className={"p-2"}
-      >
+    <Box className={"p-2"}>
+      <Select size={"small"} label="Velg environment" hideLabel onChange={handleEnvChange} value={envName} className={"p-2"}>
         <option value="api">API</option>
         <option value="beta">BETA</option>
         <option value="alpha">ALPHA</option>
       </Select>
-    </div>
+    </Box>
   );
 };
 

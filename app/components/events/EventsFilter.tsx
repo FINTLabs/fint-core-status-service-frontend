@@ -1,13 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  DatePicker,
-  ExpansionCard,
-  Search,
-  Select,
-  useRangeDatepicker,
-} from "@navikt/ds-react";
+import { Box, Button, Checkbox, CheckboxGroup, DatePicker, ExpansionCard, HGrid, HStack, Search, Select, useRangeDatepicker, VStack } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
 import React from "react";
 
@@ -72,129 +63,87 @@ export function EventsFilter({
   };
 
   return (
-    <div className="mb-4">
+    <Box className="mb-4">
       <ExpansionCard aria-label="Filtrer hendelser" size="small">
         <ExpansionCard.Header>
-          <div className="flex items-center gap-2">
+          <HStack gap="2">
             <FunnelIcon aria-hidden fontSize="1.5rem" />
-            <div>
-              <ExpansionCard.Title size="small">Filtrer</ExpansionCard.Title>
-            </div>
-          </div>
+            <ExpansionCard.Title size="small">Filtrer</ExpansionCard.Title>
+          </HStack>
         </ExpansionCard.Header>
         <ExpansionCard.Content>
-          <div className="space-y-6">
-            {/* Search Filter */}
-            <div>
-              <Search
-                label="Søk hendelser"
-                value={searchFilter}
-                onChange={onSearchFilterChange}
-                placeholder="Søk hendelser..."
-                variant="secondary"
-                size="small"
-              />
-            </div>
-
-            {/* Select Filters Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Operation Filter */}
-              <div>
-                <Select
-                  label="Operasjon"
-                  size="small"
-                  value={operationFilter}
-                  onChange={(e) => onOperationFilterChange(e.target.value)}
-                  id="operation-filter"
-                >
-                  <option value="">Alle operasjoner</option>
-                  {uniqueOperations.map((operation) => (
-                    <option key={operation} value={operation}>
-                      {operation}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-
-              {/* Organisation Filter */}
-              <div>
-                <Select
-                  label="Organisasjon"
-                  size="small"
-                  value={organisasjonFilter}
-                  onChange={(e) => onOrganisasjonFilterChange(e.target.value)}
-                  id="organisation-filter"
-                >
-                  <option value="">Alle organisasjoner</option>
-                  {uniqueOrganisasjoner.map((org) => (
-                    <option key={org} value={org}>
-                      {org}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-
-              {/* Resource Filter */}
-              <div>
-                <Select
-                  label="Ressurser"
-                  size="small"
-                  value={ressursFilter}
-                  onChange={(e) => onRessursFilterChange(e.target.value)}
-                  id="resource-filter"
-                >
-                  <option value="">Alle ressurser</option>
-                  {uniqueRessurser.map((ressurs) => (
-                    <option key={ressurs} value={ressurs}>
-                      {ressurs}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            </div>
+          {/*<div className="space-y-6">*/}
+          {/* Search Filter */}
+          <VStack gap="2">
+            <Search label="Søk hendelser" value={searchFilter} onChange={onSearchFilterChange} placeholder="Søk hendelser..." variant="secondary" size="small" />
+            <HGrid gap="space-24" columns={3}>
+              <Select label="Operasjon" size="small" value={operationFilter} onChange={(e) => onOperationFilterChange(e.target.value)} id="operation-filter">
+                <option value="">Alle operasjoner</option>
+                {uniqueOperations.map((operation) => (
+                  <option key={operation} value={operation}>
+                    {operation}
+                  </option>
+                ))}
+              </Select>
+              <Select label="Organisasjon" size="small" value={organisasjonFilter} onChange={(e) => onOrganisasjonFilterChange(e.target.value)} id="organisation-filter">
+                <option value="">Alle organisasjoner</option>
+                {uniqueOrganisasjoner.map((org) => (
+                  <option key={org} value={org}>
+                    {org}
+                  </option>
+                ))}
+              </Select>
+              <Select label="Ressurser" size="small" value={ressursFilter} onChange={(e) => onRessursFilterChange(e.target.value)} id="resource-filter">
+                <option value="">Alle ressurser</option>
+                {uniqueRessurser.map((ressurs) => (
+                  <option key={ressurs} value={ressurs}>
+                    {ressurs}
+                  </option>
+                ))}
+              </Select>
+            </HGrid>
 
             {/* Date Range and Status Filter Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <HGrid gap="space-24" columns={2}>
               {/* Date Range Filter */}
-              <div className="md:col-span-2">
-                <DatePicker {...datepickerProps}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <DatePicker.Input {...fromInputProps} label="Fra dato" size="small" />
-                    <DatePicker.Input {...toInputProps} label="Til dato" size="small" />
-                  </div>
-                </DatePicker>
-              </div>
+
+              <DatePicker {...datepickerProps}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <DatePicker.Input {...fromInputProps} label="Fra dato" size="small" />
+                  <DatePicker.Input {...toInputProps} label="Til dato" size="small" />
+                </div>
+              </DatePicker>
 
               {/* Status Filter */}
-              <div>
-                <CheckboxGroup
-                  legend="Status"
-                  size="small"
-                  value={Object.entries(statusFilter)
-                    .filter(([, value]) => value)
-                    .map(([key]) => key)}
-                  onChange={(values: string[]) => {
-                    onStatusFilterChange({
-                      ok: values.includes("ok"),
-                      error: values.includes("error"),
-                    });
-                  }}
-                >
-                  <Checkbox value="ok">OK</Checkbox>
-                  <Checkbox value="error">Feil</Checkbox>
-                </CheckboxGroup>
-              </div>
-            </div>
+
+              <CheckboxGroup
+                legend="Status"
+                size="small"
+                value={Object.entries(statusFilter)
+                  .filter(([, value]) => value)
+                  .map(([key]) => key)}
+                onChange={(values: string[]) => {
+                  onStatusFilterChange({
+                    ok: values.includes("ok"),
+                    error: values.includes("error"),
+                  });
+                }}
+              >
+                <Checkbox value="ok">OK</Checkbox>
+                <Checkbox value="error">Feil</Checkbox>
+              </CheckboxGroup>
+            </HGrid>
 
             {/* Clear Filters Button */}
-            <div>
+            <Box>
               <Button variant="tertiary" size="small" onClick={handleClearFilters}>
                 Tøm filtre
               </Button>
-            </div>
-          </div>
+            </Box>
+            {/*</div>*/}
+          </VStack>
         </ExpansionCard.Content>
       </ExpansionCard>
-    </div>
+    </Box>
   );
 }
