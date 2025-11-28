@@ -11,16 +11,8 @@ interface SyncTableProps {
   onRowClick: (sync: ISyncData) => void;
 }
 
-export function SyncTable({
-  data,
-  currentPage,
-  onPageChange,
-  itemsPerPage,
-  onRowClick,
-}: SyncTableProps) {
-  const [sort, setSort] = useState<
-    { orderBy: string; direction: "ascending" | "descending" } | undefined
-  >();
+export function SyncTable({ data, currentPage, onPageChange, itemsPerPage, onRowClick }: SyncTableProps) {
+  const [sort, setSort] = useState<{ orderBy: string; direction: "ascending" | "descending" } | undefined>();
 
   const sortedData = useMemo(() => {
     if (!sort) return data;
@@ -87,29 +79,16 @@ export function SyncTable({
         </Table.Header>
         <Table.Body>
           {paginatedData.map((sync, index) => (
-            <Table.Row
-              key={index}
-              data-cy="sync-row"
-              onRowClick={() => onRowClick(sync)}
-              shadeOnHover={true}
-            >
+            <Table.Row key={index} data-cy="sync-row" onRowClick={() => onRowClick(sync)} shadeOnHover={true}>
               <Table.DataCell>
                 {sync.finished ? (
-                  <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                    <CheckmarkCircleFillIcon
-                      className="text-green-600"
-                      title="Fullført"
-                      fontSize="1.25rem"
-                    />
-                  </div>
+                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
+                    <CheckmarkCircleFillIcon className="text-green-600" title="Fullført" fontSize="1.25rem" />
+                  </Box>
                 ) : (
-                  <div className="inline-flex items-center justify-center w-8 h-8 bg-yellow-100 rounded-md">
-                    <ArrowCirclepathIcon
-                      className="text-yellow-600"
-                      title="Pågår"
-                      fontSize="1.25rem"
-                    />
-                  </div>
+                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-yellow-100 rounded-md">
+                    <ArrowCirclepathIcon className="text-yellow-600" title="Pågår" fontSize="1.25rem" />
+                  </Box>
                 )}
               </Table.DataCell>
               <Table.DataCell>{sync.orgId}</Table.DataCell>
@@ -121,9 +100,7 @@ export function SyncTable({
               <Table.DataCell>
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    sync.syncType === "FULL"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-purple-100 text-purple-800"
+                    sync.syncType === "FULL" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"
                   }`}
                 >
                   {sync.syncType}
@@ -140,26 +117,14 @@ export function SyncTable({
                 </span>
               </Table.DataCell>
               <Table.DataCell>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1">
-                    <div
-                      className={
-                        sync.finished
-                          ? "[--ac-progress-bar-fg:rgb(22_163_74)]"
-                          : "[--ac-progress-bar-fg:rgb(202_138_4)]"
-                      }
-                    >
-                      <ProgressBar
-                        value={calculateProgress(sync)}
-                        size="small"
-                        aria-label={`Fremdrift: ${calculateProgress(sync)}%`}
-                      />
-                    </div>
-                  </div>
-                  <span className="text-xs text-gray-600 min-w-[3rem]">
-                    {calculateProgress(sync)}%
-                  </span>
-                </div>
+                <Box className="flex items-center gap-2">
+                  <Box className="flex-1">
+                    <Box className={sync.finished ? "[--ac-progress-bar-fg:rgb(22_163_74)]" : "[--ac-progress-bar-fg:rgb(202_138_4)]"}>
+                      <ProgressBar value={calculateProgress(sync)} size="small" aria-label={`Fremdrift: ${calculateProgress(sync)}%`} />
+                    </Box>
+                  </Box>
+                  <span className="text-xs text-gray-600 min-w-[3rem]">{calculateProgress(sync)}%</span>
+                </Box>
               </Table.DataCell>
               <Table.DataCell>
                 <span className="text-gray-700 text-sm">{formatTime(sync.lastPageTime)}</span>
@@ -171,14 +136,7 @@ export function SyncTable({
 
       {totalPages > 1 && (
         <Box paddingBlock="4" className="flex justify-center" data-cy="pagination">
-          <Pagination
-            page={currentPage}
-            onPageChange={onPageChange}
-            count={totalPages}
-            size="small"
-            boundaryCount={1}
-            siblingCount={1}
-          />
+          <Pagination page={currentPage} onPageChange={onPageChange} count={totalPages} size="small" boundaryCount={1} siblingCount={1} />
         </Box>
       )}
     </Box>

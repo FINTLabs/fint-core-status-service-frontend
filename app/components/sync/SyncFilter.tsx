@@ -1,12 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  Select,
-  DatePicker,
-  useRangeDatepicker,
-  ExpansionCard,
-} from "@navikt/ds-react";
+import { Button, Checkbox, CheckboxGroup, Select, DatePicker, useRangeDatepicker, ExpansionCard, HStack } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
 
 interface SyncFilterProps {
@@ -56,16 +48,15 @@ export function SyncFilter({
     defaultSelected: dateRange.from && dateRange.to ? dateRange : undefined,
   });
 
+  //TODO: Fix from div to box
   return (
     <div className="mb-4">
       <ExpansionCard aria-label="Filtrer synkroniseringer" size="small">
         <ExpansionCard.Header>
-          <div className="flex items-center gap-2">
+          <HStack gap="2">
             <FunnelIcon aria-hidden fontSize="1.5rem" />
-            <div>
-              <ExpansionCard.Title size="small">Filtrer</ExpansionCard.Title>
-            </div>
-          </div>
+            <ExpansionCard.Title size="small">Filtrer</ExpansionCard.Title>
+          </HStack>
         </ExpansionCard.Header>
         <ExpansionCard.Content>
           <div className="space-y-6">
@@ -112,13 +103,7 @@ export function SyncFilter({
 
               {/* Organisation Filter */}
               <div>
-                <Select
-                  label="Organisasjon"
-                  size="small"
-                  value={organisasjonFilter}
-                  onChange={(e) => onOrganisasjonFilterChange(e.target.value)}
-                  id="organisation-filter"
-                >
+                <Select label="Organisasjon" size="small" value={organisasjonFilter} onChange={(e) => onOrganisasjonFilterChange(e.target.value)} id="organisation-filter">
                   <option value="">Alle organisasjoner</option>
                   {uniqueOrganisasjoner.map((org) => (
                     <option key={org} value={org}>
@@ -130,13 +115,7 @@ export function SyncFilter({
 
               {/* Domain Filter */}
               <div>
-                <Select
-                  label="Domene"
-                  size="small"
-                  value={domeneFilter}
-                  onChange={(e) => onDomeneFilterChange(e.target.value)}
-                  id="domain-filter"
-                >
+                <Select label="Domene" size="small" value={domeneFilter} onChange={(e) => onDomeneFilterChange(e.target.value)} id="domain-filter">
                   <option value="">Alle domener</option>
                   {uniqueDomener.map((domain) => (
                     <option key={domain} value={domain}>

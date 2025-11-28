@@ -1,26 +1,17 @@
 import { EventsPage } from "~/components/events/EventsPage";
-import {
-  Await,
-  type LoaderFunction,
-  useAsyncValue,
-  useLoaderData,
-  useNavigation,
-} from "react-router";
+import { Await, type LoaderFunction, useAsyncValue, useLoaderData, useNavigation } from "react-router";
 import EventsApi from "~/api/EventsApi";
 import { selectedEnvCookie } from "~/utils/cookies";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
-import { Alert, Loader } from "@navikt/ds-react";
+import { Alert, Box, Loader } from "@navikt/ds-react";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { BellIcon } from "@navikt/aksel-icons";
 import type { IEvent } from "~/types/Event";
 
 export function meta() {
-  return [
-    { title: "Hendelser - Fint Core Status Service" },
-    { name: "description", content: "View event logs and operations" },
-  ];
+  return [{ title: "Hendelser - Fint Core Status Service" }, { name: "description", content: "View event logs and operations" }];
 }
 
 //TODO: add metrics
@@ -50,33 +41,27 @@ export default function Events() {
   const isNavigating = Boolean(navigation.location);
 
   if (isNavigating) {
-    return <div>Loading stuff...</div>;
+    return <Box>Loading stuff...</Box>;
   }
 
   return (
     <>
-      <PageHeader
-        title="Hendelser"
-        description="Oversikt over hendelser og deres status i Fint Core systemet."
-        env={env}
-        breadcrumbItems={breadcrumbItems}
-        icon={BellIcon}
-      />
+      <PageHeader title="Hendelser" description="Oversikt over hendelser og deres status i Fint Core systemet." env={env} breadcrumbItems={breadcrumbItems} icon={BellIcon} />
       <Suspense
         fallback={
-          <div className="p-6 flex justify-center">
+          <Box className="p-6 flex justify-center">
             <Loader size="3xlarge" title="Laster hendelser ..." />
-          </div>
+          </Box>
         }
       >
         <Await
           resolve={eventResponse}
           errorElement={
-            <div className="p-6">
+            <Box className="p-6">
               <Alert variant="error" className="mb-4">
                 Kunne ikke hente synkroniseringer.
               </Alert>
-            </div>
+            </Box>
           }
         >
           <SyncResolved env={env} alerts={alerts} setAlerts={setAlerts} />
@@ -87,15 +72,7 @@ export default function Events() {
 }
 
 // ---------- Child component used inside <Await> ----------
-function SyncResolved({
-  env,
-  alerts,
-  setAlerts,
-}: {
-  env: string;
-  alerts: NovariSnackbarItem[];
-  setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
-}) {
+function SyncResolved({ env, alerts, setAlerts }: { env: string; alerts: NovariSnackbarItem[]; setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>> }) {
   const response = useAsyncValue() as {
     success: boolean;
     message?: string;

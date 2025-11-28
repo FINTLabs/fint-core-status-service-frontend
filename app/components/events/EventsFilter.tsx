@@ -72,7 +72,6 @@ export function EventsFilter({
           </HStack>
         </ExpansionCard.Header>
         <ExpansionCard.Content>
-          {/*<div className="space-y-6">*/}
           {/* Search Filter */}
           <VStack gap="2">
             <Search label="Søk hendelser" value={searchFilter} onChange={onSearchFilterChange} placeholder="Søk hendelser..." variant="secondary" size="small" />
@@ -106,16 +105,12 @@ export function EventsFilter({
             {/* Date Range and Status Filter Row */}
             <HGrid gap="space-24" columns={2}>
               {/* Date Range Filter */}
-
               <DatePicker {...datepickerProps}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <DatePicker.Input {...fromInputProps} label="Fra dato" size="small" />
-                  <DatePicker.Input {...toInputProps} label="Til dato" size="small" />
-                </div>
+                <DatePicker.Input {...fromInputProps} label="Fra dato" size="small" />
+                <DatePicker.Input {...toInputProps} label="Til dato" size="small" />
               </DatePicker>
 
               {/* Status Filter */}
-
               <CheckboxGroup
                 legend="Status"
                 size="small"
@@ -140,7 +135,6 @@ export function EventsFilter({
                 Tøm filtre
               </Button>
             </Box>
-            {/*</div>*/}
           </VStack>
         </ExpansionCard.Content>
       </ExpansionCard>

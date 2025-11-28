@@ -204,8 +204,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
-    details =
-      error.status === 404 ? "The requested page could not be found." : error.statusText || details;
+    details = error.status === 404 ? "The requested page could not be found." : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
   }
@@ -214,10 +213,10 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     <Page>
       {/*<Header />*/}
       <Page.Block as="main" width="xl" gutters>
-        <div className="py-8">
+        <Box className="py-8">
           <h1 className="text-3xl font-bold mb-4">{message}</h1>
           <p className="text-lg mb-4">{details}</p>
-        </div>
+        </Box>
       </Page.Block>
       <Footer />
     </Page>

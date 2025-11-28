@@ -1,19 +1,13 @@
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
-import {
-  Await,
-  type LoaderFunction,
-  useAsyncValue,
-  useLoaderData,
-  useNavigation,
-} from "react-router";
+import { Await, type LoaderFunction, useAsyncValue, useLoaderData, useNavigation } from "react-router";
 import SyncApi from "~/api/SyncApi";
 import { SyncPage } from "~/components/sync/SyncPage";
 import type { ISyncData } from "~/types";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { ArrowsSquarepathIcon } from "@navikt/aksel-icons";
-import { Alert, Loader } from "@navikt/ds-react";
+import { Alert, Box, Loader } from "@navikt/ds-react";
 import { selectedEnvCookie } from "~/utils/cookies";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -42,7 +36,7 @@ export default function Sync() {
   const isNavigating = Boolean(navigation.location);
 
   if (isNavigating) {
-    return <div>Loading stuff...</div>;
+    return <Box>Loading stuff...</Box>;
   }
 
   return (
@@ -57,9 +51,9 @@ export default function Sync() {
 
       <Suspense
         fallback={
-          <div className="p-6 flex justify-center">
+          <Box className="p-6 flex justify-center">
             <Loader size="3xlarge" title="Laster synkroniseringer ..." />
-          </div>
+          </Box>
         }
       >
         <Await
@@ -80,15 +74,7 @@ export default function Sync() {
 }
 
 // ---------- Child component used inside <Await> ----------
-function SyncResolved({
-  env,
-  alerts,
-  setAlerts,
-}: {
-  env: string;
-  alerts: NovariSnackbarItem[];
-  setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
-}) {
+function SyncResolved({ env, alerts, setAlerts }: { env: string; alerts: NovariSnackbarItem[]; setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>> }) {
   const response = useAsyncValue() as {
     success: boolean;
     message?: string;

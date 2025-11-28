@@ -71,13 +71,13 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
               </Table.DataCell>
               <Table.DataCell>
                 {!event.hasError ? (
-                  <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
+                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
                     <CheckmarkCircleFillIcon className="text-green-600" title="OK" fontSize="1.25rem" />
-                  </div>
+                  </Box>
                 ) : (
-                  <div className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
+                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
                     <XMarkIcon className="text-red-600" title="Error" fontSize="1.25rem" />
-                  </div>
+                  </Box>
                 )}
               </Table.DataCell>
             </Table.Row>
