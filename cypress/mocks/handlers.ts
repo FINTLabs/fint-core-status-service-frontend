@@ -9,41 +9,41 @@ import syncData from "../fixtures/sync.json";
 import syncDataApi from "../fixtures/sync-api.json";
 
 const BASE_URL = "http://localhost:8080";
-const BETA_API_URL = "http://localhost:8081";
+const BETA_API_URL = "http://localhost:8080";
 
 export const handlers = [
   // Adapter API
-  http.get(`${BASE_URL}/api/adapters`, () => {
+  http.get(`${BASE_URL}/component`, () => {
     return HttpResponse.json(adaptereData);
   }),
 
   // Adapter detail API
-  http.get(`${BASE_URL}/api/adapters/:adapterId`, () => {
+  http.get(`${BASE_URL}/component/:adapterId`, () => {
     return HttpResponse.json(adapterDetailData);
   }),
 
   // Adapter component detail API
-  http.get(`${BASE_URL}/api/adapters/:adapterId/:componentId`, () => {
+  http.get(`${BASE_URL}/component/:adapterId/:componentId`, () => {
     return HttpResponse.json(adapterComponentDetailData);
   }),
 
   // Adapter component modal data API
-  http.get(`${BASE_URL}/api/adapters/:adapterId/:componentId/:adapterName`, () => {
+  http.get(`${BASE_URL}/component/:adapterId/:componentId/:adapterName`, () => {
     return HttpResponse.json(adapterComponentModalData);
   }),
 
   // Events API
-  http.get(`${BASE_URL}/api/events`, () => {
+  http.get(`${BASE_URL}/event`, () => {
     return HttpResponse.json(eventsData);
   }),
 
   // Event detail API (for modal)
-  http.get(`${BASE_URL}/api/events/:eventId`, () => {
+  http.get(`${BASE_URL}/event/:eventId`, () => {
     return HttpResponse.json(eventDetailData);
   }),
 
   // Event detail API (new endpoint)
-  http.get(`${BASE_URL}/api/events/:eventId/detail`, () => {
+  http.get(`${BASE_URL}/event/:eventId/detail`, () => {
     return HttpResponse.json(eventDetailData);
   }),
 
