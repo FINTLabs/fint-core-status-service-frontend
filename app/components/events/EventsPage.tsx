@@ -6,12 +6,12 @@ import { EventsModal } from "./EventsModal";
 import { EventsTable } from "./EventsTable";
 import type { IEvent } from "~/types/Event";
 
-interface FilterPageProps {
+interface EventPageProps {
   initialData: IEvent[];
   env: string;
 }
 
-export function EventsPage({ initialData }: FilterPageProps) {
+export function EventsPage({ initialData }: EventPageProps) {
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
   const [operationFilter, setOperationFilter] = useState<string>("");

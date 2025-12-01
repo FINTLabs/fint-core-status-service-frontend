@@ -1,7 +1,7 @@
 import type { Route } from "./+types/adapter.$adapterId";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, type LoaderFunction, useLoaderData } from "react-router";
-import type { IAdapterDetailData, IAdaptereTableRow } from "~/types";
+import type { IAdapterDetailData, IAdapter } from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterDetailAlert } from "~/components/adapters/AdapterDetailAlert";
 import { AdapterDetailTable } from "~/components/adapters/AdapterDetailTable";
@@ -49,7 +49,7 @@ export default function AdapterDetail() {
   const [mounted, setMounted] = useState(false);
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
-  const selectedAdapter = location.state?.selectedAdapter as IAdaptereTableRow | undefined;
+  const selectedAdapter = location.state?.selectedAdapter as IAdapter | undefined;
 
   useEffect(() => {
     setMounted(true);

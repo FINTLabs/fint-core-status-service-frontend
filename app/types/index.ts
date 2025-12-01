@@ -3,4 +3,4 @@ export interface IUserSession {
 }
 export type { IEvent, IRequestEvent, IResponseEvent } from "./Event";
 export type { ISyncData, ISyncPage } from "./Sync";
-export type { IAdapter, IPackageStatus, IStatusTimestamp, IAdaptereTableRow } from "./Adapter";
+export type { IAdapter, IPackageStatus, IStatusTimestamp } from "./Adapter";

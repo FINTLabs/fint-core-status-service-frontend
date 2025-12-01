@@ -25,7 +25,7 @@ const apiManagers = {
 
 //Note that endpoint is called component
 class AdapterApi {
-  static async getAllAdapters(env: "beta" | "api" | "alpha" = "api"): Promise<ApiResponse<IAdapter>> {
+  static async getAllAdapters(env: "beta" | "api" | "alpha" = "api"): Promise<ApiResponse<IAdapter[]>> {
     const token = AuthProperties.getToken();
     const apiManager = apiManagers[env];
 
@@ -33,12 +33,12 @@ class AdapterApi {
       return {
         success: false,
         message: "Ukjent miljø",
-        data: {},
+        data: [],
         variant: "error",
       };
     }
 
-    return await apiManager.call<IAdapter>({
+    return await apiManager.call<IAdapter[]>({
       method: "GET",
       endpoint: `/component`,
       functionName: "getAllAdapters",

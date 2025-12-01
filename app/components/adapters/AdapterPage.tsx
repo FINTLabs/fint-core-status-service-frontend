@@ -1,12 +1,11 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { AdapterFilter } from "./AdapterFilter";
 import { AdapterTable } from "./AdapterTable";
-import { AdapterDetailModal } from "./AdapterDetailModal";
-import type { IAdapter, IAdaptereTableRow } from "~/types";
+import type { IAdapter } from "~/types";
 
 interface AdapterPageProps {
-  initialData: IAdapter;
+  initialData: IAdapter[];
   env: string;
 }
 
@@ -16,18 +15,17 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  // const [statusFilter, setStatusFilter] = useState<{
-  //   ok: boolean;
-  //   error: boolean;
-  // }>({ ok: true, error: true });
-  const [heartbeatFilter, setHeartbeatFilter] = useState<{
-    active: boolean;
-    inactive: boolean;
-  }>({ active: true, inactive: true });
+  const [statusFilter, setStatusFilter] = useState<Record<string, boolean>>({});
+  // Removed heartbeatFilter as it's not in the new data structure
+  // const [heartbeatFilter, setHeartbeatFilter] = useState<{
+  //   active: boolean;
+  //   inactive: boolean;
+  // }>({ active: true, inactive: true });
   const [organisationFilter, setOrganisationFilter] = useState<string>("");
   const [domainFilter, setDomainFilter] = useState<string>("");
-  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
-  const [selectedRow, setSelectedRow] = useState<IAdaptereTableRow | null>(null);
+  // Date range removed as it's not in the new data structure
+  // const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
+  const [selectedRow, setSelectedRow] = useState<IAdapter | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSortChange = (sortKey: string) => {
@@ -46,16 +44,16 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
     setCurrentPage(page);
   };
 
-  const handleStatusFilterChange = (value: { ok: boolean; error: boolean }) => {
-    // setStatusFilter(value);
-    console.log("status filter change", value);
+  const handleStatusFilterChange = (value: Record<string, boolean>) => {
+    setStatusFilter(value);
     setCurrentPage(1);
   };
 
-  const handleHeartbeatFilterChange = (value: { active: boolean; inactive: boolean }) => {
-    setHeartbeatFilter(value);
-    setCurrentPage(1);
-  };
+  // Removed heartbeat filter handler as it's not in the new data structure
+  // const handleHeartbeatFilterChange = (value: { active: boolean; inactive: boolean }) => {
+  //   setHeartbeatFilter(value);
+  //   setCurrentPage(1);
+  // };
 
   const handleOrganisationFilterChange = (value: string) => {
     setOrganisationFilter(value);
@@ -67,21 +65,25 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
     setCurrentPage(1);
   };
 
-  const handleDateRangeChange = (range: { from?: Date; to?: Date } | undefined) => {
-    setDateRange(range);
-    setCurrentPage(1);
-  };
+  // Date range handler removed as it's not in the new data structure
+  // const handleDateRangeChange = (range: { from?: Date; to?: Date } | undefined) => {
+  //   setDateRange(range);
+  //   setCurrentPage(1);
+  // };
 
   const handleClearFilters = () => {
-    // setStatusFilter({ ok: true, error: true });
-    setHeartbeatFilter({ active: true, inactive: true });
+    // Reset status filter to all selected
+    const resetStatusFilter: Record<string, boolean> = {};
+    uniqueStatuses.forEach((status) => {
+      resetStatusFilter[status] = true;
+    });
+    setStatusFilter(resetStatusFilter);
     setOrganisationFilter("");
     setDomainFilter("");
-    setDateRange(undefined);
     setCurrentPage(1);
   };
 
-  const handleRowClick = (row: IAdaptereTableRow) => {
+  const handleRowClick = (row: IAdapter) => {
     setSelectedRow(row);
     setIsModalOpen(true);
   };
@@ -91,88 +93,59 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
     setSelectedRow(null);
   };
 
-  const tableData: IAdaptereTableRow[] = useMemo(() => {
-    return Object.entries(initialData || {}).flatMap(([organisation, packages]) =>
-      packages.map((pkg) => ({
-        organisation,
-        packageName: pkg.packageName,
-        healty: pkg.healty,
-        heartBeat: pkg.heartBeat,
-        lastDelta: pkg.lastDelta,
-        lastFull: pkg.lastFull,
-      }))
-    );
+  const tableData: IAdapter[] = useMemo(() => {
+    return initialData || [];
   }, [initialData]);
 
   const uniqueOrganisations = useMemo(() => {
-    return [...new Set(Object.keys(initialData || {}))].sort();
+    return [...new Set((initialData || []).map((adapter) => adapter.organzation))].sort();
   }, [initialData]);
 
   const uniqueDomains = useMemo(() => {
-    return [...new Set(Object.values(initialData || {}).flatMap((packages) => packages.map((pkg) => pkg.packageName)))].sort();
+    return [...new Set((initialData || []).map((adapter) => adapter.domain))].sort();
   }, [initialData]);
+
+  const uniqueStatuses = useMemo(() => {
+    return [...new Set((initialData || []).map((adapter) => adapter.status))].sort();
+  }, [initialData]);
+
+  // Initialize status filter with all statuses selected by default
+  useEffect(() => {
+    if (uniqueStatuses.length > 0 && Object.keys(statusFilter).length === 0) {
+      const initialFilter: Record<string, boolean> = {};
+      uniqueStatuses.forEach((status) => {
+        initialFilter[status] = true;
+      });
+      setStatusFilter(initialFilter);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uniqueStatuses]);
 
   const filteredData = useMemo(() => {
     return tableData.filter((item) => {
-      const isHeartbeatActive = item.heartBeat;
-      if (isHeartbeatActive && !heartbeatFilter.active) {
-        return false;
-      }
-      if (!isHeartbeatActive && !heartbeatFilter.inactive) {
+      if (organisationFilter && !item.organzation.toLowerCase().includes(organisationFilter.toLowerCase())) {
         return false;
       }
 
-      if (organisationFilter && !item.organisation.toLowerCase().includes(organisationFilter.toLowerCase())) {
+      if (domainFilter && !item.domain.toLowerCase().includes(domainFilter.toLowerCase())) {
         return false;
       }
 
-      if (domainFilter && !item.packageName.toLowerCase().includes(domainFilter.toLowerCase())) {
+      // Status filter
+      if (Object.keys(statusFilter).length > 0 && !statusFilter[item.status]) {
         return false;
-      }
-
-      // Date range filter for last full sync
-      if (dateRange?.from || dateRange?.to) {
-        const lastFullDate = item.lastFull?.date;
-        if (!lastFullDate) {
-          return false; // Exclude items without last full sync date
-        }
-
-        // Convert timestamp to Date (assuming timestamp is in milliseconds)
-        const syncDate = new Date(lastFullDate);
-
-        if (dateRange.from && dateRange.to) {
-          const fromDate = new Date(dateRange.from);
-          fromDate.setHours(0, 0, 0, 0);
-          const toDate = new Date(dateRange.to);
-          toDate.setHours(23, 59, 59, 999);
-          if (syncDate < fromDate || syncDate > toDate) {
-            return false;
-          }
-        } else if (dateRange.from) {
-          const fromDate = new Date(dateRange.from);
-          fromDate.setHours(0, 0, 0, 0);
-          if (syncDate < fromDate) {
-            return false;
-          }
-        } else if (dateRange.to) {
-          const toDate = new Date(dateRange.to);
-          toDate.setHours(23, 59, 59, 999);
-          if (syncDate > toDate) {
-            return false;
-          }
-        }
       }
 
       return true;
     });
-  }, [tableData, heartbeatFilter, organisationFilter, domainFilter, dateRange]);
+  }, [tableData, organisationFilter, domainFilter, statusFilter]);
 
   const sortedFilteredData = useMemo(() => {
     if (!sortState) return filteredData;
 
     return [...filteredData].sort((a, b) => {
-      const aValue = a[sortState.orderBy as keyof IAdaptereTableRow];
-      const bValue = b[sortState.orderBy as keyof IAdaptereTableRow];
+      const aValue = a[sortState.orderBy as keyof IAdapter];
+      const bValue = b[sortState.orderBy as keyof IAdapter];
 
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortState.direction === "ascending" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
@@ -188,17 +161,15 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   return (
     <Box padding="8" paddingBlock="2">
       <AdapterFilter
-        heartbeatFilter={heartbeatFilter}
+        statusFilter={statusFilter}
         organisationFilter={organisationFilter}
         domainFilter={domainFilter}
-        dateRange={dateRange}
+        uniqueStatuses={uniqueStatuses}
         uniqueOrganisations={uniqueOrganisations}
         uniqueDomains={uniqueDomains}
         onStatusFilterChange={handleStatusFilterChange}
-        onHeartbeatFilterChange={handleHeartbeatFilterChange}
         onOrganisationFilterChange={handleOrganisationFilterChange}
         onDomainFilterChange={handleDomainFilterChange}
-        onDateRangeChange={handleDateRangeChange}
         onClearFilters={handleClearFilters}
       />
 
@@ -211,8 +182,6 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
         itemsPerPage={itemsPerPage}
         onRowClick={handleRowClick}
       />
-
-      <AdapterDetailModal isOpen={isModalOpen} onClose={handleCloseModal} data={selectedRow} />
     </Box>
   );
 }

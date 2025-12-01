@@ -16,8 +16,14 @@
 // }
 
 //TODO: fix spelling error in backend
+// export interface IAdapter {
+//   [orgId: string]: IPackageStatus[];
+// }
+
 export interface IAdapter {
-  [orgId: string]: IPackageStatus[];
+  organzation: string;
+  domain: string;
+  status: string;
 }
 
 export interface IPackageStatus {
@@ -33,13 +39,3 @@ export interface IStatusTimestamp {
   date: number;
   expectedDate?: number; // only present on lastFull
 }
-
-export interface IAdaptereTableRow {
-  organisation: string;
-  packageName: string;
-  healty: string;
-  heartBeat: boolean;
-  lastDelta: IStatusTimestamp | null;
-  lastFull: IStatusTimestamp | null;
-}
-

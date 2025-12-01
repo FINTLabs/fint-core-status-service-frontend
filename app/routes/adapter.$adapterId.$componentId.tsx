@@ -1,7 +1,7 @@
 import type { Route } from "./+types/adapter.$adapterId.$componentId";
 import { useEffect, useState } from "react";
 import { type LoaderFunction, useLoaderData, useLocation } from "react-router";
-import type { IAdapterComponentData, IAdapterComponentModalData, IAdapterDetailData, IAdaptereTableRow } from "~/types";
+import type { IAdapterComponentData, IAdapterComponentModalData, IAdapterDetailData, IAdapter } from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { AdapterComponentModal } from "~/components/adapters/AdapterComponentModal";
 import { AdapterComponentAlert } from "~/components/adapters/AdapterComponentAlert";
@@ -46,7 +46,7 @@ export default function AdapterComponent() {
   const [mounted, setMounted] = useState(false);
 
   const selectedComponent = location.state?.selectedComponent as IAdapterDetailData | undefined;
-  const selectedAdapter = location.state?.selectedAdapter as IAdaptereTableRow | undefined;
+  const selectedAdapter = location.state?.selectedAdapter as IAdapter | undefined;
 
   useEffect(() => {
     setMounted(true);

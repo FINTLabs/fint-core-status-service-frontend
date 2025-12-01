@@ -1,8 +1,8 @@
 import { Alert, BodyShort, Box, Heading, HStack } from "@navikt/ds-react";
-import type { IAdaptereTableRow } from "~/types";
+import type { IAdapter } from "~/types";
 
 interface AdapterDetailAlertProps {
-  adapter: IAdaptereTableRow;
+  adapter: IAdapter;
 }
 
 export function AdapterDetailAlert({ adapter }: AdapterDetailAlertProps) {
@@ -15,7 +15,7 @@ export function AdapterDetailAlert({ adapter }: AdapterDetailAlertProps) {
         <HStack gap="space-16" wrap>
           <div className="space-y-1 flex-1 min-w-0">
             <BodyShort>
-              <strong>Organisasjon:</strong> {adapter.organisation}
+              <strong>Organisasjon:</strong> {adapter.organzation}
             </BodyShort>
             <BodyShort>
               <strong>Domene:</strong> {adapter.domain}

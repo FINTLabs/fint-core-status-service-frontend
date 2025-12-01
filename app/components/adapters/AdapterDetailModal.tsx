@@ -1,12 +1,12 @@
-import { Modal, Button, Heading, Box, BodyShort, HStack, VStack, Label } from "@navikt/ds-react";
-import { HeartIcon, HeartBrokenIcon } from "@navikt/aksel-icons";
-import type { IAdaptereTableRow } from "~/types";
+import { BodyShort, Box, Button, Heading, HStack, Modal, VStack } from "@navikt/ds-react";
+import { HeartBrokenIcon, HeartIcon } from "@navikt/aksel-icons";
+import type { IAdapter } from "~/types";
 import { formatTimestampDetailed } from "~/utils/time";
 
 interface AdapterDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  data: IAdaptereTableRow | null;
+  data: IAdapter | null;
 }
 
 export function AdapterDetailModal({ isOpen, onClose, data }: AdapterDetailModalProps) {

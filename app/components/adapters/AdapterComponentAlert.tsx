@@ -1,17 +1,13 @@
 import { Alert, BodyShort, Box, Heading, HStack } from "@navikt/ds-react";
-import type { IAdapterDetailData, IAdaptereTableRow } from "~/types";
+import type { IAdapterDetailData, IAdapter } from "~/types";
 
 interface AdapterComponentAlertProps {
   componentName: string;
   selectedComponent?: IAdapterDetailData;
-  selectedAdapter?: IAdaptereTableRow;
+  selectedAdapter?: IAdapter;
 }
 
-export function AdapterComponentAlert({
-  componentName,
-  selectedComponent,
-  selectedAdapter,
-}: AdapterComponentAlertProps) {
+export function AdapterComponentAlert({ componentName, selectedComponent, selectedAdapter }: AdapterComponentAlertProps) {
   if (!selectedComponent && !selectedAdapter) {
     return null;
   }
@@ -30,7 +26,7 @@ export function AdapterComponentAlert({
                   <strong>Adapter:</strong> {selectedAdapter.domain}
                 </BodyShort>
                 <BodyShort>
-                  <strong>Organisasjon:</strong> {selectedAdapter.organisation}
+                  <strong>Organisasjon:</strong> {selectedAdapter.organzation}
                 </BodyShort>
               </>
             )}
@@ -43,9 +39,7 @@ export function AdapterComponentAlert({
                   <strong>Heartbeat:</strong>
                   <span
                     className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      selectedComponent.heartbeat
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                      selectedComponent.heartbeat ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                     }`}
                   >
                     {selectedComponent.heartbeat ? "Aktiv" : "Inaktiv"}
@@ -64,9 +58,7 @@ export function AdapterComponentAlert({
                   <strong>Full Status:</strong>
                   <span
                     className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      selectedComponent.full.healthy
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                      selectedComponent.full.healthy ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                     }`}
                   >
                     {selectedComponent.full.healthy ? "OK" : "Feil"}
