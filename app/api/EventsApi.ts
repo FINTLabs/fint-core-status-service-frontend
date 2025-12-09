@@ -2,20 +2,18 @@ import { type ApiResponse, NovariApiManager } from "novari-frontend-components";
 
 import { AuthProperties } from "~/utils/auth";
 import type { IEvent } from "~/types/Event";
-
-const API_URL = import.meta.env.VITE_API_URL || "";
-const BETA_API_URL = import.meta.env.VITE_BETA_URL || "";
+import { backendRoutesMap } from "./backendRoutes.js";
 
 const apiManagerBeta = new NovariApiManager({
-  baseUrl: BETA_API_URL,
+  baseUrl: backendRoutesMap.beta,
 });
 
 const apiManagerApi = new NovariApiManager({
-  baseUrl: API_URL,
+  baseUrl: backendRoutesMap.api,
 });
 
 const apiManagerAlpha = new NovariApiManager({
-  baseUrl: API_URL,
+  baseUrl: backendRoutesMap.alpha,
 });
 
 const apiManagers = {
