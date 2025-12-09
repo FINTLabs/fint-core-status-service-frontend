@@ -3,10 +3,7 @@ import { Box, Heading, BodyLong, LinkCard } from "@navikt/ds-react";
 import { InformationSquareIcon, TasklistIcon, ArrowsCirclepathIcon } from "@navikt/aksel-icons";
 
 export function meta(_args: Route.MetaArgs) {
-  return [
-    { title: "Fint Core Status Service" },
-    { name: "description", content: "Monitor the status of Fint Core services" },
-  ];
+  return [{ title: "Fint Core Status Service" }, { name: "description", content: "Monitor the status of Fint Core services" }];
 }
 
 export default function Home() {
@@ -31,8 +28,7 @@ export default function Home() {
               <LinkCard.Anchor href="/adaptere">Adaptere</LinkCard.Anchor>
             </LinkCard.Title>
             <LinkCard.Description>
-              Se oversikt over alle adaptere, deres status, komponenter og helsetilstand. Overvåk
-              driftspuls, delta- og full-overføringer.
+              Se oversikt over alle adaptere, deres status, komponenter og helsetilstand. Overvåk driftspuls, delta- og full-overføringer.
             </LinkCard.Description>
           </LinkCard>
         </li>
@@ -45,10 +41,7 @@ export default function Home() {
             <LinkCard.Title as="h2">
               <LinkCard.Anchor href="/hendelser">Hendelser</LinkCard.Anchor>
             </LinkCard.Title>
-            <LinkCard.Description>
-              Følg med på alle hendelser og operasjoner i systemet. Se detaljer om requests,
-              responses og eventuelle feil.
-            </LinkCard.Description>
+            <LinkCard.Description>Følg med på alle hendelser og operasjoner i systemet. Se detaljer om requests, responses og eventuelle feil.</LinkCard.Description>
           </LinkCard>
         </li>
 
@@ -61,8 +54,7 @@ export default function Home() {
               <LinkCard.Anchor href="/sync">Synkronisering</LinkCard.Anchor>
             </LinkCard.Title>
             <LinkCard.Description>
-              Overvåk synkroniseringer i sanntid. Se fremdrift, antall entiteter og sider som er
-              hentet for både full- og delta-synkroniseringer.
+              Overvåk synkroniseringer i sanntid. Se fremdrift, antall entiteter og sider som er hentet for både full- og delta-synkroniseringer.
             </LinkCard.Description>
           </LinkCard>
         </li>

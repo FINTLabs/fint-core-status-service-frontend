@@ -32,11 +32,6 @@ export default function Events() {
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
-  const breadcrumbItems = [
-    { label: "Dashboard", href: "/" },
-    { label: "Hendelser", href: "/hendelser" },
-  ];
-
   const navigation = useNavigation();
   const isNavigating = Boolean(navigation.location);
 
@@ -44,9 +39,10 @@ export default function Events() {
     return <Box>Loading stuff...</Box>;
   }
 
+  //TODO: use suspense on all routes
   return (
     <>
-      <PageHeader title="Hendelser" description="Oversikt over hendelser og deres status i Fint Core systemet." env={env} breadcrumbItems={breadcrumbItems} icon={BellIcon} />
+      <PageHeader title="Hendelser" description="Oversikt over hendelser og deres status i Fint Core systemet." env={env} icon={BellIcon} />
       <Suspense
         fallback={
           <Box className="p-6 flex justify-center">

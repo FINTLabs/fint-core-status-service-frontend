@@ -1,7 +1,8 @@
 import { http, HttpResponse, delay } from "msw";
 import adaptereData from "../fixtures/adaptere.json";
 import adapterDetailData from "../fixtures/adapter-detail.json";
-import adapterComponentDetailData from "../fixtures/adapter-component-detail.json";
+import adapterComponentDetailData from "../fixtures/adapter-component.json";
+import adapterComponentDetail from "../fixtures/adapter-component-detail.json";
 import adapterComponentModalData from "../fixtures/adapter-component-modal.json";
 import eventsData from "../fixtures/events.json";
 import eventDetailData from "../fixtures/event-detail.json";
@@ -23,13 +24,18 @@ export const handlers = [
   }),
 
   // Adapter component detail API
-  http.get(`${BASE_URL}/component/:adapterId/:componentId`, () => {
+  // http.get(`${BASE_URL}/component/:adapterId/:componentId`, () => {
+  http.get(`${BASE_URL}/component/agderfk.no/utdanning`, () => {
     return HttpResponse.json(adapterComponentDetailData);
   }),
 
   // Adapter component modal data API
   http.get(`${BASE_URL}/component/:adapterId/:componentId/:adapterName`, () => {
     return HttpResponse.json(adapterComponentModalData);
+  }),
+
+  http.get(`${BASE_URL}/contract/agderfk.no/utdanning`, () => {
+    return HttpResponse.json(adapterComponentDetail);
   }),
 
   // Events API

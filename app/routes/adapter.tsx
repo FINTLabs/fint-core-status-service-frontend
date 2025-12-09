@@ -19,7 +19,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
   const env = await selectedEnvCookie.parse(cookieHeader);
 
-  const adapterResponse = AdapterApi.getAllAdapters(env);
+  const adapterResponse = AdapterApi.getAdapterContract(env);
 
   return { env, adapterResponse };
 };
@@ -27,7 +27,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Adapter() {
   const { env, adapterResponse } = useLoaderData() as {
     env: string;
-    adapterResponse: Promise<{ success: boolean; message?: string; data?: IAdapter[] }>;
+    adapterResponse: Promise<{ success: boolean; message?: string; data?: IAdapter[]; variant?: string }>;
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
@@ -35,18 +35,13 @@ export default function Adapter() {
   const navigation = useNavigation();
   const isNavigating = Boolean(navigation.location);
 
-  const breadcrumbItems = [
-    { label: "Dashboard", href: "/" },
-    { label: "Adaptere", href: "/adaptere" },
-  ];
-
   if (isNavigating) {
     return <Box>Loading stuff...</Box>;
   }
 
   return (
     <>
-      <PageHeader title="Adaptere" description="Oversikt over adaptere og deres status i Fint Core systemet." env={env} breadcrumbItems={breadcrumbItems} icon={ComponentIcon} />
+      <PageHeader title="Status adaptere" description="Oversikt over adaptere og status i Fint Core systemet." env={env} icon={ComponentIcon} />
       <Suspense
         fallback={
           <Box className="p-6 flex justify-center">
@@ -77,6 +72,7 @@ function SyncResolved({ env, alerts, setAlerts }: { env: string; alerts: NovariS
     success: boolean;
     message?: string;
     data?: IAdapter[];
+    variant?: string;
   };
 
   useEffect(() => {
@@ -85,13 +81,13 @@ function SyncResolved({ env, alerts, setAlerts }: { env: string; alerts: NovariS
         ...prev,
         {
           id: `sync-error-${Date.now()}`,
-          variant: "error",
+          variant: (response?.variant || "error") as "error" | "warning" | "success" | "info",
           message: response?.message || "Kunne ikke hente adapters.",
           header: "Connection Feil",
         },
       ]);
     }
-  }, [response?.success, response?.message, setAlerts]);
+  }, [response?.success, response?.message, response?.variant, setAlerts]);
 
   return (
     <>

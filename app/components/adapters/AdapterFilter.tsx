@@ -3,26 +3,24 @@ import { FunnelIcon } from "@navikt/aksel-icons";
 import React from "react";
 
 interface AdaptereFilterProps {
-  statusFilter: Record<string, boolean>;
+  heartbeatFilter: { active: boolean; inactive: boolean };
   organisationFilter: string;
   domainFilter: string;
-  uniqueStatuses: string[];
   uniqueOrganisations: string[];
   uniqueDomains: string[];
-  onStatusFilterChange: (filter: Record<string, boolean>) => void;
+  onHeartbeatFilterChange: (filter: { active: boolean; inactive: boolean }) => void;
   onOrganisationFilterChange: (value: string) => void;
   onDomainFilterChange: (value: string) => void;
   onClearFilters: () => void;
 }
 
 export function AdapterFilter({
-  statusFilter,
+  heartbeatFilter,
   organisationFilter,
   domainFilter,
-  uniqueStatuses,
   uniqueOrganisations,
   uniqueDomains,
-  onStatusFilterChange,
+  onHeartbeatFilterChange,
   onOrganisationFilterChange,
   onDomainFilterChange,
   onClearFilters,
@@ -59,14 +57,7 @@ export function AdapterFilter({
               ))}
             </Select>
 
-            <Select
-              size="small"
-              label="Domene"
-              value={domainFilter}
-              onChange={(e) => onDomainFilterChange(e.target.value)}
-              id="domain-filter"
-              data-cy="domain-filter"
-            >
+            <Select size="small" label="Domene" value={domainFilter} onChange={(e) => onDomainFilterChange(e.target.value)} id="domain-filter" data-cy="domain-filter">
               <option value="">Alle domener</option>
               {uniqueDomains.map((domain) => (
                 <option key={domain} value={domain}>
@@ -76,26 +67,22 @@ export function AdapterFilter({
             </Select>
           </HGrid>
 
-          {/* Status Filter */}
+          {/* Heartbeat Filter */}
           <CheckboxGroup
-            legend="Status"
+            legend="Heartbeat"
             size="small"
-            value={Object.entries(statusFilter)
+            value={Object.entries(heartbeatFilter)
               .filter(([, value]) => value)
               .map(([key]) => key)}
             onChange={(values: string[]) => {
-              const newFilter: Record<string, boolean> = {};
-              uniqueStatuses.forEach((status) => {
-                newFilter[status] = values.includes(status);
+              onHeartbeatFilterChange({
+                active: values.includes("active"),
+                inactive: values.includes("inactive"),
               });
-              onStatusFilterChange(newFilter);
             }}
           >
-            {uniqueStatuses.map((status) => (
-              <Checkbox key={status} value={status}>
-                {status}
-              </Checkbox>
-            ))}
+            <Checkbox value="active">Aktiv</Checkbox>
+            <Checkbox value="inactive">Inaktiv</Checkbox>
           </CheckboxGroup>
 
           {/* Clear Filters Button */}

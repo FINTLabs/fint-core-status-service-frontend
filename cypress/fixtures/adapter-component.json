@@ -1,0 +1,27 @@
+[
+
+
+          {
+
+            "orgId": "agderfk.no",
+            "component": "utdanning",
+            "resource": "elevfravar",
+            "heartbeat": true,
+            "followsContract": true,
+            "lastDelta": 1764669503092,
+            "lastFull": null
+          },
+          {
+            "orgId": "agderfk.no",
+            "component": "utdanning",
+            "resource": "vurdering",
+            "heartbeat": false,
+            "followsContract": false,
+            "lastDelta": 1764669503092,
+            "lastFull": null
+          }
+
+
+
+
+  ]

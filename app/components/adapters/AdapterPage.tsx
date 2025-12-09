@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { AdapterFilter } from "./AdapterFilter";
 import { AdapterTable } from "./AdapterTable";
@@ -15,18 +15,12 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  const [statusFilter, setStatusFilter] = useState<Record<string, boolean>>({});
-  // Removed heartbeatFilter as it's not in the new data structure
-  // const [heartbeatFilter, setHeartbeatFilter] = useState<{
-  //   active: boolean;
-  //   inactive: boolean;
-  // }>({ active: true, inactive: true });
+  const [heartbeatFilter, setHeartbeatFilter] = useState<{
+    active: boolean;
+    inactive: boolean;
+  }>({ active: true, inactive: true });
   const [organisationFilter, setOrganisationFilter] = useState<string>("");
   const [domainFilter, setDomainFilter] = useState<string>("");
-  // Date range removed as it's not in the new data structure
-  // const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
-  const [selectedRow, setSelectedRow] = useState<IAdapter | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSortChange = (sortKey: string) => {
     let newDirection: "ascending" | "descending" = "ascending";
@@ -44,16 +38,10 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
     setCurrentPage(page);
   };
 
-  const handleStatusFilterChange = (value: Record<string, boolean>) => {
-    setStatusFilter(value);
+  const handleHeartbeatFilterChange = (value: { active: boolean; inactive: boolean }) => {
+    setHeartbeatFilter(value);
     setCurrentPage(1);
   };
-
-  // Removed heartbeat filter handler as it's not in the new data structure
-  // const handleHeartbeatFilterChange = (value: { active: boolean; inactive: boolean }) => {
-  //   setHeartbeatFilter(value);
-  //   setCurrentPage(1);
-  // };
 
   const handleOrganisationFilterChange = (value: string) => {
     setOrganisationFilter(value);
@@ -65,32 +53,11 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
     setCurrentPage(1);
   };
 
-  // Date range handler removed as it's not in the new data structure
-  // const handleDateRangeChange = (range: { from?: Date; to?: Date } | undefined) => {
-  //   setDateRange(range);
-  //   setCurrentPage(1);
-  // };
-
   const handleClearFilters = () => {
-    // Reset status filter to all selected
-    const resetStatusFilter: Record<string, boolean> = {};
-    uniqueStatuses.forEach((status) => {
-      resetStatusFilter[status] = true;
-    });
-    setStatusFilter(resetStatusFilter);
+    setHeartbeatFilter({ active: true, inactive: true });
     setOrganisationFilter("");
     setDomainFilter("");
     setCurrentPage(1);
-  };
-
-  const handleRowClick = (row: IAdapter) => {
-    setSelectedRow(row);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedRow(null);
   };
 
   const tableData: IAdapter[] = useMemo(() => {
@@ -105,22 +72,6 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
     return [...new Set((initialData || []).map((adapter) => adapter.domain))].sort();
   }, [initialData]);
 
-  const uniqueStatuses = useMemo(() => {
-    return [...new Set((initialData || []).map((adapter) => adapter.status))].sort();
-  }, [initialData]);
-
-  // Initialize status filter with all statuses selected by default
-  useEffect(() => {
-    if (uniqueStatuses.length > 0 && Object.keys(statusFilter).length === 0) {
-      const initialFilter: Record<string, boolean> = {};
-      uniqueStatuses.forEach((status) => {
-        initialFilter[status] = true;
-      });
-      setStatusFilter(initialFilter);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uniqueStatuses]);
-
   const filteredData = useMemo(() => {
     return tableData.filter((item) => {
       if (organisationFilter && !item.organzation.toLowerCase().includes(organisationFilter.toLowerCase())) {
@@ -131,14 +82,13 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
         return false;
       }
 
-      // Status filter
-      if (Object.keys(statusFilter).length > 0 && !statusFilter[item.status]) {
+      // Heartbeat filter
+      if (item.heartBeat && !heartbeatFilter.active) {
         return false;
       }
-
-      return true;
+      return !(!item.heartBeat && !heartbeatFilter.inactive);
     });
-  }, [tableData, organisationFilter, domainFilter, statusFilter]);
+  }, [tableData, organisationFilter, domainFilter, heartbeatFilter]);
 
   const sortedFilteredData = useMemo(() => {
     if (!sortState) return filteredData;
@@ -161,13 +111,12 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   return (
     <Box padding="8" paddingBlock="2">
       <AdapterFilter
-        statusFilter={statusFilter}
+        heartbeatFilter={heartbeatFilter}
         organisationFilter={organisationFilter}
         domainFilter={domainFilter}
-        uniqueStatuses={uniqueStatuses}
         uniqueOrganisations={uniqueOrganisations}
         uniqueDomains={uniqueDomains}
-        onStatusFilterChange={handleStatusFilterChange}
+        onHeartbeatFilterChange={handleHeartbeatFilterChange}
         onOrganisationFilterChange={handleOrganisationFilterChange}
         onDomainFilterChange={handleDomainFilterChange}
         onClearFilters={handleClearFilters}
@@ -180,7 +129,6 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
         currentPage={currentPage}
         onPageChange={handlePageChange}
         itemsPerPage={itemsPerPage}
-        onRowClick={handleRowClick}
       />
     </Box>
   );

@@ -27,11 +27,6 @@ export default function Sync() {
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
-  const breadcrumbItems = [
-    { label: "Dashboard", href: "/" },
-    { label: "Synkronisering", href: "/sync" },
-  ];
-
   const navigation = useNavigation();
   const isNavigating = Boolean(navigation.location);
 
@@ -41,13 +36,7 @@ export default function Sync() {
 
   return (
     <>
-      <PageHeader
-        title="Synkronisering"
-        description="Oversikt over synkroniseringer og status i Fint Core systemet."
-        env={env}
-        breadcrumbItems={breadcrumbItems}
-        icon={ArrowsSquarepathIcon}
-      />
+      <PageHeader title="Synkronisering" description="Oversikt over synkroniseringer og status i Fint Core systemet." env={env} icon={ArrowsSquarepathIcon} />
 
       <Suspense
         fallback={

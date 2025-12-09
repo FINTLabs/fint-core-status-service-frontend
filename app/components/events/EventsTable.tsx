@@ -23,16 +23,27 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
       <Table>
         <Table.Header>
           <Table.Row>
+            <Table.HeaderCell>Status</Table.HeaderCell>
             <Table.HeaderCell>Hendelse ID</Table.HeaderCell>
             <Table.HeaderCell>Operasjon</Table.HeaderCell>
             <Table.HeaderCell>Organisasjon</Table.HeaderCell>
             <Table.HeaderCell>Ressurser</Table.HeaderCell>
-            <Table.HeaderCell>Status</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {paginatedData.map((event, index) => (
             <Table.Row key={index} onRowClick={() => onRowClick(event)} shadeOnHover={true} data-cy="event-row">
+              <Table.DataCell>
+                {!event.hasError ? (
+                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
+                    <CheckmarkCircleFillIcon className="text-green-600" title="OK" fontSize="1.25rem" />
+                  </Box>
+                ) : (
+                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
+                    <XMarkIcon className="text-red-600" title="Error" fontSize="1.25rem" />
+                  </Box>
+                )}
+              </Table.DataCell>
               <Table.DataCell>
                 <HStack align="center" gap="2">
                   <CopyButton copyText={event.corrId} size={"small"} />
@@ -68,17 +79,6 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
               </Table.DataCell>
               <Table.DataCell>
                 <span className="text-gray-700">{event.requestEvent.resourceName || "N/A"}</span>
-              </Table.DataCell>
-              <Table.DataCell>
-                {!event.hasError ? (
-                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                    <CheckmarkCircleFillIcon className="text-green-600" title="OK" fontSize="1.25rem" />
-                  </Box>
-                ) : (
-                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
-                    <XMarkIcon className="text-red-600" title="Error" fontSize="1.25rem" />
-                  </Box>
-                )}
               </Table.DataCell>
             </Table.Row>
           ))}

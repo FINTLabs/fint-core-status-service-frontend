@@ -1,6 +1,7 @@
 import { Box, Pagination, Table } from "@navikt/ds-react";
 import { HeartBrokenIcon, HeartIcon } from "@navikt/aksel-icons";
 import type { IAdapter } from "~/types";
+import { useNavigate } from "react-router";
 
 interface AdapterTableProps {
   data: IAdapter[];
@@ -9,38 +10,34 @@ interface AdapterTableProps {
   currentPage: number;
   onPageChange: (page: number) => void;
   itemsPerPage: number;
-  onRowClick?: (row: IAdapter) => void;
 }
 
-export function AdapterTable({ data, currentPage, onPageChange, itemsPerPage, onRowClick }: AdapterTableProps) {
+export function AdapterTable({ data, currentPage, onPageChange, itemsPerPage }: AdapterTableProps) {
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = data.slice(startIndex, endIndex);
+  const nav = useNavigate();
 
-  const handleRowClick = (row: IAdapter) => {
-    if (onRowClick) {
-      onRowClick(row);
-    }
-  };
+  function handleRowClick(item: IAdapter) {
+    nav(`/adaptere/${item.organzation}/${item.domain}`);
+  }
 
   return (
     <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
-      <Table size="small" zebraStripes={true}>
+      <Table zebraStripes={true}>
         <Table.Header>
           <Table.Row>
+            <Table.HeaderCell scope="col">Status</Table.HeaderCell>
             <Table.HeaderCell scope="col">Organisasjon</Table.HeaderCell>
             <Table.HeaderCell scope="col">Domene</Table.HeaderCell>
-            <Table.HeaderCell scope="col">Status</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {paginatedData.map((row, index) => (
-            <Table.Row key={row.organzation + row.domain + index} onClick={() => handleRowClick(row)}>
-              <Table.HeaderCell scope="row">{row.organzation}</Table.HeaderCell>
-              <Table.DataCell>{row.domain}</Table.DataCell>
+            <Table.Row key={row.organzation + row.domain + index} onRowClick={() => handleRowClick(row)}>
               <Table.DataCell>
-                {row.status === "OK" ? (
+                {row.heartBeat ? (
                   <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
                     <HeartIcon className="text-green-600" title="OK" fontSize="1.25rem" />
                   </Box>
@@ -50,6 +47,8 @@ export function AdapterTable({ data, currentPage, onPageChange, itemsPerPage, on
                   </Box>
                 )}
               </Table.DataCell>
+              <Table.HeaderCell scope="row">{row.organzation}</Table.HeaderCell>
+              <Table.DataCell>{row.domain}</Table.DataCell>
             </Table.Row>
           ))}
         </Table.Body>

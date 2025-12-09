@@ -23,9 +23,27 @@
 export interface IAdapter {
   organzation: string;
   domain: string;
-  status: string;
+  heartBeat: boolean;
 }
 
+export interface IAdapterComponent {
+  orgId: string;
+  component: string;
+  resource: string;
+  heartbeat: boolean;
+  followsContract: boolean;
+  lastDelta: number;
+  lastFull: number | null;
+}
+
+export interface IContract {
+  adapterId: string;
+  heartbeat: boolean;
+  lastDelta: number | null;
+  lastFull: number | null;
+}
+
+//TODO: check if these are in use
 export interface IPackageStatus {
   packageName: string;
   healty: string; // (kept as spelled in your data)

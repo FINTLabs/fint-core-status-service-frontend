@@ -1,20 +1,94 @@
 [
-  {
-    "adapter": "elevprogram-visma",
-    "heartbeatStatus": "error",
-    "deltaTransfer": "",
-    "fullTransfer": ""
-  },
-  {
-    "adapter": "elevprogram-visma2",
-    "heartbeatStatus": "ok",
-    "deltaTransfer": "Today",
-    "fullTransfer": "Saturday"
-  },
-  {
-    "adapter": "elevprogram-dev",
-    "heartbeatStatus": "error",
-    "deltaTransfer": "15.03.2024",
-    "fullTransfer": "15.03.2024"
-  }
-]
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "eksamensgruppe",
+          "heartbeat": true,
+          "followsContract": true,
+          "lastDelta": 1759488876,
+          "lastFull": 1759488876
+        },
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "eksamensgruppemedlemskap",
+          "heartbeat": true,
+          "followsContract": true,
+          "lastDelta": 1759488876,
+          "lastFull": 1759488876
+        },
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "elevfravar",
+          "heartbeat": false,
+          "followsContract": false,
+          "lastDelta": null,
+          "lastFull": null
+        },
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "elevvurdering",
+          "heartbeat": true,
+          "followsContract": true,
+          "lastDelta": null,
+          "lastFull": null
+        },
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "fravarsoversikt",
+          "heartbeat": true,
+          "followsContract": true,
+          "lastDelta": null,
+          "lastFull": null
+        },
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "fravarsregistrering",
+          "heartbeat": true,
+          "followsContract": true,
+          "lastDelta": null,
+          "lastFull": null
+        },
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "halvarsfagvurdering",
+          "heartbeat": true,
+          "followsContract": true,
+          "lastDelta": null,
+          "lastFull": null
+        },
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "karakterverdi",
+          "heartbeat": true,
+          "followsContract": true,
+          "lastDelta": null,
+          "lastFull": null
+        },
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "sluttfagvurdering",
+          "heartbeat": true,
+          "followsContract": true,
+          "lastDelta": null,
+          "lastFull": null
+        },
+        {
+          "orgId": "rogfk.no",
+          "componentName": "utdanning-vurdering",
+          "resourceName": "underveisfagvurdering",
+          "heartbeat": true,
+          "followsContract": true,
+          "lastDelta": null,
+          "lastFull": null
+        }
+      ]
+
+
