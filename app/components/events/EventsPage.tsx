@@ -14,7 +14,12 @@ interface EventPageProps {
 export function EventsPage({ initialData }: EventPageProps) {
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
-  const [operationFilter, setOperationFilter] = useState<string>("");
+  const [operationFilter, setOperationFilter] = useState<{
+    CREATE: boolean;
+    UPDATE: boolean;
+    DELETE: boolean;
+    VALIDATE: boolean;
+  }>({ CREATE: true, UPDATE: true, DELETE: true, VALIDATE: true });
   const [organisasjonFilter, setOrganisasjonFilter] = useState<string>("");
   const [ressursFilter, setRessursFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<{
@@ -31,7 +36,7 @@ export function EventsPage({ initialData }: EventPageProps) {
   const handleClearFilters = () => {
     setSearchFilter("");
     setDateRange(undefined);
-    setOperationFilter("");
+    setOperationFilter({ CREATE: true, UPDATE: true, DELETE: true, VALIDATE: true });
     setOrganisasjonFilter("");
     setRessursFilter("");
     setStatusFilter({ ok: true, error: true });
@@ -83,7 +88,8 @@ export function EventsPage({ initialData }: EventPageProps) {
     }
 
     // Operation filter
-    if (operationFilter && event.requestEvent.operationType !== operationFilter) {
+    const operationType = event.requestEvent.operationType?.toUpperCase() || "";
+    if (!operationFilter[operationType as keyof typeof operationFilter]) {
       return false;
     }
 
@@ -145,7 +151,7 @@ export function EventsPage({ initialData }: EventPageProps) {
     setCurrentPage(1);
   };
 
-  const handleOperationFilterChange = (value: string) => {
+  const handleOperationFilterChange = (value: { CREATE: boolean; UPDATE: boolean; DELETE: boolean; VALIDATE: boolean }) => {
     setOperationFilter(value);
     setCurrentPage(1);
   };
@@ -166,7 +172,6 @@ export function EventsPage({ initialData }: EventPageProps) {
   };
 
   // Extract unique values for filters
-  const uniqueOperations = [...new Set(initialData.map((event) => event.requestEvent.operationType).filter(Boolean))].sort();
   const uniqueOrganisasjoner = [...new Set(initialData.map((event) => event.orgId).filter(Boolean))].sort();
   const uniqueRessurser = [...new Set(initialData.map((event) => event.requestEvent.resourceName).filter(Boolean))].sort();
 
@@ -180,7 +185,6 @@ export function EventsPage({ initialData }: EventPageProps) {
         organisasjonFilter={organisasjonFilter}
         ressursFilter={ressursFilter}
         statusFilter={statusFilter}
-        uniqueOperations={uniqueOperations}
         uniqueOrganisasjoner={uniqueOrganisasjoner}
         uniqueRessurser={uniqueRessurser}
         onSearchFilterChange={handleSearchFilterChange}

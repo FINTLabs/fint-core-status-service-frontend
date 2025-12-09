@@ -5,19 +5,23 @@ import React from "react";
 interface EventsFilterProps {
   searchFilter: string;
   dateRange: { from?: Date; to?: Date } | undefined;
-  operationFilter: string;
+  operationFilter: {
+    CREATE: boolean;
+    UPDATE: boolean;
+    DELETE: boolean;
+    VALIDATE: boolean;
+  };
   organisasjonFilter: string;
   ressursFilter: string;
   statusFilter: {
     ok: boolean;
     error: boolean;
   };
-  uniqueOperations: string[];
   uniqueOrganisasjoner: string[];
   uniqueRessurser: string[];
   onSearchFilterChange: (value: string) => void;
   onDateRangeChange: (dateRange: { from?: Date; to?: Date } | undefined) => void;
-  onOperationFilterChange: (value: string) => void;
+  onOperationFilterChange: (value: { CREATE: boolean; UPDATE: boolean; DELETE: boolean; VALIDATE: boolean }) => void;
   onOrganisasjonFilterChange: (value: string) => void;
   onRessursFilterChange: (value: string) => void;
   onStatusFilterChange: (value: { ok: boolean; error: boolean }) => void;
@@ -31,7 +35,6 @@ export function EventsFilter({
   organisasjonFilter,
   ressursFilter,
   statusFilter,
-  uniqueOperations,
   uniqueOrganisasjoner,
   uniqueRessurser,
   onSearchFilterChange,
@@ -74,15 +77,7 @@ export function EventsFilter({
         {/* Search Filter */}
         <VStack gap="4">
           <Search label="Søk hendelser" value={searchFilter} onChange={onSearchFilterChange} placeholder="Søk hendelser..." variant="secondary" size="small" />
-          <HGrid gap="space-24" columns={3}>
-            <Select label="Operasjon" size="small" value={operationFilter} onChange={(e) => onOperationFilterChange(e.target.value)} id="operation-filter">
-              <option value="">Alle operasjoner</option>
-              {uniqueOperations.map((operation) => (
-                <option key={operation} value={operation}>
-                  {operation}
-                </option>
-              ))}
-            </Select>
+          <HGrid gap="space-24" columns={2}>
             <Select label="Organisasjon" size="small" value={organisasjonFilter} onChange={(e) => onOrganisasjonFilterChange(e.target.value)} id="organisation-filter">
               <option value="">Alle organisasjoner</option>
               {uniqueOrganisasjoner.map((org) => (
@@ -100,6 +95,28 @@ export function EventsFilter({
               ))}
             </Select>
           </HGrid>
+
+          {/* Operation Type Filter */}
+          <CheckboxGroup
+            legend="Operasjon"
+            size="small"
+            value={Object.entries(operationFilter)
+              .filter(([, value]) => value)
+              .map(([key]) => key)}
+            onChange={(values: string[]) => {
+              onOperationFilterChange({
+                CREATE: values.includes("CREATE"),
+                UPDATE: values.includes("UPDATE"),
+                DELETE: values.includes("DELETE"),
+                VALIDATE: values.includes("VALIDATE"),
+              });
+            }}
+          >
+            <Checkbox value="CREATE">CREATE</Checkbox>
+            <Checkbox value="UPDATE">UPDATE</Checkbox>
+            <Checkbox value="DELETE">DELETE</Checkbox>
+            <Checkbox value="VALIDATE">VALIDATE</Checkbox>
+          </CheckboxGroup>
 
           {/* Date Range and Status Filter Row */}
           <HGrid gap="space-24" columns={2}>
