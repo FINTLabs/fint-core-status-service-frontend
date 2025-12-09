@@ -6,6 +6,8 @@ A React application for monitoring Fint Core service status and events.
 
 _This project is currently in development._
 
+***Frontend only exists in API environment.***
+
 ## Getting Started
 
 Install dependencies:
@@ -26,14 +28,6 @@ The application will be available at `http://localhost:5173`.
 
 ```bash
 npm run build
-```
-
-## Environment Variables
-
-Create a `.env` file with:
-
-```
-VITE_API_URL=your-api-url-here
 ```
 
 ## Available Scripts

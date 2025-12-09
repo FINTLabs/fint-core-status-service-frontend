@@ -57,6 +57,9 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
                   let textColor = "text-gray-800";
 
                   if (operationType === "CREATE") {
+                    bgColor = "bg-yellow-100";
+                    textColor = "text-yellow-800";
+                  } else if (operationType === "UPDATE") {
                     bgColor = "bg-blue-100";
                     textColor = "text-blue-800";
                   } else if (operationType === "DELETE") {
