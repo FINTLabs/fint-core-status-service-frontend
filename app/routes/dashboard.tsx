@@ -6,7 +6,7 @@ import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
 import { Alert, Box, Loader } from "@navikt/ds-react";
 import { PageHeader } from "~/components/layout/PageHeader";
-import { DashboardIcon } from "@navikt/aksel-icons";
+import { DonutChartIcon } from "@navikt/aksel-icons";
 import type { IStats } from "~/types/Stats";
 
 export function meta() {
@@ -17,9 +17,9 @@ export const loader: LoaderFunction = async () => {
   const statsPromises = StatsApi.getAllStats();
 
   return {
-    betaStats: statsPromises.beta,
-    apiStats: statsPromises.api,
-    alphaStats: statsPromises.alpha,
+    betaStats: (await statsPromises).beta,
+    apiStats: (await statsPromises).api,
+    alphaStats: (await statsPromises).alpha,
   };
 };
 
@@ -41,7 +41,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <PageHeader title="Dashboard" description="Oversikt over statistikk fra alle miljøer i Fint Core systemet." icon={DashboardIcon} />
+      <PageHeader title="Dashboard" description="Oversikt over statistikk fra alle miljøer i Fint Core systemet." icon={DonutChartIcon} />
       <Suspense
         fallback={
           <Box className="p-6 flex justify-center">
