@@ -25,6 +25,8 @@ import type { IUserSession } from "~/types";
 import { NovariHeader } from "novari-frontend-components";
 import { EnvironmentSelector } from "~/components/common/EnvironmentSelector";
 
+//TODO: fix MSW for local development
+
 // // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // let server: any;
 //

@@ -182,16 +182,16 @@ export function EventsPage({ initialData }: EventPageProps) {
         searchFilter={searchFilter}
         dateRange={dateRange}
         operationFilter={operationFilter}
-        organisasjonFilter={organisasjonFilter}
-        ressursFilter={ressursFilter}
+        orgFilter={organisasjonFilter}
+        resourceFilter={ressursFilter}
         statusFilter={statusFilter}
-        uniqueOrganisasjoner={uniqueOrganisasjoner}
-        uniqueRessurser={uniqueRessurser}
+        uniqueOrg={uniqueOrganisasjoner}
+        uniqueResource={uniqueRessurser}
         onSearchFilterChange={handleSearchFilterChange}
         onDateRangeChange={handleDateRangeChange}
         onOperationFilterChange={handleOperationFilterChange}
-        onOrganisasjonFilterChange={handleOrganisasjonFilterChange}
-        onRessursFilterChange={handleRessursFilterChange}
+        onOrgFilterChange={handleOrganisasjonFilterChange}
+        onResourceFilterChange={handleRessursFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
         onClearFilters={handleClearFilters}
       />

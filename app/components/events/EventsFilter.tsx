@@ -11,19 +11,19 @@ interface EventsFilterProps {
     DELETE: boolean;
     VALIDATE: boolean;
   };
-  organisasjonFilter: string;
-  ressursFilter: string;
+  orgFilter: string;
+  resourceFilter: string;
   statusFilter: {
     ok: boolean;
     error: boolean;
   };
-  uniqueOrganisasjoner: string[];
-  uniqueRessurser: string[];
+  uniqueOrg: string[];
+  uniqueResource: string[];
   onSearchFilterChange: (value: string) => void;
   onDateRangeChange: (dateRange: { from?: Date; to?: Date } | undefined) => void;
   onOperationFilterChange: (value: { CREATE: boolean; UPDATE: boolean; DELETE: boolean; VALIDATE: boolean }) => void;
-  onOrganisasjonFilterChange: (value: string) => void;
-  onRessursFilterChange: (value: string) => void;
+  onOrgFilterChange: (value: string) => void;
+  onResourceFilterChange: (value: string) => void;
   onStatusFilterChange: (value: { ok: boolean; error: boolean }) => void;
   onClearFilters: () => void;
 }
@@ -32,16 +32,16 @@ export function EventsFilter({
   searchFilter,
   dateRange,
   operationFilter,
-  organisasjonFilter,
-  ressursFilter,
+  orgFilter,
+  resourceFilter,
   statusFilter,
-  uniqueOrganisasjoner,
-  uniqueRessurser,
+  uniqueOrg,
+  uniqueResource,
   onSearchFilterChange,
   onDateRangeChange,
   onOperationFilterChange,
-  onOrganisasjonFilterChange,
-  onRessursFilterChange,
+  onOrgFilterChange,
+  onResourceFilterChange,
   onStatusFilterChange,
   onClearFilters,
 }: EventsFilterProps) {
@@ -78,17 +78,17 @@ export function EventsFilter({
         <VStack gap="4">
           <Search label="Søk hendelser" value={searchFilter} onChange={onSearchFilterChange} placeholder="Søk hendelser..." variant="secondary" size="small" />
           <HGrid gap="space-24" columns={2}>
-            <Select label="Organisasjon" size="small" value={organisasjonFilter} onChange={(e) => onOrganisasjonFilterChange(e.target.value)} id="organisation-filter">
+            <Select label="Organisasjon" size="small" value={orgFilter} onChange={(e) => onOrgFilterChange(e.target.value)} id="organisation-filter">
               <option value="">Alle organisasjoner</option>
-              {uniqueOrganisasjoner.map((org) => (
+              {uniqueOrg.map((org) => (
                 <option key={org} value={org}>
                   {org}
                 </option>
               ))}
             </Select>
-            <Select label="Ressurser" size="small" value={ressursFilter} onChange={(e) => onRessursFilterChange(e.target.value)} id="resource-filter">
+            <Select label="Ressurser" size="small" value={resourceFilter} onChange={(e) => onResourceFilterChange(e.target.value)} id="resource-filter">
               <option value="">Alle ressurser</option>
-              {uniqueRessurser.map((ressurs) => (
+              {uniqueResource.map((ressurs) => (
                 <option key={ressurs} value={ressurs}>
                   {ressurs}
                 </option>
