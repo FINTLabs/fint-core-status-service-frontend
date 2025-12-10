@@ -157,14 +157,6 @@ export function SyncPage({ initialData }: SyncPageProps) {
 
   return (
     <Box padding="8" paddingBlock="2">
-      {/*<PageHeader*/}
-      {/*  title="Synkronisering"*/}
-      {/*  description="Oversikt over synkroniseringer og status i Fint Core systemet."*/}
-      {/*  env={env}*/}
-      {/*  breadcrumbItems={breadcrumbItems}*/}
-      {/*  icon={<ArrowsSquarepathIcon aria-hidden />}*/}
-      {/*/>*/}
-
       <SyncFilter
         syncTypeFilter={syncTypeFilter}
         statusFilter={statusFilter}

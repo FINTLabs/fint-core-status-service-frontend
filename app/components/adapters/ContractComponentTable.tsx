@@ -39,7 +39,7 @@ export function ContractComponentTable({ data }: AdapterComponentDetailTableProp
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Heartbeat</Table.HeaderCell>
-            <Table.HeaderCell>Ressurs</Table.HeaderCell>
+            <Table.HeaderCell>Adapter ID </Table.HeaderCell>
             <Table.HeaderCell>Siste Delta</Table.HeaderCell>
             <Table.HeaderCell>Siste Full</Table.HeaderCell>
           </Table.Row>

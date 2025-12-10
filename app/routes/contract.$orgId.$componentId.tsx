@@ -10,6 +10,7 @@ import { Alert, Box, Loader } from "@navikt/ds-react";
 import { InformationSquareIcon } from "@navikt/aksel-icons";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 import { ContractComponentTable } from "~/components/adapters/ContractComponentTable";
+import { Breadcrumbs } from "~/components/layout/Breadcrumbs";
 
 //TODO: fix all meta data
 export function meta({ params }: Route.MetaArgs) {
@@ -28,6 +29,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const cookieHeader = request.headers.get("Cookie");
   const env = (await selectedEnvCookie.parse(cookieHeader)) || "api";
   const { orgId, componentId } = params;
+  const url = new URL(request.url);
+  const domainId = url.searchParams.get("domain") || "";
 
   const response = ContractApi.getContractComponent(orgId || "", componentId || "", env);
 
@@ -35,30 +38,17 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     env,
     orgId,
     componentId,
+    domainId,
     response,
   };
 };
 
 export default function ContractComponent() {
-  // const location = useLocation();
-  // const [mounted, setMounted] = useState(false);
-  //
-  // const selectedComponent = location.state?.selectedComponent as IContract | undefined;
-  // const selectedAdapter = location.state?.selectedAdapter as IAdapter | undefined;
-
-  // useEffect(() => {
-  //   setMounted(true);
-  // }, []);
-
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [selectedAdapterName, setSelectedAdapterName] = useState<string | null>(null);
-  // const [modalData, setModalData] = useState<IAdapterComponent | null>(null);
-  // const [loadingModal, setLoadingModal] = useState(false);
-
-  const { env, orgId, componentId, response } = useLoaderData() as {
+  const { env, orgId, componentId, response, domainId } = useLoaderData() as {
     env: string;
     orgId: string;
     componentId: string;
+    domainId: string;
     response: Promise<{ success: boolean; message?: string; data?: IContractComponent[]; variant?: string }>;
   };
 
@@ -71,18 +61,16 @@ export default function ContractComponent() {
     return <Box>Loading stuff...</Box>;
   }
 
-  // const domain = orgId.charAt(0).toUpperCase() + orgId.slice(1).replace(/-/g, " ");
-
-  // const handleCloseModal = () => {
-  //   setIsModalOpen(false);
-  //   setSelectedAdapterName(null);
-  //   setModalData(null);
-  // };
+  const breadcrumbItems = [
+    { label: `${orgId} - ${domainId} `, href: `/adaptere/${orgId}/${domainId}` },
+    { label: `${componentId}`, href: "/contract/${orgId}/${componentId}" },
+  ];
 
   return (
     <>
       <Box padding="8" paddingBlock="2">
         <PageHeader title="Detaljer for komponent " description={`Detaljer for  ${orgId} : ${componentId} `} env={env} icon={InformationSquareIcon} />
+        <Breadcrumbs items={breadcrumbItems} />
         <Suspense
           fallback={
             <Box className="p-6 flex justify-center">
@@ -104,10 +92,6 @@ export default function ContractComponent() {
           </Await>
         </Suspense>
         <NovariSnackbar items={alerts} />
-
-        {/*{mounted && <AdapterComponentAlert componentName={componentId} selectedComponent={selectedComponent} selectedAdapter={selectedAdapter} />}*/}
-
-        {/*{selectedAdapterName && <AdapterComponentModal isOpen={isModalOpen} onClose={handleCloseModal} data={modalData} adapterName={selectedAdapterName} loading={loadingModal} />}*/}
       </Box>
     </>
   );

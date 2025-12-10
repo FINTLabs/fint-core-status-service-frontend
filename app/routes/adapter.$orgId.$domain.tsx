@@ -10,6 +10,7 @@ import { Alert, Box, Loader } from "@navikt/ds-react";
 import { LayersIcon } from "@navikt/aksel-icons";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
 import { ContractDomainTable } from "~/components/adapters/ContractDomainTable";
+import { Breadcrumbs } from "~/components/layout/Breadcrumbs";
 
 //TODO: fix all meta data
 export function meta({ params }: Route.MetaArgs) {
@@ -50,17 +51,20 @@ export default function AdapterDetail() {
   const isNavigating = Boolean(navigation.location);
 
   function handleRowClick(item: IContractDomain) {
-    nav(`/contract/${orgId}/${item.component}`);
+    nav(`/contract/${orgId}/${item.component}?domain=${domain}`);
   }
 
   if (isNavigating) {
     return <Box>Loading stuff...</Box>;
   }
 
+  const breadcrumbItems = [{ label: `${orgId} - ${domain}`, href: "/adaptere/${orgId}/${domain}" }];
+
   return (
     <>
       <Box padding="8" paddingBlock="2">
         <PageHeader title="Status adaptere pr komponent" description={`Komponenter for ${orgId} : ${domain}`} env={env} icon={LayersIcon} />
+        <Breadcrumbs items={breadcrumbItems} />
         <Suspense
           fallback={
             <Box className="p-6 flex justify-center">
