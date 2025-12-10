@@ -1,0 +1,30 @@
+[
+  {
+    "component": "personvern-samtykke",
+    "hasContact": true,
+    "answersEvents": false,
+    "lastDeltaSync": 0,
+    "lastFullSync": 1765362783215
+  },
+  {
+    "component": "personvern-kodeverk",
+    "hasContact": true,
+    "answersEvents": false,
+    "lastDeltaSync": 0,
+    "lastFullSync": 0
+  },
+  {
+    "component": "personvern-samtykke",
+    "hasContact": true,
+    "answersEvents": false,
+    "lastDeltaSync": 1765361237489,
+    "lastFullSync": 0
+  },
+  {
+    "component": "personvern-kodeverk",
+    "hasContact": true,
+    "answersEvents": false,
+    "lastDeltaSync": 0,
+    "lastFullSync": 0
+  }
+]

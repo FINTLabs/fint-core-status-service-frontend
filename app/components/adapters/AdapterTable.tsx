@@ -1,27 +1,22 @@
 import { Box, Pagination, Table } from "@navikt/ds-react";
 import { HeartBrokenIcon, HeartIcon } from "@navikt/aksel-icons";
-import type { IAdapter } from "~/types";
-import { useNavigate } from "react-router";
+import type { IContractStatus } from "~/types";
 
 interface AdapterTableProps {
-  data: IAdapter[];
+  data: IContractStatus[];
   sortState?: { orderBy: string; direction: "ascending" | "descending" };
   onSortChange: (sortKey: string) => void;
   currentPage: number;
   onPageChange: (page: number) => void;
   itemsPerPage: number;
+  onRowClick: (adapter: IContractStatus) => void;
 }
 
-export function AdapterTable({ data, currentPage, onPageChange, itemsPerPage }: AdapterTableProps) {
+export function AdapterTable({ data, currentPage, onPageChange, itemsPerPage, onRowClick }: AdapterTableProps) {
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = data.slice(startIndex, endIndex);
-  const nav = useNavigate();
-
-  function handleRowClick(item: IAdapter) {
-    nav(`/adaptere/${item.organzation}/${item.domain}`);
-  }
 
   return (
     <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
@@ -35,7 +30,7 @@ export function AdapterTable({ data, currentPage, onPageChange, itemsPerPage }: 
         </Table.Header>
         <Table.Body>
           {paginatedData.map((row, index) => (
-            <Table.Row key={row.organzation + row.domain + index} onRowClick={() => handleRowClick(row)}>
+            <Table.Row key={row.organzation + row.domain + index} onRowClick={() => onRowClick(row)}>
               <Table.DataCell>
                 {row.heartBeat ? (
                   <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">

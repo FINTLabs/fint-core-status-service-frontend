@@ -1,14 +1,15 @@
 import type { Route } from "./+types/contract.$orgId.$componentId";
-import { useEffect, useState } from "react";
-import { type LoaderFunction, useLoaderData } from "react-router";
-import type { IContract } from "~/types";
+import * as React from "react";
+import { Suspense, useEffect, useState } from "react";
+import { Await, type LoaderFunction, useAsyncValue, useLoaderData, useNavigation } from "react-router";
+import type { IContractComponent } from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
-import AdapterApi from "~/api/AdapterApi";
+import ContractApi from "~/api/ContractApi";
 import { selectedEnvCookie } from "~/utils/cookies";
-import { Box } from "@navikt/ds-react";
+import { Alert, Box, Loader } from "@navikt/ds-react";
 import { InformationSquareIcon } from "@navikt/aksel-icons";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
-import { AdapterComponentDetailTable } from "~/components/adapters/AdapterComponentDetailTable";
+import { ContractComponentTable } from "~/components/adapters/ContractComponentTable";
 
 //TODO: fix all meta data
 export function meta({ params }: Route.MetaArgs) {
@@ -28,16 +29,13 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const env = (await selectedEnvCookie.parse(cookieHeader)) || "api";
   const { orgId, componentId } = params;
 
-  const response = await AdapterApi.getAdapterComponentContract(orgId || "", componentId || "", env);
-  const adapterData = response.data || [];
+  const response = ContractApi.getContractComponent(orgId || "", componentId || "", env);
 
   return {
-    adapterData,
     env,
     orgId,
     componentId,
-    success: response.success,
-    customErrorMessage: response.message || "Kunne ikke hente adapter komponent detaljer",
+    response,
   };
 };
 
@@ -57,29 +55,21 @@ export default function ContractComponent() {
   // const [modalData, setModalData] = useState<IAdapterComponent | null>(null);
   // const [loadingModal, setLoadingModal] = useState(false);
 
-  const { adapterData, env, orgId, componentId, success, customErrorMessage } = useLoaderData() as {
-    adapterData: IContract[];
+  const { env, orgId, componentId, response } = useLoaderData() as {
     env: string;
     orgId: string;
     componentId: string;
-    success: boolean;
-    customErrorMessage: string;
+    response: Promise<{ success: boolean; message?: string; data?: IContractComponent[]; variant?: string }>;
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
-  useEffect(() => {
-    if (!success) {
-      setAlerts([
-        {
-          id: `component-error-${Date.now()}`,
-          variant: "error",
-          message: customErrorMessage,
-          header: "Connection Feil",
-        },
-      ]);
-    }
-  }, [customErrorMessage, success]);
+  const navigation = useNavigation();
+  const isNavigating = Boolean(navigation.location);
+
+  if (isNavigating) {
+    return <Box>Loading stuff...</Box>;
+  }
 
   // const domain = orgId.charAt(0).toUpperCase() + orgId.slice(1).replace(/-/g, " ");
 
@@ -93,14 +83,58 @@ export default function ContractComponent() {
     <>
       <Box padding="8" paddingBlock="2">
         <PageHeader title="Detaljer for komponent " description={`Detaljer for  ${orgId} : ${componentId} `} env={env} icon={InformationSquareIcon} />
+        <Suspense
+          fallback={
+            <Box className="p-6 flex justify-center">
+              <Loader size="3xlarge" title="Laster adaptere ..." />
+            </Box>
+          }
+        >
+          <Await
+            resolve={response}
+            errorElement={
+              <Box className="p-6">
+                <Alert variant="error" className="mb-4">
+                  Kunne ikke hente adaptere.
+                </Alert>
+              </Box>
+            }
+          >
+            <ContractComponentResolved setAlerts={setAlerts} />
+          </Await>
+        </Suspense>
         <NovariSnackbar items={alerts} />
 
         {/*{mounted && <AdapterComponentAlert componentName={componentId} selectedComponent={selectedComponent} selectedAdapter={selectedAdapter} />}*/}
-
-        <AdapterComponentDetailTable data={adapterData} />
 
         {/*{selectedAdapterName && <AdapterComponentModal isOpen={isModalOpen} onClose={handleCloseModal} data={modalData} adapterName={selectedAdapterName} loading={loadingModal} />}*/}
       </Box>
     </>
   );
+}
+
+// ---------- Child component used inside <Await> ----------
+function ContractComponentResolved({ setAlerts }: { setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>> }) {
+  const response = useAsyncValue() as {
+    success: boolean;
+    message?: string;
+    data?: IContractComponent[];
+    variant?: string;
+  };
+
+  useEffect(() => {
+    if (!response?.success) {
+      setAlerts((prev) => [
+        ...prev,
+        {
+          id: `component-error-${Date.now()}`,
+          variant: (response?.variant || "error") as "error" | "warning" | "success" | "info",
+          message: response?.message || "Kunne ikke hente adapter komponent detaljer",
+          header: "Connection Feil",
+        },
+      ]);
+    }
+  }, [response?.success, response?.message, response?.variant, setAlerts]);
+
+  return <ContractComponentTable data={response.data || []} />;
 }

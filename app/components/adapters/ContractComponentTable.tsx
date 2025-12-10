@@ -1,10 +1,10 @@
 import { Box, Table } from "@navikt/ds-react";
 import { HeartBrokenIcon, HeartIcon } from "@navikt/aksel-icons";
 import { formatTimestampDetailed } from "~/utils/time";
-import type { IContract } from "~/types";
+import type { IContractComponent } from "~/types";
 
 interface AdapterComponentDetailTableProps {
-  data: IContract[];
+  data: IContractComponent[];
 }
 
 const formatTimestamp = (value?: number | null) => {
@@ -12,7 +12,7 @@ const formatTimestamp = (value?: number | null) => {
   return new Date(value).toLocaleString("nb-NO");
 };
 
-export function AdapterComponentDetailTable({ data }: AdapterComponentDetailTableProps) {
+export function ContractComponentTable({ data }: AdapterComponentDetailTableProps) {
   // Flatten resources from all components
   // const allResources: IAdapterComponentResource[] = [];
   // if (data?.components) {
@@ -29,9 +29,9 @@ export function AdapterComponentDetailTable({ data }: AdapterComponentDetailTabl
   //   }
   // };
 
-  function handleRowClick(row: IContract) {
-    console.log("row click adapter component detail table", row);
-  }
+  // function handleRowClick(row: IContract) {
+  //   console.log("row click adapter component detail table", row);
+  // }
 
   return (
     <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
@@ -53,12 +53,7 @@ export function AdapterComponentDetailTable({ data }: AdapterComponentDetailTabl
             </Table.Row>
           ) : (
             data.map((row, index) => (
-              <Table.Row
-                key={`${row.adapterId}-${index}`}
-                data-cy="adapter-component-detail-table-row"
-                onRowClick={() => handleRowClick(row)}
-                // shadeOnHover={!!onRowClick}
-              >
+              <Table.Row key={`${row.adapterId}-${index}`} data-cy="adapter-component-detail-table-row">
                 <Table.DataCell>
                   {row.heartbeat ? (
                     <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">

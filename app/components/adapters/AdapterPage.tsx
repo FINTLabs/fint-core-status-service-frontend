@@ -2,11 +2,11 @@ import { useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { AdapterFilter } from "./AdapterFilter";
 import { AdapterTable } from "./AdapterTable";
-import type { IAdapter } from "~/types";
+import type { IContractStatus } from "~/types";
+import { useNavigate } from "react-router";
 
 interface AdapterPageProps {
-  initialData: IAdapter[];
-  env: string;
+  initialData: IContractStatus[];
 }
 
 export function AdapterPage({ initialData }: AdapterPageProps) {
@@ -14,6 +14,7 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
+  const nav = useNavigate();
 
   const [heartbeatFilter, setHeartbeatFilter] = useState<{
     active: boolean;
@@ -21,6 +22,10 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   }>({ active: true, inactive: true });
   const [organisationFilter, setOrganisationFilter] = useState<string>("");
   const [domainFilter, setDomainFilter] = useState<string>("");
+
+  function handleRowClick(item: IContractStatus) {
+    nav(`/adaptere/${item.organzation}/${item.domain}`);
+  }
 
   const handleSortChange = (sortKey: string) => {
     let newDirection: "ascending" | "descending" = "ascending";
@@ -60,7 +65,7 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
     setCurrentPage(1);
   };
 
-  const tableData: IAdapter[] = useMemo(() => {
+  const tableData: IContractStatus[] = useMemo(() => {
     return initialData || [];
   }, [initialData]);
 
@@ -94,8 +99,8 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
     if (!sortState) return filteredData;
 
     return [...filteredData].sort((a, b) => {
-      const aValue = a[sortState.orderBy as keyof IAdapter];
-      const bValue = b[sortState.orderBy as keyof IAdapter];
+      const aValue = a[sortState.orderBy as keyof IContractStatus];
+      const bValue = b[sortState.orderBy as keyof IContractStatus];
 
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortState.direction === "ascending" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
@@ -108,6 +113,7 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
       return 0;
     });
   }, [filteredData, sortState]);
+
   return (
     <Box padding="8" paddingBlock="2">
       <AdapterFilter
@@ -129,6 +135,7 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
         currentPage={currentPage}
         onPageChange={handlePageChange}
         itemsPerPage={itemsPerPage}
+        onRowClick={handleRowClick}
       />
     </Box>
   );

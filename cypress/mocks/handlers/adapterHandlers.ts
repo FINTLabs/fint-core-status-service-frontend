@@ -1,34 +1,22 @@
 import { http, HttpResponse } from "msw";
-import adaptereData from "../../fixtures/adaptere.json";
-import adapterDetailData from "../../fixtures/adapter-detail.json";
-import adapterComponentDetailData from "../../fixtures/adapter-component.json";
-import adapterComponentDetail from "../../fixtures/adapter-component-detail.json";
-import adapterComponentModalData from "../../fixtures/adapter-component-modal.json";
+import contractStatus from "../../fixtures/contract-status.json";
+import contractDomain from "../../fixtures/contract-domain.json";
+import contractComponent from "../../fixtures/contract-component.json";
 import { BASE_URL } from "./constants";
 
 export const adapterHandlers = [
-  // Adapter API
-  http.get(`${BASE_URL}/component`, () => {
-    return HttpResponse.json(adaptereData);
+  // Adapter page 1
+  http.get(`${BASE_URL}/contract/status`, () => {
+    return HttpResponse.json(contractStatus);
   }),
 
-  // Adapter detail API
-  http.get(`${BASE_URL}/component/:adapterId`, () => {
-    return HttpResponse.json(adapterDetailData);
+  // /contract/${adapterId}/${componentId} page 2
+  http.get(`${BASE_URL}/contract/fintlabs.no/domain/personvern`, () => {
+    return HttpResponse.json(contractDomain);
   }),
 
-  // Adapter component detail API
-  // http.get(`${BASE_URL}/component/:adapterId/:componentId`, () => {
-  http.get(`${BASE_URL}/component/agderfk.no/utdanning`, () => {
-    return HttpResponse.json(adapterComponentDetailData);
-  }),
-
-  // Adapter component modal data API
-  http.get(`${BASE_URL}/component/:adapterId/:componentId/:adapterName`, () => {
-    return HttpResponse.json(adapterComponentModalData);
-  }),
-
-  http.get(`${BASE_URL}/contract/agderfk.no/utdanning`, () => {
-    return HttpResponse.json(adapterComponentDetail);
+  // /contract/${orgId}/component/${domainId} page 3
+  http.get(`${BASE_URL}/contract/fintlabs.no/component/personvern-samtykke`, () => {
+    return HttpResponse.json(contractComponent);
   }),
 ];

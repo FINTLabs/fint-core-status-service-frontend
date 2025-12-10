@@ -1,14 +1,15 @@
 import type { Route } from "./+types/adapter.$orgId.$domain";
-import { useEffect, useState } from "react";
-import { type LoaderFunction, useLoaderData, useLocation } from "react-router";
-import type { IAdapter, IAdapterComponent } from "~/types";
+import * as React from "react";
+import { Suspense, useEffect, useState } from "react";
+import { Await, type LoaderFunction, useAsyncValue, useLoaderData, useNavigate, useNavigation } from "react-router";
+import type { IContractDomain } from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
-import AdapterApi from "~/api/AdapterApi";
+import ContractApi from "~/api/ContractApi";
 import { selectedEnvCookie } from "~/utils/cookies";
-import { Box } from "@navikt/ds-react";
+import { Alert, Box, Loader } from "@navikt/ds-react";
 import { LayersIcon } from "@navikt/aksel-icons";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
-import { AdapterComponentTable } from "~/components/adapters/AdapterComponentTable";
+import { ContractDomainTable } from "~/components/adapters/ContractDomainTable";
 
 //TODO: fix all meta data
 export function meta({ params }: Route.MetaArgs) {
@@ -25,62 +26,96 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const env = (await selectedEnvCookie.parse(cookieHeader)) || "api";
   const { orgId, domain } = params;
 
-  const response = await AdapterApi.getAdapterComponent(orgId || "", domain || "", env);
+  const response = ContractApi.getContractDomain(orgId || "", domain || "", env);
 
-  console.log("response adapter component", response.data);
   return {
-    data: response.data || [],
     env,
     orgId,
     domain,
-    status: response.status,
-    customErrorMessage: response.message || "Kunne ikke hente adapter detaljer",
+    response,
   };
 };
 
 export default function AdapterDetail() {
-  const location = useLocation();
-  const { data, env, orgId, domain, status, customErrorMessage } = useLoaderData() as {
-    data: IAdapterComponent[];
+  const { env, orgId, domain, response } = useLoaderData() as {
     env: string;
     orgId: string;
     domain: string;
-    status: boolean;
-    customErrorMessage: string;
+    response: Promise<{ success: boolean; message?: string; data?: IContractDomain[]; status?: boolean; variant?: string }>;
   };
-  const [mounted, setMounted] = useState(false);
+
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
+  const navigation = useNavigation();
+  const nav = useNavigate();
+  const isNavigating = Boolean(navigation.location);
 
-  const selectedAdapter = location.state?.selectedAdapter as IAdapter | undefined;
+  function handleRowClick(item: IContractDomain) {
+    nav(`/contract/${orgId}/${item.component}`);
+  }
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!status) {
-      setAlerts([
-        {
-          id: `adapter-detail-success-${Date.now()}`,
-          variant: "success",
-          message: "Adapter detaljer hentet vellykket",
-        },
-      ]);
-    }
-  }, [status, customErrorMessage]);
-
-  // const domainDisplay = domain.charAt(0).toUpperCase() + domain.slice(1).replace(/-/g, " ");
+  if (isNavigating) {
+    return <Box>Loading stuff...</Box>;
+  }
 
   return (
     <>
       <Box padding="8" paddingBlock="2">
         <PageHeader title="Status adaptere pr komponent" description={`Komponenter for ${orgId} : ${domain}`} env={env} icon={LayersIcon} />
-
-        {/*{mounted && selectedAdapter && <AdapterDetailAlert adapter={selectedAdapter} />}*/}
-
-        <AdapterComponentTable data={data} />
+        <Suspense
+          fallback={
+            <Box className="p-6 flex justify-center">
+              <Loader size="3xlarge" title="Laster adaptere ..." />
+            </Box>
+          }
+        >
+          <Await
+            resolve={response}
+            errorElement={
+              <Box className="p-6">
+                <Alert variant="error" className="mb-4">
+                  Kunne ikke hente adaptere.
+                </Alert>
+              </Box>
+            }
+          >
+            <AdapterDetailResolved setAlerts={setAlerts} handleRowClick={handleRowClick} />
+          </Await>
+        </Suspense>
       </Box>
       <NovariSnackbar items={alerts} />
     </>
   );
+}
+
+// ---------- Child component used inside <Await> ----------
+function AdapterDetailResolved({
+  setAlerts,
+  handleRowClick,
+}: {
+  setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
+  handleRowClick: (item: IContractDomain) => void;
+}) {
+  const response = useAsyncValue() as {
+    success: boolean;
+    message?: string;
+    data?: IContractDomain[];
+    status?: boolean;
+    variant?: string;
+  };
+
+  useEffect(() => {
+    if (!response?.success) {
+      setAlerts((prev) => [
+        ...prev,
+        {
+          id: `adapter-detail-error-${Date.now()}`,
+          variant: (response?.variant || "error") as "error" | "warning" | "success" | "info",
+          message: response?.message || "Kunne ikke hente adapter detaljer",
+          header: "Connection Feil",
+        },
+      ]);
+    }
+  }, [response?.success, response?.message, response?.variant, setAlerts]);
+
+  return <ContractDomainTable data={response.data || []} onRowClick={handleRowClick} />;
 }

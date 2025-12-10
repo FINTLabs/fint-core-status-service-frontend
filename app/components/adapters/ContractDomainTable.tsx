@@ -1,11 +1,11 @@
 import { Box, Table } from "@navikt/ds-react";
-import { CheckmarkCircleFillIcon, XMarkIcon, ChevronRightIcon, HeartIcon, HeartBrokenIcon } from "@navikt/aksel-icons";
-import type { IAdapterComponent } from "~/types";
+import { CheckmarkCircleFillIcon, ChevronRightIcon, HeartBrokenIcon, HeartIcon, XMarkIcon } from "@navikt/aksel-icons";
+import type { IContractDomain } from "~/types";
 import { formatTimestampDetailed } from "~/utils/time";
-import { useNavigate } from "react-router";
 
 interface AdapterComponentTableProps {
-  data: IAdapterComponent[];
+  data: IContractDomain[];
+  onRowClick: (item: IContractDomain) => void;
 }
 
 const formatTimestamp = (value?: number | null) => {
@@ -13,13 +13,7 @@ const formatTimestamp = (value?: number | null) => {
   return new Date(value).toLocaleString("nb-NO");
 };
 
-export function AdapterComponentTable({ data }: AdapterComponentTableProps) {
-  const nav = useNavigate();
-
-  function handleRowClick(item: IAdapterComponent) {
-    nav(`/contract/${item.orgId}/${item.component}`);
-  }
-
+export function ContractDomainTable({ data, onRowClick }: AdapterComponentTableProps) {
   return (
     <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
       <Table zebraStripes={true}>
@@ -36,9 +30,9 @@ export function AdapterComponentTable({ data }: AdapterComponentTableProps) {
         </Table.Header>
         <Table.Body>
           {data.map((item, index) => (
-            <Table.Row key={`${item.orgId}-${item.component}-${item.resource}-${index}`} data-cy="adapter-detail-table-row" onRowClick={() => handleRowClick(item)}>
+            <Table.Row key={`${item.component}-${index}`} data-cy="adapter-detail-table-row" onRowClick={() => onRowClick(item)}>
               <Table.DataCell>
-                {item.heartbeat ? (
+                {item.hasContact ? (
                   <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
                     <HeartIcon className="text-green-600" title="OK" fontSize="1.25rem" />
                   </Box>
@@ -49,29 +43,29 @@ export function AdapterComponentTable({ data }: AdapterComponentTableProps) {
                 )}
               </Table.DataCell>
               <Table.DataCell>
-                <span className="font-medium">{item.resource}</span>
+                <span className="font-medium">{item.component}</span>
               </Table.DataCell>
 
               <Table.DataCell>
-                {item.lastDelta ? (
-                  <span className="text-gray-700" title={formatTimestampDetailed(item.lastDelta)}>
-                    {formatTimestamp(item.lastDelta)}
+                {item.lastDeltaSync ? (
+                  <span className="text-gray-700" title={formatTimestampDetailed(item.lastDeltaSync)}>
+                    {formatTimestamp(item.lastDeltaSync)}
                   </span>
                 ) : (
                   <span className="text-gray-500">-</span>
                 )}
               </Table.DataCell>
               <Table.DataCell>
-                {item.lastFull ? (
-                  <span className="text-gray-700" title={formatTimestampDetailed(item.lastFull)}>
-                    {formatTimestamp(item.lastFull)}
+                {item.lastFullSync ? (
+                  <span className="text-gray-700" title={formatTimestampDetailed(item.lastFullSync)}>
+                    {formatTimestamp(item.lastFullSync)}
                   </span>
                 ) : (
                   <span className="text-gray-500">-</span>
                 )}
               </Table.DataCell>
               <Table.DataCell>
-                {item.followsContract ? (
+                {item.answersEvents ? (
                   <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
                     <CheckmarkCircleFillIcon className="text-green-600" title="Aktiv" fontSize="1.25rem" />
                   </div>
