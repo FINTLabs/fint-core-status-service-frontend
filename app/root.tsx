@@ -27,46 +27,46 @@ import { EnvironmentSelector } from "~/components/common/EnvironmentSelector";
 
 //TODO: fix MSW for local development
 
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// let server: any;
-//
-// async function initializeMSW() {
-//   try {
-//     const enableMocking = import.meta.env.VITE_MOCK_CYPRESS === "true";
-//
-//     if (enableMocking) {
-//       if (typeof window !== "undefined") {
-//         const { worker } = await import("../cypress/mocks/browser");
-//         await worker.start({
-//           serviceWorker: {
-//             url: "/mockServiceWorker.js",
-//           },
-//           onUnhandledRequest: "warn",
-//         });
-//         // console.log("[MSW] Worker started with handlers:", worker.listHandlers().length);
-//         // MSW worker started successfully
-//         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//         (window as any).__mswReady = true;
-//       } else {
-//         const { server: nodeServer } = await import("../cypress/mocks/node");
-//         server = nodeServer;
-//         server.listen({ onUnhandledRequest: "bypass" });
-//         // MSW server started successfully
-//       }
-//     } else {
-//       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//       if (typeof window !== "undefined") (window as any).__mswReady = true;
-//     }
-//   } catch {
-//     // MSW initialization failed - handle silently
-//     // console.warn("MSW initialization failed:", error);
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     if (typeof window !== "undefined") (window as any).__mswReady = true;
-//   }
-// }
-//
-// // Initialize MSW
-// initializeMSW();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let server: any;
+
+async function initializeMSW() {
+  try {
+    const enableMocking = import.meta.env.VITE_MOCK_CYPRESS === "true";
+
+    if (enableMocking) {
+      if (typeof window !== "undefined") {
+        const { worker } = await import("../cypress/mocks/browser");
+        await worker.start({
+          serviceWorker: {
+            url: "/mockServiceWorker.js",
+          },
+          onUnhandledRequest: "warn",
+        });
+        // console.log("[MSW] Worker started with handlers:", worker.listHandlers().length);
+        // MSW worker started successfully
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).__mswReady = true;
+      } else {
+        const { server: nodeServer } = await import("../cypress/mocks/node");
+        server = nodeServer;
+        server.listen({ onUnhandledRequest: "bypass" });
+        // MSW server started successfully
+      }
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (typeof window !== "undefined") (window as any).__mswReady = true;
+    }
+  } catch {
+    // MSW initialization failed - handle silently
+    // console.warn("MSW initialization failed:", error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof window !== "undefined") (window as any).__mswReady = true;
+  }
+}
+
+// Initialize MSW
+initializeMSW();
 
 export const links: Route.LinksFunction = () => [
   {

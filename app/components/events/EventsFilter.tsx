@@ -1,6 +1,5 @@
 import { Box, Button, Checkbox, CheckboxGroup, DatePicker, ExpansionCard, HGrid, HStack, Search, Select, useRangeDatepicker, VStack } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
-import React from "react";
 
 interface EventsFilterProps {
   searchFilter: string;
