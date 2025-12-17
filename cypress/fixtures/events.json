@@ -10,7 +10,7 @@
       "domainName": "administrasjon",
       "packageName": "personal",
       "resourceName": "fravar",
-      "operationType": "DELETE",
+      "operationType": null,
       "created": 1764335290739,
       "timeToLive": 0,
       "value": ""

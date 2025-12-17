@@ -88,7 +88,7 @@ export function EventsPage({ initialData }: EventPageProps) {
     }
 
     // Operation filter
-    const operationType = event.requestEvent.operationType?.toUpperCase() || "";
+    const operationType = event.requestEvent.operationType ? event.requestEvent.operationType.toUpperCase() : "";
     if (!operationFilter[operationType as keyof typeof operationFilter]) {
       return false;
     }
