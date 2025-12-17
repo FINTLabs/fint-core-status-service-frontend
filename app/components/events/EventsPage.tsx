@@ -74,6 +74,11 @@ export function EventsPage({ initialData }: EventPageProps) {
   // };
 
   const filteredData = initialData.filter((event) => {
+    // Skip events without requestEvent
+    if (!event.requestEvent) {
+      return false;
+    }
+
     // Search filter
     if (searchFilter) {
       const searchTerm = searchFilter.toLowerCase();
@@ -173,7 +178,7 @@ export function EventsPage({ initialData }: EventPageProps) {
 
   // Extract unique values for filters
   const uniqueOrganisasjoner = [...new Set(initialData.map((event) => event.orgId).filter(Boolean))].sort();
-  const uniqueRessurser = [...new Set(initialData.map((event) => event.requestEvent.resourceName).filter(Boolean))].sort();
+  const uniqueRessurser = [...new Set(initialData.map((event) => event.requestEvent?.resourceName).filter(Boolean))].sort();
 
   const loadingDetail = false;
   return (
@@ -198,7 +203,9 @@ export function EventsPage({ initialData }: EventPageProps) {
 
       <EventsTable data={filteredData} onRowClick={handleRowClick} loading={loadingDetail} currentPage={currentPage} onPageChange={handlePageChange} itemsPerPage={itemsPerPage} />
 
-      {selectedEvent && <EventsModal isOpen={isModalOpen} onClose={handleCloseModal} requestData={selectedEvent.requestEvent} responseData={selectedEvent.responseEvent} />}
+      {selectedEvent && selectedEvent.requestEvent && (
+        <EventsModal isOpen={isModalOpen} onClose={handleCloseModal} requestData={selectedEvent.requestEvent} responseData={selectedEvent.responseEvent} />
+      )}
     </Box>
   );
 }

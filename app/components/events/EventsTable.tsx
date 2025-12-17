@@ -53,6 +53,10 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
               </Table.DataCell>
               <Table.DataCell>
                 {(() => {
+                  if (!event.requestEvent) {
+                    return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">N/A</span>;
+                  }
+
                   const operationType = event.requestEvent.operationType ? event.requestEvent.operationType.toUpperCase() : "";
                   let bgColor = "bg-gray-100";
                   let textColor = "text-gray-800";
@@ -82,10 +86,10 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
                 <span className="text-gray-700">{event.orgId || "N/A"}</span>
               </Table.DataCell>
               <Table.DataCell>
-                <span className="text-gray-700">{event.requestEvent.resourceName || "N/A"}</span>
+                <span className="text-gray-700">{event.requestEvent?.resourceName || "N/A"}</span>
               </Table.DataCell>
               <Table.DataCell>
-                <span className="text-gray-700">{new Date(event.requestEvent.created).toLocaleString("no-NO")}</span>
+                <span className="text-gray-700">{event.requestEvent?.created ? new Date(event.requestEvent.created).toLocaleString("no-NO") : "N/A"}</span>
               </Table.DataCell>
             </Table.Row>
           ))}

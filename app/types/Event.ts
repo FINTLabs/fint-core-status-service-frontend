@@ -4,7 +4,7 @@ export interface IEvent {
   corrId: string;
   orgId: string;
   hasError: boolean;
-  requestEvent: IRequestEvent;
+  requestEvent: IRequestEvent | null;
   responseEvent: IResponseEvent;
 }
 

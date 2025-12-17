@@ -87,11 +87,17 @@ export function EventsModal({ isOpen, onClose, requestData, responseData }: Hend
                 )}
               </Box>
               <Box className="mt-4">
-                <HStack gap="4" justify="space-between" align="center" className="mb-2">
-                  <span className="font-medium text-gray-600">Raw JSON:</span>
-                  <CopyButton copyText={formatJson(requestData)} size="small" text="Kopier JSON" activeText="Kopiert!" />
-                </HStack>
-                <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-[6px] overflow-x-auto overflow-y-auto">{formatJson(requestData)}</pre>
+                {requestData ? (
+                  <>
+                    <HStack gap="4" justify="space-between" align="center" className="mb-2">
+                      <span className="font-medium text-gray-600">Raw JSON:</span>
+                      <CopyButton copyText={formatJson(requestData)} size="small" text="Kopier JSON" activeText="Kopiert!" />
+                    </HStack>
+                    <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-[6px] overflow-x-auto overflow-y-auto">{formatJson(requestData)}</pre>
+                  </>
+                ) : (
+                  <p className="text-gray-500">No request data available</p>
+                )}
               </Box>
             </Tabs.Panel>
 
