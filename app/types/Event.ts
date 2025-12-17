@@ -14,7 +14,7 @@ export interface IRequestEvent {
   domainName: string;
   packageName: string;
   resourceName: string;
-  operationType: string;
+  operationType: string | null;
   created: number;
   timeToLive: number;
   value: string;

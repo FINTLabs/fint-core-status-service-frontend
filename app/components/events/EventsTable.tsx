@@ -53,7 +53,7 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
               </Table.DataCell>
               <Table.DataCell>
                 {(() => {
-                  const operationType = event.requestEvent.operationType?.toUpperCase() || "";
+                  const operationType = event.requestEvent.operationType ? event.requestEvent.operationType.toUpperCase() : "";
                   let bgColor = "bg-gray-100";
                   let textColor = "text-gray-800";
 
