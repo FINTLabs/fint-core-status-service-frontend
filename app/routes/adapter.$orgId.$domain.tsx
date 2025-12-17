@@ -58,7 +58,7 @@ export default function AdapterDetail() {
     return <Box>Loading stuff...</Box>;
   }
 
-  const breadcrumbItems = [{ label: `${orgId} - ${domain}`, href: "/adaptere/${orgId}/${domain}" }];
+  const breadcrumbItems = [{ label: `${orgId} - ${domain}`, href: "" }];
 
   return (
     <>

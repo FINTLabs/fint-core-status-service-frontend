@@ -63,7 +63,7 @@ export default function ContractComponent() {
 
   const breadcrumbItems = [
     { label: `${orgId} - ${domainId} `, href: `/adaptere/${orgId}/${domainId}` },
-    { label: `${componentId}`, href: "/contract/${orgId}/${componentId}" },
+    { label: `${componentId}`, href: "" },
   ];
 
   return (

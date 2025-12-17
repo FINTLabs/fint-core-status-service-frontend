@@ -28,6 +28,7 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
             <Table.HeaderCell>Operasjon</Table.HeaderCell>
             <Table.HeaderCell>Organisasjon</Table.HeaderCell>
             <Table.HeaderCell>Ressurser</Table.HeaderCell>
+            <Table.HeaderCell>Request Date</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -82,6 +83,9 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
               </Table.DataCell>
               <Table.DataCell>
                 <span className="text-gray-700">{event.requestEvent.resourceName || "N/A"}</span>
+              </Table.DataCell>
+              <Table.DataCell>
+                <span className="text-gray-700">{new Date(event.requestEvent.created).toLocaleString("no-NO")}</span>
               </Table.DataCell>
             </Table.Row>
           ))}
