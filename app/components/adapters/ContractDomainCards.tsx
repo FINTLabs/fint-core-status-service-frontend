@@ -1,5 +1,5 @@
 import { Box, Detail, HGrid, Label, Tooltip, VStack } from "@navikt/ds-react";
-import { ArrowsSquarepathIcon, CalendarIcon, CheckmarkCircleFillIcon, LinkBrokenIcon, XMarkIcon } from "@navikt/aksel-icons";
+import { ArrowsSquarepathIcon, CalendarIcon, CheckmarkCircleFillIcon, ChevronRightIcon, LinkBrokenIcon, XMarkIcon } from "@navikt/aksel-icons";
 import type { IContractDomain } from "~/types";
 import { formatTimestampDetailed, formatDateRelative } from "~/utils/time";
 import { useMemo } from "react";
@@ -46,10 +46,11 @@ export function ContractDomainCards({ data, onCardClick }: ContractDomainCardsPr
             padding="4"
             borderRadius="large"
             shadow="xsmall"
-            className={`cursor-pointer transition-all hover:shadow-medium ${item.hasContact ? "border-l-4 border-l-green-500" : "border-l-4 border-l-red-500"}`}
+            className={`cursor-pointer transition-all hover:shadow-medium relative ${item.hasContact ? "border-l-4 border-l-green-500" : "border-l-4 border-l-red-500"}`}
             onClick={() => onCardClick(item)}
             data-cy="adapter-detail-card"
           >
+            <ChevronRightIcon className="absolute top-4 right-4 text-gray-400" fontSize="1.25rem" aria-hidden="true" />
             <VStack gap="3">
               {/* Heartbeat status */}
               <Box className="flex items-center gap-2">

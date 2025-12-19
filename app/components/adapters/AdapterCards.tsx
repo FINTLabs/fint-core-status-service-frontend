@@ -1,5 +1,5 @@
 import { Box, Detail, HGrid, Label, VStack } from "@navikt/ds-react";
-import { CheckmarkCircleIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
+import { CheckmarkCircleIcon, ChevronRightIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
 import type { IContractStatus } from "~/types";
 
 interface AdapterCardsProps {
@@ -17,9 +17,10 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
           padding="4"
           borderRadius="large"
           shadow="xsmall"
-          className={`cursor-pointer transition-all hover:shadow-medium ${item.heartBeat ? "border-l-4 border-l-green-500" : "border-l-4 border-l-red-500"}`}
+          className={`cursor-pointer transition-all hover:shadow-medium relative ${item.heartBeat ? "border-l-4 border-l-green-500" : "border-l-4 border-l-red-500"}`}
           onClick={() => onCardClick(item)}
         >
+          <ChevronRightIcon className="absolute top-4 right-4 text-gray-400" fontSize="1.25rem" aria-hidden="true" />
           <VStack gap="3">
             {/* Status indicator */}
             <Box className="flex items-center gap-2">
