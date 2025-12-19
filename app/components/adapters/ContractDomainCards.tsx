@@ -1,4 +1,4 @@
-import { Box, HGrid, Tooltip, VStack } from "@navikt/ds-react";
+import { Box, Detail, HGrid, Label, Tooltip, VStack } from "@navikt/ds-react";
 import { ArrowsSquarepathIcon, CalendarIcon, CheckmarkCircleFillIcon, LinkBrokenIcon, XMarkIcon } from "@navikt/aksel-icons";
 import type { IContractDomain } from "~/types";
 import { formatTimestampDetailed, formatDateRelative } from "~/utils/time";
@@ -56,12 +56,12 @@ export function ContractDomainCards({ data, onCardClick }: ContractDomainCardsPr
                 {item.hasContact ? (
                   <>
                     <ArrowsSquarepathIcon className="text-green-600" title="Aktiv" fontSize="1.5rem" />
-                    <span className="text-sm font-semibold text-green-700">Har kontakt</span>
+                    <Label className="text-sm font-semibold text-green-700">Har kontakt</Label>
                   </>
                 ) : (
                   <>
                     <LinkBrokenIcon className="text-red-600" title="Inaktiv" fontSize="1.5rem" />
-                    <span className="text-sm font-semibold text-red-700">Inaktiv</span>
+                    <Label className="text-sm font-semibold text-red-700">Inaktiv</Label>
                   </>
                 )}
               </Box>
@@ -69,21 +69,21 @@ export function ContractDomainCards({ data, onCardClick }: ContractDomainCardsPr
               {/* Component name */}
               <Box>
                 <span className="text-xs text-gray-600 uppercase tracking-wide">Ressurs</span>
-                <p className="text-base font-medium mt-1 break-words">{item.component}</p>
+                <p className="text-base font-medium break-words">{item.component}</p>
               </Box>
 
               {/* Last Delta Sync */}
               <Box>
                 <span className="text-xs text-gray-600 uppercase tracking-wide">Siste Delta</span>
                 {item.lastDeltaSync && item.lastDeltaSync !== 0 ? (
-                  <Box className="flex items-center gap-2 mt-1">
+                  <Box className="flex items-center gap-2">
                     <p className="text-base">{formatDateRelative(item.lastDeltaSync)}</p>
                     <Tooltip content={formatTimestampDetailed(item.lastDeltaSync)}>
                       <CalendarIcon title="a11y-title" fontSize="1.5rem" className="text-gray-500" />
                     </Tooltip>
                   </Box>
                 ) : (
-                  <p className="text-base text-gray-500 mt-1">-</p>
+                  <p className="text-base text-gray-500 ">-</p>
                 )}
               </Box>
 
@@ -91,14 +91,14 @@ export function ContractDomainCards({ data, onCardClick }: ContractDomainCardsPr
               <Box>
                 <span className="text-xs text-gray-600 uppercase tracking-wide">Siste Full</span>
                 {item.lastFullSync && item.lastFullSync !== 0 ? (
-                  <Box className="flex items-center gap-2 mt-1">
-                    <p className="text-base">{formatDateRelative(item.lastFullSync)}</p>
+                  <Box className="flex items-center gap-2">
+                    <Detail>{formatDateRelative(item.lastFullSync)}</Detail>
                     <Tooltip content={formatTimestampDetailed(item.lastFullSync)}>
                       <CalendarIcon title="a11y-title" fontSize="1.5rem" className="text-gray-500" />
                     </Tooltip>
                   </Box>
                 ) : (
-                  <p className="text-base text-gray-500 mt-1">-</p>
+                  <Detail className="text-base text-gray-500">-</Detail>
                 )}
               </Box>
 

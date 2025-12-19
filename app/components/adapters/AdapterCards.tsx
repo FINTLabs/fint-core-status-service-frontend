@@ -1,4 +1,4 @@
-import { Box, HGrid, VStack } from "@navikt/ds-react";
+import { Box, Detail, HGrid, Label, VStack } from "@navikt/ds-react";
 import { CheckmarkCircleIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
 import type { IContractStatus } from "~/types";
 
@@ -26,12 +26,12 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
               {item.heartBeat ? (
                 <>
                   <CheckmarkCircleIcon className="text-green-600" title="Aktiv" fontSize="1.5rem" />
-                  <span className="text-sm font-semibold text-green-700">Aktiv</span>
+                  <Label className="text-sm font-semibold text-green-700">Aktiv</Label>
                 </>
               ) : (
                 <>
                   <ExclamationmarkTriangleIcon className="text-red-600" title="Inaktiv" fontSize="1.5rem" />
-                  <span className="text-sm font-semibold text-red-700">Inaktiv</span>
+                  <Label className="text-sm font-semibold text-red-700">Inaktiv</Label>
                 </>
               )}
             </Box>
@@ -39,13 +39,13 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
             {/* Organization */}
             <Box>
               <span className="text-xs text-gray-600 uppercase tracking-wide">Organisasjon</span>
-              <p className="text-base font-medium mt-1 break-words">{item.organzation}</p>
+              <Detail weight="semibold">{item.organzation}</Detail>
             </Box>
 
             {/* Domain */}
             <Box>
               <span className="text-xs text-gray-600 uppercase tracking-wide">Domene</span>
-              <p className="text-base font-medium mt-1 break-words">{item.domain}</p>
+              <Detail weight="semibold">{item.domain}</Detail>
             </Box>
           </VStack>
         </Box>

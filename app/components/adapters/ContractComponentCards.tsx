@@ -1,4 +1,4 @@
-import { Box, HGrid, Tooltip, VStack } from "@navikt/ds-react";
+import { Box, Detail, HGrid, Label, Tooltip, VStack } from "@navikt/ds-react";
 import { CalendarIcon, HeartBrokenIcon, HeartIcon } from "@navikt/aksel-icons";
 import { formatTimestampDetailed, formatDateRelative } from "~/utils/time";
 import type { IContractComponent } from "~/types";
@@ -64,12 +64,12 @@ export function ContractComponentCards({ data }: ContractComponentCardsProps) {
                 {item.heartbeat ? (
                   <>
                     <HeartIcon className="text-green-600" title="Aktiv" fontSize="1.5rem" />
-                    <span className="text-sm font-semibold text-green-700">Aktiv</span>
+                    <Label className="text-sm font-semibold text-green-700">Aktiv</Label>
                   </>
                 ) : (
                   <>
                     <HeartBrokenIcon className="text-red-600" title="Inaktiv" fontSize="1.5rem" />
-                    <span className="text-sm font-semibold text-red-700">Inaktiv</span>
+                    <Label className="text-sm font-semibold text-red-700">Inaktiv</Label>
                   </>
                 )}
               </Box>
@@ -77,21 +77,21 @@ export function ContractComponentCards({ data }: ContractComponentCardsProps) {
               {/* Adapter ID */}
               <Box>
                 <span className="text-xs text-gray-600 uppercase tracking-wide">Adapter ID</span>
-                <p className="text-base font-medium mt-1 break-words">{item.adapterId}</p>
+                <Detail>{item.adapterId}</Detail>
               </Box>
 
               {/* Last Delta Sync */}
               <Box>
                 <span className="text-xs text-gray-600 uppercase tracking-wide">Siste Delta</span>
                 {item.lastDelta && item.lastDelta !== 0 ? (
-                  <Box className="flex items-center gap-2 mt-1">
-                    <p className="text-base">{formatDateRelative(item.lastDelta)}</p>
+                  <Box className="flex items-center gap-2">
+                    <Detail>{formatDateRelative(item.lastDelta)}</Detail>
                     <Tooltip content={formatTimestampDetailed(item.lastDelta)}>
                       <CalendarIcon title="a11y-title" fontSize="1.5rem" className="text-gray-500" />
                     </Tooltip>
                   </Box>
                 ) : (
-                  <p className="text-base text-gray-500 mt-1">-</p>
+                  <Detail className="text-base text-gray-500">-</Detail>
                 )}
               </Box>
 
@@ -99,14 +99,14 @@ export function ContractComponentCards({ data }: ContractComponentCardsProps) {
               <Box>
                 <span className="text-xs text-gray-600 uppercase tracking-wide">Siste Full</span>
                 {item.lastFull && item.lastFull !== 0 ? (
-                  <Box className="flex items-center gap-2 mt-1">
-                    <p className="text-base">{formatDateRelative(item.lastFull)}</p>
+                  <Box className="flex items-center gap-2">
+                    <Detail className="text-base">{formatDateRelative(item.lastFull)}</Detail>
                     <Tooltip content={formatTimestampDetailed(item.lastFull)}>
                       <CalendarIcon title="a11y-title" fontSize="1.5rem" className="text-gray-500" />
                     </Tooltip>
                   </Box>
                 ) : (
-                  <p className="text-base text-gray-500 mt-1">-</p>
+                  <Detail className="text-base text-gray-500">-</Detail>
                 )}
               </Box>
             </VStack>

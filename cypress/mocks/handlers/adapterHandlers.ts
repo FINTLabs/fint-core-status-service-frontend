@@ -16,7 +16,7 @@ export const adapterHandlers = [
   }),
 
   // /contract/${orgId}/component/${domainId} page 3
-  http.get(`${BASE_URL}/contract/fintlabs.no/component/personvern-samtykke`, () => {
+  http.get(`${BASE_URL}/contract/fintlabs.no/component/utdanning-kodeverk`, () => {
     return HttpResponse.json(contractComponent);
   }),
 ];
