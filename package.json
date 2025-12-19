@@ -26,7 +26,7 @@
     "depcheck": "^1.4.7",
     "isbot": "^5.1.31",
     "msw": "^2.11.5",
-    "novari-frontend-components": "^3.1.1",
+    "novari-frontend-components": "6.0.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router": "^7.9.2"

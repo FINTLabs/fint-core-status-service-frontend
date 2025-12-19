@@ -177,8 +177,8 @@ export function EventsPage({ initialData }: EventPageProps) {
   };
 
   // Extract unique values for filters
-  const uniqueOrganisasjoner = [...new Set(initialData.map((event) => event.orgId).filter(Boolean))].sort();
-  const uniqueRessurser = [...new Set(initialData.map((event) => event.requestEvent?.resourceName).filter(Boolean))].sort();
+  const uniqueOrganisasjoner = [...new Set(initialData.map((event) => event.orgId).filter((id): id is string => Boolean(id)))].sort();
+  const uniqueRessurser = [...new Set(initialData.map((event) => event.requestEvent?.resourceName).filter((name): name is string => Boolean(name)))].sort();
 
   const loadingDetail = false;
   return (
