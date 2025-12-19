@@ -126,9 +126,7 @@ export function SyncTable({ data, currentPage, onPageChange, itemsPerPage, onRow
                   <span className="text-xs text-gray-600 min-w-[3rem]">{calculateProgress(sync)}%</span>
                 </Box>
               </Table.DataCell>
-              <Table.DataCell>
-                <span className="text-gray-700 text-sm">{formatTime(sync.lastPageTime)}</span>
-              </Table.DataCell>
+              <Table.DataCell>{formatTime(sync.lastPageTime)}</Table.DataCell>
             </Table.Row>
           ))}
         </Table.Body>

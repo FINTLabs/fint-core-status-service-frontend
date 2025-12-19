@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { EventsFilter } from "./EventsFilter";
 import { EventsModal } from "./EventsModal";
@@ -73,78 +73,87 @@ export function EventsPage({ initialData }: EventPageProps) {
   //   }
   // };
 
-  const filteredData = initialData.filter((event) => {
-    // Skip events without requestEvent
-    if (!event.requestEvent) {
-      return false;
-    }
-
-    // Search filter
-    if (searchFilter) {
-      const searchTerm = searchFilter.toLowerCase();
-      const matchesCorrId = event.corrId?.toLowerCase().includes(searchTerm);
-      const matchesOrgId = event.orgId?.toLowerCase().includes(searchTerm);
-      const matchesResource = event.requestEvent.resourceName?.toLowerCase().includes(searchTerm);
-      const matchesTopic = event.topic?.toLowerCase().includes(searchTerm);
-
-      if (!matchesCorrId && !matchesOrgId && !matchesResource && !matchesTopic) {
+  const filteredData = useMemo(() => {
+    const filtered = initialData.filter((event) => {
+      // Skip events without requestEvent
+      if (!event.requestEvent) {
         return false;
       }
-    }
 
-    // Operation filter
-    const operationType = event.requestEvent.operationType ? event.requestEvent.operationType.toUpperCase() : "";
-    if (!operationFilter[operationType as keyof typeof operationFilter]) {
-      return false;
-    }
+      // Search filter
+      if (searchFilter) {
+        const searchTerm = searchFilter.toLowerCase();
+        const matchesCorrId = event.corrId?.toLowerCase().includes(searchTerm);
+        const matchesOrgId = event.orgId?.toLowerCase().includes(searchTerm);
+        const matchesResource = event.requestEvent.resourceName?.toLowerCase().includes(searchTerm);
+        const matchesTopic = event.topic?.toLowerCase().includes(searchTerm);
 
-    // Organisation filter
-    if (organisasjonFilter && event.orgId !== organisasjonFilter) {
-      return false;
-    }
-
-    // Resource filter
-    if (ressursFilter && event.requestEvent.resourceName !== ressursFilter) {
-      return false;
-    }
-
-    // Status filter
-    if (!statusFilter.ok && !event.hasError) {
-      return false;
-    }
-    if (!statusFilter.error && event.hasError) {
-      return false;
-    }
-
-    // Date range filter
-    if (dateRange?.from || dateRange?.to) {
-      const eventDate = new Date(event.requestEvent.created);
-
-      if (dateRange.from && dateRange.to) {
-        const fromDate = new Date(dateRange.from);
-        fromDate.setHours(0, 0, 0, 0);
-        const toDate = new Date(dateRange.to);
-        toDate.setHours(23, 59, 59, 999);
-        if (eventDate < fromDate || eventDate > toDate) {
-          return false;
-        }
-      } else if (dateRange.from) {
-        const fromDate = new Date(dateRange.from);
-        fromDate.setHours(0, 0, 0, 0);
-        if (eventDate < fromDate) {
-          return false;
-        }
-      } else if (dateRange.to) {
-        const toDate = new Date(dateRange.to);
-        toDate.setHours(23, 59, 59, 999);
-        if (eventDate > toDate) {
+        if (!matchesCorrId && !matchesOrgId && !matchesResource && !matchesTopic) {
           return false;
         }
       }
-    }
 
-    return true;
-  });
+      // Operation filter
+      const operationType = event.requestEvent.operationType ? event.requestEvent.operationType.toUpperCase() : "";
+      if (!operationFilter[operationType as keyof typeof operationFilter]) {
+        return false;
+      }
+
+      // Organisation filter
+      if (organisasjonFilter && event.orgId !== organisasjonFilter) {
+        return false;
+      }
+
+      // Resource filter
+      if (ressursFilter && event.requestEvent.resourceName !== ressursFilter) {
+        return false;
+      }
+
+      // Status filter
+      if (!statusFilter.ok && !event.hasError) {
+        return false;
+      }
+      if (!statusFilter.error && event.hasError) {
+        return false;
+      }
+
+      // Date range filter
+      if (dateRange?.from || dateRange?.to) {
+        const eventDate = new Date(event.requestEvent.created);
+
+        if (dateRange.from && dateRange.to) {
+          const fromDate = new Date(dateRange.from);
+          fromDate.setHours(0, 0, 0, 0);
+          const toDate = new Date(dateRange.to);
+          toDate.setHours(23, 59, 59, 999);
+          if (eventDate < fromDate || eventDate > toDate) {
+            return false;
+          }
+        } else if (dateRange.from) {
+          const fromDate = new Date(dateRange.from);
+          fromDate.setHours(0, 0, 0, 0);
+          if (eventDate < fromDate) {
+            return false;
+          }
+        } else if (dateRange.to) {
+          const toDate = new Date(dateRange.to);
+          toDate.setHours(23, 59, 59, 999);
+          if (eventDate > toDate) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    });
+
+    // Sort by date, newest first
+    return [...filtered].sort((a, b) => {
+      const aDate = a.requestEvent?.created || 0;
+      const bDate = b.requestEvent?.created || 0;
+      return bDate - aDate; // Descending order (newest first)
+    });
+  }, [initialData, searchFilter, operationFilter, organisasjonFilter, ressursFilter, statusFilter, dateRange]);
 
   const handleSearchFilterChange = (value: string) => {
     setSearchFilter(value);

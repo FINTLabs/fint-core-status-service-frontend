@@ -28,7 +28,7 @@ export function EventsTable({ data, onRowClick, loading, currentPage, onPageChan
             <Table.HeaderCell>Operasjon</Table.HeaderCell>
             <Table.HeaderCell>Organisasjon</Table.HeaderCell>
             <Table.HeaderCell>Ressurser</Table.HeaderCell>
-            <Table.HeaderCell>Request Date</Table.HeaderCell>
+            <Table.HeaderCell>Request Dato</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
