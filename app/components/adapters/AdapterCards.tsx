@@ -13,7 +13,7 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
       {data.map((item, index) => (
         <Box
           key={item.organzation + item.domain + index}
-          background="surface-default"
+          background={"surface-subtle" as const}
           padding="4"
           borderRadius="large"
           shadow="xsmall"

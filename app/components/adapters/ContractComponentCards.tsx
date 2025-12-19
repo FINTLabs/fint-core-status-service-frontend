@@ -37,7 +37,7 @@ export function ContractComponentCards({ data }: ContractComponentCardsProps) {
 
   if (sortedData.length === 0) {
     return (
-      <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
+      <Box background={"surface-subtle" as const} padding="space-16" borderRadius="large" shadow="xsmall">
         <Box className="text-center text-gray-500">Ingen ressurser funnet</Box>
       </Box>
     );
@@ -51,7 +51,7 @@ export function ContractComponentCards({ data }: ContractComponentCardsProps) {
         return (
           <Box
             key={`${item.adapterId}-${index}`}
-            background="surface-default"
+            background={"surface-subtle" as const}
             padding="4"
             borderRadius="large"
             shadow="xsmall"

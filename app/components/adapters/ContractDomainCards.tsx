@@ -42,7 +42,7 @@ export function ContractDomainCards({ data, onCardClick }: ContractDomainCardsPr
         return (
           <Box
             key={`${item.component}-${index}`}
-            background="surface-default"
+            background={"surface-subtle" as const}
             padding="4"
             borderRadius="large"
             shadow="xsmall"
