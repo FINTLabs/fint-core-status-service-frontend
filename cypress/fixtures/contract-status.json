@@ -1,22 +1,30 @@
 [
-  {
-    "organzation": "agderfk.no",
-    "domain": "utdanning",
-    "status": "OK"
-  },
-  {
-    "organzation": "agderfk.no",
-    "domain": "personvern",
-    "status": "OK"
-  },
-  {
-    "organzation": "fintlabs.no",
-    "domain": "utdanning",
-    "status": "FAIL"
-  },
-  {
-    "organzation": "fintlabs.no",
-    "domain": "personvern",
-    "status": "OK"
-  }
+  { "organzation": "fintlabs.no", "domain": "personvern", "heartBeat": true },
+  { "organzation": "fintlabs.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "rogfk.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "vestfoldfylke.no", "domain": "administrasjon", "heartBeat": true },
+  { "organzation": "trondelagfylke.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "telemarkfylke.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "vestfoldfylke.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "tffk.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "nfk.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "mrfylke.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "agderfk.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "innlandetfylke.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "vlfk.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "ffk.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "bfk.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "ude.oslo.kommune.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "ofk.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "afk.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "rogfk.no", "domain": "personvern", "heartBeat": true },
+  { "organzation": "sdworx.com", "domain": "administrasjon", "heartBeat": true },
+  { "organzation": "telemarkfylke.no", "domain": "administrasjon", "heartBeat": false },
+  { "organzation": "vestfoldfylke.no", "domain": "administrasjon", "heartBeat": false },
+  { "organzation": "trondelagfylke.no", "domain": "personvern", "heartBeat": true },
+  { "organzation": "tromsfylke.no", "domain": "utdanning", "heartBeat": true },
+  { "organzation": "rogfk.no", "domain": "administrasjon", "heartBeat": false },
+  { "organzation": "th.rogfk.no", "domain": "administrasjon", "heartBeat": false },
+  { "organzation": "trondelagfylke.no", "domain": "administrasjon", "heartBeat": false },
+  { "organzation": "fintlabs.no", "domain": "administrasjon", "heartBeat": true }
 ]

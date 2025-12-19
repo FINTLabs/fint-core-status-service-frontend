@@ -9,7 +9,7 @@ import { selectedEnvCookie } from "~/utils/cookies";
 import { Alert, Box, Loader } from "@navikt/ds-react";
 import { LayersIcon } from "@navikt/aksel-icons";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
-import { ContractDomainTable } from "~/components/adapters/ContractDomainTable";
+import { ContractDomainCards } from "~/components/adapters/ContractDomainCards";
 import { Breadcrumbs } from "~/components/layout/Breadcrumbs";
 
 //TODO: fix all meta data
@@ -50,7 +50,7 @@ export default function AdapterDetail() {
   const nav = useNavigate();
   const isNavigating = Boolean(navigation.location);
 
-  function handleRowClick(item: IContractDomain) {
+  function handleCardClick(item: IContractDomain) {
     nav(`/contract/${orgId}/${item.component}?domain=${domain}`);
   }
 
@@ -82,7 +82,7 @@ export default function AdapterDetail() {
               </Box>
             }
           >
-            <AdapterDetailResolved setAlerts={setAlerts} handleRowClick={handleRowClick} />
+            <AdapterDetailResolved setAlerts={setAlerts} handleCardClick={handleCardClick} />
           </Await>
         </Suspense>
       </Box>
@@ -94,10 +94,10 @@ export default function AdapterDetail() {
 // ---------- Child component used inside <Await> ----------
 function AdapterDetailResolved({
   setAlerts,
-  handleRowClick,
+  handleCardClick,
 }: {
   setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
-  handleRowClick: (item: IContractDomain) => void;
+  handleCardClick: (item: IContractDomain) => void;
 }) {
   const response = useAsyncValue() as {
     success: boolean;
@@ -121,5 +121,5 @@ function AdapterDetailResolved({
     }
   }, [response?.success, response?.message, response?.variant, setAlerts]);
 
-  return <ContractDomainTable data={response.data || []} onRowClick={handleRowClick} />;
+  return <ContractDomainCards data={response.data || []} onCardClick={handleCardClick} />;
 }

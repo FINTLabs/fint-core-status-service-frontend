@@ -9,7 +9,7 @@ import { selectedEnvCookie } from "~/utils/cookies";
 import { Alert, Box, Loader } from "@navikt/ds-react";
 import { InformationSquareIcon } from "@navikt/aksel-icons";
 import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
-import { ContractComponentTable } from "~/components/adapters/ContractComponentTable";
+import { ContractComponentCards } from "~/components/adapters/ContractComponentCards";
 import { Breadcrumbs } from "~/components/layout/Breadcrumbs";
 
 //TODO: fix all meta data
@@ -120,5 +120,5 @@ function ContractComponentResolved({ setAlerts }: { setAlerts: React.Dispatch<Re
     }
   }, [response?.success, response?.message, response?.variant, setAlerts]);
 
-  return <ContractComponentTable data={response.data || []} />;
+  return <ContractComponentCards data={response.data || []} />;
 }

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { AdapterFilter } from "./AdapterFilter";
-import { AdapterTable } from "./AdapterTable";
+import { AdapterCards } from "./AdapterCards";
 import type { IContractStatus } from "~/types";
 import { useNavigate } from "react-router";
 
@@ -10,10 +10,6 @@ interface AdapterPageProps {
 }
 
 export function AdapterPage({ initialData }: AdapterPageProps) {
-  const [sortState, setSortState] = useState<{ orderBy: string; direction: "ascending" | "descending" } | undefined>(undefined);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
   const nav = useNavigate();
 
   const [heartbeatFilter, setHeartbeatFilter] = useState<{
@@ -23,46 +19,26 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   const [organisationFilter, setOrganisationFilter] = useState<string>("");
   const [domainFilter, setDomainFilter] = useState<string>("");
 
-  function handleRowClick(item: IContractStatus) {
+  function handleCardClick(item: IContractStatus) {
     nav(`/adaptere/${item.organzation}/${item.domain}`);
   }
 
-  const handleSortChange = (sortKey: string) => {
-    let newDirection: "ascending" | "descending" = "ascending";
-
-    if (sortState?.orderBy === sortKey && sortState?.direction === "ascending") {
-      newDirection = "descending";
-    }
-
-    const newSortState = { orderBy: sortKey, direction: newDirection };
-    setSortState(newSortState);
-    setCurrentPage(1);
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   const handleHeartbeatFilterChange = (value: { active: boolean; inactive: boolean }) => {
     setHeartbeatFilter(value);
-    setCurrentPage(1);
   };
 
   const handleOrganisationFilterChange = (value: string) => {
     setOrganisationFilter(value);
-    setCurrentPage(1);
   };
 
   const handleDomainFilterChange = (value: string) => {
     setDomainFilter(value);
-    setCurrentPage(1);
   };
 
   const handleClearFilters = () => {
     setHeartbeatFilter({ active: true, inactive: true });
     setOrganisationFilter("");
     setDomainFilter("");
-    setCurrentPage(1);
   };
 
   const tableData: IContractStatus[] = useMemo(() => {
@@ -78,7 +54,7 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   }, [initialData]);
 
   const filteredData = useMemo(() => {
-    return tableData.filter((item) => {
+    const filtered = tableData.filter((item) => {
       if (organisationFilter && !item.organzation.toLowerCase().includes(organisationFilter.toLowerCase())) {
         return false;
       }
@@ -93,26 +69,16 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
       }
       return !(!item.heartBeat && !heartbeatFilter.inactive);
     });
-  }, [tableData, organisationFilter, domainFilter, heartbeatFilter]);
 
-  const sortedFilteredData = useMemo(() => {
-    if (!sortState) return filteredData;
-
-    return [...filteredData].sort((a, b) => {
-      const aValue = a[sortState.orderBy as keyof IContractStatus];
-      const bValue = b[sortState.orderBy as keyof IContractStatus];
-
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortState.direction === "ascending" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-      }
-
-      if (typeof aValue === "boolean" && typeof bValue === "boolean") {
-        return sortState.direction === "ascending" ? (aValue === bValue ? 0 : aValue ? 1 : -1) : aValue === bValue ? 0 : aValue ? -1 : 1;
-      }
-
+    // Sort so errors (heartBeat: false) appear first
+    return [...filtered].sort((a, b) => {
+      // If one has error and the other doesn't, error comes first
+      if (!a.heartBeat && b.heartBeat) return -1;
+      if (a.heartBeat && !b.heartBeat) return 1;
+      // If both have same status, maintain original order (or sort by organization/domain)
       return 0;
     });
-  }, [filteredData, sortState]);
+  }, [tableData, organisationFilter, domainFilter, heartbeatFilter]);
 
   return (
     <Box padding="8" paddingBlock="2">
@@ -128,15 +94,7 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
         onClearFilters={handleClearFilters}
       />
 
-      <AdapterTable
-        data={sortedFilteredData}
-        sortState={sortState}
-        onSortChange={handleSortChange}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-        itemsPerPage={itemsPerPage}
-        onRowClick={handleRowClick}
-      />
+      <AdapterCards data={filteredData} onCardClick={handleCardClick} />
     </Box>
   );
 }

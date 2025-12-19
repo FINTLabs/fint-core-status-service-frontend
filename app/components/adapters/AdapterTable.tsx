@@ -1,5 +1,5 @@
 import { Box, Pagination, Table } from "@navikt/ds-react";
-import { HeartBrokenIcon, HeartIcon } from "@navikt/aksel-icons";
+import { CheckmarkCircleIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
 import type { IContractStatus } from "~/types";
 
 interface AdapterTableProps {
@@ -34,11 +34,11 @@ export function AdapterTable({ data, currentPage, onPageChange, itemsPerPage, on
               <Table.DataCell>
                 {row.heartBeat ? (
                   <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                    <HeartIcon className="text-green-600" title="OK" fontSize="1.25rem" />
+                    <CheckmarkCircleIcon className="text-green-600" title="OK" fontSize="1.25rem" />
                   </Box>
                 ) : (
                   <Box className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
-                    <HeartBrokenIcon className="text-red-600" title="Error" fontSize="1.25rem" />
+                    <ExclamationmarkTriangleIcon className="text-red-600" title="Error" fontSize="1.25rem" />
                   </Box>
                 )}
               </Table.DataCell>
