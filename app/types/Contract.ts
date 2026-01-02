@@ -1,7 +1,14 @@
 export interface IContractStatus {
   organzation: string;
   domain: string;
-  heartBeat: boolean;
+  status: ContractStatusEnum;
+}
+
+export enum ContractStatusEnum {
+  NOT_FOLLOWING_CONTRACT = "NOT_FOLLOWING_CONTRACT",
+  NO_HEARTBEAT = "NO_HEARTBEAT",
+  HEALTHY = "HEALTHY",
+  UNOWN_STATUS = "UNOWN_STATUS"
 }
 
 export interface IContractDomain {
