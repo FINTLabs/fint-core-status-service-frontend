@@ -68,7 +68,7 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
             {/* Contract warning for NOT_FOLLOWING_CONTRACT */}
             {item.status === "NOT_FOLLOWING_CONTRACT" && (
               <Box className="mt-2 pt-2 border-t border-gray-200">
-                <Label className="text-xs font-semibold text-red-600">Ikke følger kontrakt</Label>
+                <Detail className="text-xs text-red-600">Ikke følger kontrakt</Detail>
               </Box>
             )}
           </VStack>
