@@ -17,7 +17,13 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
           padding="4"
           borderRadius="large"
           shadow="xsmall"
-          className={`cursor-pointer transition-all hover:shadow-medium relative ${item.status === "HEALTHY" ? "border-l-4 border-l-green-500" : "border-l-4 border-l-red-500"}`}
+          className={`cursor-pointer transition-all hover:shadow-medium relative ${
+            item.status === "HEALTHY"
+              ? "border-l-4 border-l-green-500"
+              : item.status === "NOT_FOLLOWING_CONTRACT"
+                ? "border-l-4 border-l-orange-500"
+                : "border-l-4 border-l-red-500"
+          }`}
           onClick={() => onCardClick(item)}
         >
           <ChevronRightIcon className="absolute top-4 right-4 text-gray-400" fontSize="1.25rem" aria-hidden="true" />
@@ -36,8 +42,8 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
                   case "NOT_FOLLOWING_CONTRACT":
                     return (
                       <>
-                        <XMarkOctagonIcon className="text-green-600" title="Inaktiv" fontSize="1.5rem" />
-                        <Label className="text-sm font-semibold text-green-600">Leverer ikke på komponent</Label>
+                        <XMarkOctagonIcon className="text-orange-600" title="Inaktiv" fontSize="1.5rem" />
+                        <Label className="text-sm font-semibold text-orange-600">Leverer ikke på komponent</Label>
                       </>
                     );
                   case "NO_HEARTBEAT":
