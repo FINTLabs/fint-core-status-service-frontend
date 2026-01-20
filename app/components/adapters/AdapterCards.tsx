@@ -1,5 +1,5 @@
 import { Box, Detail, HGrid, Label, VStack } from "@navikt/ds-react";
-import { CheckmarkCircleIcon, ChevronRightIcon, HeartBrokenIcon, XMarkOctagonIcon } from "@navikt/aksel-icons";
+import { CheckmarkCircleIcon, ChevronRightIcon, HeartBrokenIcon } from "@navikt/aksel-icons";
 import type { IContractStatus } from "~/types";
 
 interface AdapterCardsProps {
@@ -18,11 +18,7 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
           borderRadius="large"
           shadow="xsmall"
           className={`cursor-pointer transition-all hover:shadow-medium relative ${
-            item.status === "HEALTHY"
-              ? "border-l-4 border-l-green-500"
-              : item.status === "NOT_FOLLOWING_CONTRACT"
-                ? "border-l-4 border-l-orange-500"
-                : "border-l-4 border-l-red-500"
+            item.status === "HEALTHY" || item.status === "NOT_FOLLOWING_CONTRACT" ? "border-l-4 border-l-green-500" : "border-l-4 border-l-red-500"
           }`}
           onClick={() => onCardClick(item)}
         >
@@ -42,8 +38,8 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
                   case "NOT_FOLLOWING_CONTRACT":
                     return (
                       <>
-                        <XMarkOctagonIcon className="text-orange-600" title="Inaktiv" fontSize="1.5rem" />
-                        <Label className="text-sm font-semibold text-orange-600">Leverer ikke på komponent</Label>
+                        <CheckmarkCircleIcon className="text-green-600" title="Aktiv" fontSize="1.5rem" />
+                        <Label className="text-sm font-semibold text-green-700">Aktiv</Label>
                       </>
                     );
                   case "NO_HEARTBEAT":
@@ -68,6 +64,13 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
               <span className="text-xs text-gray-600 uppercase tracking-wide">Domene</span>
               <Detail weight="semibold">{item.domain}</Detail>
             </Box>
+
+            {/* Contract warning for NOT_FOLLOWING_CONTRACT */}
+            {item.status === "NOT_FOLLOWING_CONTRACT" && (
+              <Box className="mt-2 pt-2 border-t border-gray-200">
+                <Label className="text-xs font-semibold text-red-600">Ikke følger kontrakt</Label>
+              </Box>
+            )}
           </VStack>
         </Box>
       ))}
