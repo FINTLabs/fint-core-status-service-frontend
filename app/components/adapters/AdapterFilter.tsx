@@ -1,26 +1,22 @@
-import { Box, Button, Checkbox, CheckboxGroup, ExpansionCard, HGrid, HStack, Select, VStack } from "@navikt/ds-react";
+import { Box, Button, ExpansionCard, HGrid, HStack, Select, VStack } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
 import React from "react";
 
 interface AdaptereFilterProps {
-  heartbeatFilter: { active: boolean; inactive: boolean };
   organisationFilter: string;
   domainFilter: string;
   uniqueOrganisations: string[];
   uniqueDomains: string[];
-  onHeartbeatFilterChange: (filter: { active: boolean; inactive: boolean }) => void;
   onOrganisationFilterChange: (value: string) => void;
   onDomainFilterChange: (value: string) => void;
   onClearFilters: () => void;
 }
 
 export function AdapterFilter({
-  heartbeatFilter,
   organisationFilter,
   domainFilter,
   uniqueOrganisations,
   uniqueDomains,
-  onHeartbeatFilterChange,
   onOrganisationFilterChange,
   onDomainFilterChange,
   onClearFilters,
@@ -66,24 +62,6 @@ export function AdapterFilter({
               ))}
             </Select>
           </HGrid>
-
-          {/* Heartbeat Filter */}
-          <CheckboxGroup
-            legend="Heartbeat"
-            size="small"
-            value={Object.entries(heartbeatFilter)
-              .filter(([, value]) => value)
-              .map(([key]) => key)}
-            onChange={(values: string[]) => {
-              onHeartbeatFilterChange({
-                active: values.includes("active"),
-                inactive: values.includes("inactive"),
-              });
-            }}
-          >
-            <Checkbox value="active">Aktiv</Checkbox>
-            <Checkbox value="inactive">Inaktiv</Checkbox>
-          </CheckboxGroup>
 
           {/* Clear Filters Button */}
           <Box>

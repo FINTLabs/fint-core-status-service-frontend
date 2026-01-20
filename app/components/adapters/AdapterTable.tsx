@@ -32,13 +32,13 @@ export function AdapterTable({ data, currentPage, onPageChange, itemsPerPage, on
           {paginatedData.map((row, index) => (
             <Table.Row key={row.organzation + row.domain + index} onRowClick={() => onRowClick(row)}>
               <Table.DataCell>
-                {row.heartBeat ? (
-                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                    <CheckmarkCircleIcon className="text-green-600" title="OK" fontSize="1.25rem" />
-                  </Box>
-                ) : (
+                {row.status === "NO_HEARTBEAT" ? (
                   <Box className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-md">
                     <ExclamationmarkTriangleIcon className="text-red-600" title="Error" fontSize="1.25rem" />
+                  </Box>
+                ) : (
+                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
+                    <CheckmarkCircleIcon className="text-green-600" title="OK" fontSize="1.25rem" />
                   </Box>
                 )}
               </Table.DataCell>

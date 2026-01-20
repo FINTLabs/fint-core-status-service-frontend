@@ -12,20 +12,12 @@ interface AdapterPageProps {
 export function AdapterPage({ initialData }: AdapterPageProps) {
   const nav = useNavigate();
 
-  const [heartbeatFilter, setHeartbeatFilter] = useState<{
-    active: boolean;
-    inactive: boolean;
-  }>({ active: true, inactive: true });
   const [organisationFilter, setOrganisationFilter] = useState<string>("");
   const [domainFilter, setDomainFilter] = useState<string>("");
 
   function handleCardClick(item: IContractStatus) {
     nav(`/adaptere/${item.organzation}/${item.domain}`);
   }
-
-  const handleHeartbeatFilterChange = (value: { active: boolean; inactive: boolean }) => {
-    setHeartbeatFilter(value);
-  };
 
   const handleOrganisationFilterChange = (value: string) => {
     setOrganisationFilter(value);
@@ -36,7 +28,6 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   };
 
   const handleClearFilters = () => {
-    setHeartbeatFilter({ active: true, inactive: true });
     setOrganisationFilter("");
     setDomainFilter("");
   };
@@ -59,36 +50,26 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
         return false;
       }
 
-      if (domainFilter && !item.domain.toLowerCase().includes(domainFilter.toLowerCase())) {
-        return false;
-      }
-
-      // Heartbeat filter
-      if (item.heartBeat && !heartbeatFilter.active) {
-        return false;
-      }
-      return !(!item.heartBeat && !heartbeatFilter.inactive);
+      return !(domainFilter && !item.domain.toLowerCase().includes(domainFilter.toLowerCase()));
     });
 
-    // Sort so errors (heartBeat: false) appear first
+    // Sort so errors (NO_HEARTBEAT status) appear first
     return [...filtered].sort((a, b) => {
-      // If one has error and the other doesn't, error comes first
-      if (!a.heartBeat && b.heartBeat) return -1;
-      if (a.heartBeat && !b.heartBeat) return 1;
+      // If one has error status and the other doesn't, error comes first
+      if (a.status === "NO_HEARTBEAT" && b.status !== "NO_HEARTBEAT") return -1;
+      if (a.status !== "NO_HEARTBEAT" && b.status === "NO_HEARTBEAT") return 1;
       // If both have same status, maintain original order (or sort by organization/domain)
       return 0;
     });
-  }, [tableData, organisationFilter, domainFilter, heartbeatFilter]);
+  }, [tableData, organisationFilter, domainFilter]);
 
   return (
     <Box padding="8" paddingBlock="2">
       <AdapterFilter
-        heartbeatFilter={heartbeatFilter}
         organisationFilter={organisationFilter}
         domainFilter={domainFilter}
         uniqueOrganisations={uniqueOrganisations}
         uniqueDomains={uniqueDomains}
-        onHeartbeatFilterChange={handleHeartbeatFilterChange}
         onOrganisationFilterChange={handleOrganisationFilterChange}
         onDomainFilterChange={handleDomainFilterChange}
         onClearFilters={handleClearFilters}
