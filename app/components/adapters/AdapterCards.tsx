@@ -1,10 +1,5 @@
 import { Box, Detail, HGrid, Label, VStack } from "@navikt/ds-react";
-import {
-  CheckmarkCircleIcon,
-  ChevronRightIcon,
-  ExclamationmarkTriangleIcon, HeartBrokenIcon,
-  XMarkOctagonIcon
-} from "@navikt/aksel-icons";
+import { CheckmarkCircleIcon, ChevronRightIcon, HeartBrokenIcon, XMarkOctagonIcon } from "@navikt/aksel-icons";
 import type { IContractStatus } from "~/types";
 
 interface AdapterCardsProps {
@@ -34,41 +29,22 @@ export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
                   case "HEALTHY":
                     return (
                       <>
-                        <CheckmarkCircleIcon
-                          className="text-green-600"
-                          title="Aktiv"
-                          fontSize="1.5rem"
-                        />
-                        <Label className="text-sm font-semibold text-green-700">
-                          Aktiv
-                        </Label>
+                        <CheckmarkCircleIcon className="text-green-600" title="Aktiv" fontSize="1.5rem" />
+                        <Label className="text-sm font-semibold text-green-700">Aktiv</Label>
                       </>
                     );
                   case "NOT_FOLLOWING_CONTRACT":
                     return (
                       <>
-                        <XMarkOctagonIcon
-                          className="text-red-600"
-                          title="Inaktiv"
-                          fontSize="1.5rem"
-                        />
-                        <Label className="text-sm font-semibold text-red-700">
-                          Leverer ikke på komponent
-                        </Label>
+                        <XMarkOctagonIcon className="text-green-600" title="Inaktiv" fontSize="1.5rem" />
+                        <Label className="text-sm font-semibold text-green-600">Leverer ikke på komponent</Label>
                       </>
                     );
-
                   case "NO_HEARTBEAT":
                     return (
                       <>
-                        <HeartBrokenIcon
-                          className="text-red-600"
-                          title="Ingen drift puls"
-                          fontSize="1.5rem"
-                        />
-                        <Label className="text-sm font-semibold text-red-700">
-                          Ingen drift puls
-                        </Label>
+                        <HeartBrokenIcon className="text-red-600" title="Ingen drift puls" fontSize="1.5rem" />
+                        <Label className="text-sm font-semibold text-red-700">Ingen drift puls</Label>
                       </>
                     );
                 }
