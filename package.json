@@ -21,15 +21,15 @@
     "@navikt/aksel-icons": "^7.31.0",
     "@navikt/ds-css": "^7.31.0",
     "@navikt/ds-react": "^7.31.0",
-    "@react-router/node": "^7.9.2",
-    "@react-router/serve": "^7.9.2",
+    "@react-router/node": "^7.12.0",
+    "@react-router/serve": "^7.12.0",
     "depcheck": "^1.4.7",
     "isbot": "^5.1.31",
     "msw": "^2.11.5",
     "novari-frontend-components": "6.0.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router": "^7.9.2"
+    "react-router": "7.12.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
@@ -40,7 +40,7 @@
     "@types/react-dom": "^19.1.9",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
     "@typescript-eslint/parser": "^8.45.0",
-    "cypress": "^13.15.0",
+    "cypress": "^15.9.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-cypress": "^5.2.0",
     "eslint-plugin-import": "^2.32.0",
