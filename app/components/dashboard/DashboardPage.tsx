@@ -20,7 +20,7 @@ export function DashboardPage({
   alphaError,
 }: DashboardPageProps) {
   return (
-    <HStack gap="space-16" justify="center">
+    <HStack gap="space-16" justify="center" className={"h-full"}>
       {apiError ? (
         <Box padding="space-16">
           <Heading level="2" size="medium" spacing>
