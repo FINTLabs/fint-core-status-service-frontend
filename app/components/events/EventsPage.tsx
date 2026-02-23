@@ -13,7 +13,9 @@ interface EventPageProps {
 
 export function EventsPage({ initialData }: EventPageProps) {
   const [searchFilter, setSearchFilter] = useState<string>("");
-  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
+  const [dateRange, setDateRange] = useState<
+    { from?: Date; to?: Date } | undefined
+  >(undefined);
   const [operationFilter, setOperationFilter] = useState<{
     CREATE: boolean;
     UPDATE: boolean;
@@ -36,7 +38,12 @@ export function EventsPage({ initialData }: EventPageProps) {
   const handleClearFilters = () => {
     setSearchFilter("");
     setDateRange(undefined);
-    setOperationFilter({ CREATE: true, UPDATE: true, DELETE: true, VALIDATE: true });
+    setOperationFilter({
+      CREATE: true,
+      UPDATE: true,
+      DELETE: true,
+      VALIDATE: true,
+    });
     setOrganisasjonFilter("");
     setRessursFilter("");
     setStatusFilter({ ok: true, error: true });
@@ -85,16 +92,25 @@ export function EventsPage({ initialData }: EventPageProps) {
         const searchTerm = searchFilter.toLowerCase();
         const matchesCorrId = event.corrId?.toLowerCase().includes(searchTerm);
         const matchesOrgId = event.orgId?.toLowerCase().includes(searchTerm);
-        const matchesResource = event.requestEvent.resourceName?.toLowerCase().includes(searchTerm);
+        const matchesResource = event.requestEvent.resourceName
+          ?.toLowerCase()
+          .includes(searchTerm);
         const matchesTopic = event.topic?.toLowerCase().includes(searchTerm);
 
-        if (!matchesCorrId && !matchesOrgId && !matchesResource && !matchesTopic) {
+        if (
+          !matchesCorrId &&
+          !matchesOrgId &&
+          !matchesResource &&
+          !matchesTopic
+        ) {
           return false;
         }
       }
 
       // Operation filter
-      const operationType = event.requestEvent.operationType ? event.requestEvent.operationType.toUpperCase() : "";
+      const operationType = event.requestEvent.operationType
+        ? event.requestEvent.operationType.toUpperCase()
+        : "";
       if (!operationFilter[operationType as keyof typeof operationFilter]) {
         return false;
       }
@@ -153,19 +169,34 @@ export function EventsPage({ initialData }: EventPageProps) {
       const bDate = b.requestEvent?.created || 0;
       return bDate - aDate; // Descending order (newest first)
     });
-  }, [initialData, searchFilter, operationFilter, organisasjonFilter, ressursFilter, statusFilter, dateRange]);
+  }, [
+    initialData,
+    searchFilter,
+    operationFilter,
+    organisasjonFilter,
+    ressursFilter,
+    statusFilter,
+    dateRange,
+  ]);
 
   const handleSearchFilterChange = (value: string) => {
     setSearchFilter(value);
     setCurrentPage(1);
   };
 
-  const handleDateRangeChange = (range: { from?: Date; to?: Date } | undefined) => {
+  const handleDateRangeChange = (
+    range: { from?: Date; to?: Date } | undefined,
+  ) => {
     setDateRange(range);
     setCurrentPage(1);
   };
 
-  const handleOperationFilterChange = (value: { CREATE: boolean; UPDATE: boolean; DELETE: boolean; VALIDATE: boolean }) => {
+  const handleOperationFilterChange = (value: {
+    CREATE: boolean;
+    UPDATE: boolean;
+    DELETE: boolean;
+    VALIDATE: boolean;
+  }) => {
     setOperationFilter(value);
     setCurrentPage(1);
   };
@@ -186,12 +217,24 @@ export function EventsPage({ initialData }: EventPageProps) {
   };
 
   // Extract unique values for filters
-  const uniqueOrganisasjoner = [...new Set(initialData.map((event) => event.orgId).filter((id): id is string => Boolean(id)))].sort();
-  const uniqueRessurser = [...new Set(initialData.map((event) => event.requestEvent?.resourceName).filter((name): name is string => Boolean(name)))].sort();
+  const uniqueOrganisasjoner = [
+    ...new Set(
+      initialData
+        .map((event) => event.orgId)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ].sort();
+  const uniqueRessurser = [
+    ...new Set(
+      initialData
+        .map((event) => event.requestEvent?.resourceName)
+        .filter((name): name is string => Boolean(name)),
+    ),
+  ].sort();
 
   const loadingDetail = false;
   return (
-    <Box padding="8" paddingBlock="2">
+    <Box padding="space-32" paddingBlock="space-8">
       <EventsFilter
         searchFilter={searchFilter}
         dateRange={dateRange}
@@ -209,11 +252,22 @@ export function EventsPage({ initialData }: EventPageProps) {
         onStatusFilterChange={handleStatusFilterChange}
         onClearFilters={handleClearFilters}
       />
-
-      <EventsTable data={filteredData} onRowClick={handleRowClick} loading={loadingDetail} currentPage={currentPage} onPageChange={handlePageChange} itemsPerPage={itemsPerPage} />
+      <EventsTable
+        data={filteredData}
+        onRowClick={handleRowClick}
+        loading={loadingDetail}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+        itemsPerPage={itemsPerPage}
+      />
 
       {selectedEvent && selectedEvent.requestEvent && (
-        <EventsModal isOpen={isModalOpen} onClose={handleCloseModal} requestData={selectedEvent.requestEvent} responseData={selectedEvent.responseEvent} />
+        <EventsModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          requestData={selectedEvent.requestEvent}
+          responseData={selectedEvent.responseEvent}
+        />
       )}
     </Box>
   );

@@ -37,20 +37,32 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   }, [initialData]);
 
   const uniqueOrganisations = useMemo(() => {
-    return [...new Set((initialData || []).map((adapter) => adapter.organzation))].sort();
+    return [
+      ...new Set((initialData || []).map((adapter) => adapter.organzation)),
+    ].sort();
   }, [initialData]);
 
   const uniqueDomains = useMemo(() => {
-    return [...new Set((initialData || []).map((adapter) => adapter.domain))].sort();
+    return [
+      ...new Set((initialData || []).map((adapter) => adapter.domain)),
+    ].sort();
   }, [initialData]);
 
   const filteredData = useMemo(() => {
     const filtered = tableData.filter((item) => {
-      if (organisationFilter && !item.organzation.toLowerCase().includes(organisationFilter.toLowerCase())) {
+      if (
+        organisationFilter &&
+        !item.organzation
+          .toLowerCase()
+          .includes(organisationFilter.toLowerCase())
+      ) {
         return false;
       }
 
-      return !(domainFilter && !item.domain.toLowerCase().includes(domainFilter.toLowerCase()));
+      return !(
+        domainFilter &&
+        !item.domain.toLowerCase().includes(domainFilter.toLowerCase())
+      );
     });
 
     // Sort so errors (NO_HEARTBEAT status) appear first
@@ -64,7 +76,7 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
   }, [tableData, organisationFilter, domainFilter]);
 
   return (
-    <Box padding="8" paddingBlock="2">
+    <Box padding="space-32" paddingBlock="space-8">
       <AdapterFilter
         organisationFilter={organisationFilter}
         domainFilter={domainFilter}
@@ -74,7 +86,6 @@ export function AdapterPage({ initialData }: AdapterPageProps) {
         onDomainFilterChange={handleDomainFilterChange}
         onClearFilters={handleClearFilters}
       />
-
       <AdapterCards data={filteredData} onCardClick={handleCardClick} />
     </Box>
   );

@@ -170,10 +170,10 @@ describe("Sync Page", () => {
     cy.waitForAPI();
 
     // Check for FULL badge
-    cy.contains(".bg-blue-100", "FULL").should("be.visible");
+    cy.contains(".bg-ax-accent-200", "FULL").should("be.visible");
 
     // Check for DELTA badge
-    cy.contains(".bg-purple-100", "DELTA").should("be.visible");
+    cy.contains(".bg-ax-meta-purple-200", "DELTA").should("be.visible");
   });
 
   it("should display finished and ongoing status correctly", () => {
@@ -193,8 +193,8 @@ describe("Sync Page", () => {
     cy.contains("label", "Pågår").click();
 
     // Check for green indicators (finished)
-    cy.get(".bg-green-100").should("exist");
-    cy.get(".text-green-600").should("exist");
+    cy.get(".bg-ax-success-200").should("exist");
+    cy.get(".text-ax-success-700").should("exist");
   });
 
   it("should open modal when row is clicked", () => {

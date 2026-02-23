@@ -1,5 +1,8 @@
-import { Box, Pagination, Table, ProgressBar } from "@navikt/ds-react";
-import { CheckmarkCircleFillIcon, ArrowCirclepathIcon } from "@navikt/aksel-icons";
+import { Box, Pagination, Table, ProgressBar, Tag } from "@navikt/ds-react";
+import {
+  CheckmarkCircleFillIcon,
+  ArrowCirclepathIcon,
+} from "@navikt/aksel-icons";
 import type { ISyncData } from "~/types";
 import { useState, useMemo } from "react";
 
@@ -11,8 +14,16 @@ interface SyncTableProps {
   onRowClick: (sync: ISyncData) => void;
 }
 
-export function SyncTable({ data, currentPage, onPageChange, itemsPerPage, onRowClick }: SyncTableProps) {
-  const [sort, setSort] = useState<{ orderBy: string; direction: "ascending" | "descending" } | undefined>();
+export function SyncTable({
+  data,
+  currentPage,
+  onPageChange,
+  itemsPerPage,
+  onRowClick,
+}: SyncTableProps) {
+  const [sort, setSort] = useState<
+    { orderBy: string; direction: "ascending" | "descending" } | undefined
+  >({ orderBy: "date", direction: "descending" });
 
   const sortedData = useMemo(() => {
     if (!sort) return data;
@@ -59,8 +70,18 @@ export function SyncTable({ data, currentPage, onPageChange, itemsPerPage, onRow
   };
 
   return (
-    <Box background="surface-subtle" padding="space-16" borderRadius="large" shadow="xsmall">
-      <Table sort={sort} onSortChange={handleSort}>
+    <Box
+      padding="space-16"
+      borderRadius="8"
+      shadow="dialog"
+      marginBlock={"space-16"}
+    >
+      <Table
+        sort={sort}
+        onSortChange={handleSort}
+        size="small"
+        zebraStripes={true}
+      >
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Status</Table.HeaderCell>
@@ -79,51 +100,55 @@ export function SyncTable({ data, currentPage, onPageChange, itemsPerPage, onRow
         </Table.Header>
         <Table.Body>
           {paginatedData.map((sync, index) => (
-            <Table.Row key={index} data-cy="sync-row" onRowClick={() => onRowClick(sync)} shadeOnHover={true}>
+            <Table.Row
+              key={index}
+              data-cy="sync-row"
+              onRowClick={() => onRowClick(sync)}
+              shadeOnHover={true}
+            >
               <Table.DataCell>
                 {sync.finished ? (
-                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-md">
-                    <CheckmarkCircleFillIcon className="text-green-600" title="Fullført" fontSize="1.25rem" />
-                  </Box>
+                  <CheckmarkCircleFillIcon
+                    color="var(--ax-bg-success-strong)"
+                    title="Fullført"
+                    fontSize="1.25rem"
+                  />
                 ) : (
-                  <Box className="inline-flex items-center justify-center w-8 h-8 bg-yellow-100 rounded-md">
-                    <ArrowCirclepathIcon className="text-yellow-600" title="Pågår" fontSize="1.25rem" />
-                  </Box>
+                  <ArrowCirclepathIcon
+                    color="var(--ax-bg-warning-strong)"
+                    title="Pågår"
+                    fontSize="1.25rem"
+                  />
                 )}
               </Table.DataCell>
               <Table.DataCell>{sync.orgId}</Table.DataCell>
               <Table.DataCell>{sync.domain}</Table.DataCell>
               <Table.DataCell>{sync.package}</Table.DataCell>
+              <Table.DataCell>{sync.resource}</Table.DataCell>
               <Table.DataCell>
-                <span className="text-gray-700">{sync.resource}</span>
-              </Table.DataCell>
-              <Table.DataCell>
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    sync.syncType === "FULL" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"
-                  }`}
+                <Tag
+                  variant="outline"
+                  size="xsmall"
+                  data-color={sync.syncType === "FULL" ? "info" : "meta-purple"}
                 >
                   {sync.syncType}
-                </span>
+                </Tag>
               </Table.DataCell>
               <Table.DataCell>
-                <span className="text-gray-700">
-                  {sync.entitiesAquired}/{sync.totalEntities}
-                </span>
+                {sync.entitiesAquired}/{sync.totalEntities}
               </Table.DataCell>
               <Table.DataCell>
-                <span className="text-gray-700">
-                  {sync.pagesAcquired}/{sync.totalPages}
-                </span>
+                {sync.pagesAcquired}/{sync.totalPages}
               </Table.DataCell>
-              <Table.DataCell>
-                <Box className="flex items-center gap-2">
-                  <Box className="flex-1">
-                    <Box className={sync.finished ? "[--ac-progress-bar-fg:rgb(22_163_74)]" : "[--ac-progress-bar-fg:rgb(202_138_4)]"}>
-                      <ProgressBar value={calculateProgress(sync)} size="small" aria-label={`Fremdrift: ${calculateProgress(sync)}%`} />
-                    </Box>
-                  </Box>
-                  <span className="text-xs text-gray-600 min-w-[3rem]">{calculateProgress(sync)}%</span>
+              <Table.DataCell align="right">
+                <Box paddingBlock="space-0">
+                  <ProgressBar
+                    data-color={sync.finished ? "success" : "warning"}
+                    value={calculateProgress(sync)}
+                    size="small"
+                    aria-label={`Fremdrift: ${calculateProgress(sync)}%`}
+                  />
+                  <Box>{calculateProgress(sync)}%</Box>
                 </Box>
               </Table.DataCell>
               <Table.DataCell>{formatTime(sync.lastPageTime)}</Table.DataCell>
@@ -131,10 +156,20 @@ export function SyncTable({ data, currentPage, onPageChange, itemsPerPage, onRow
           ))}
         </Table.Body>
       </Table>
-
       {totalPages > 1 && (
-        <Box paddingBlock="4" className="flex justify-center" data-cy="pagination">
-          <Pagination page={currentPage} onPageChange={onPageChange} count={totalPages} size="small" boundaryCount={1} siblingCount={1} />
+        <Box
+          paddingBlock="space-16"
+          className="flex justify-center"
+          data-cy="pagination"
+        >
+          <Pagination
+            page={currentPage}
+            onPageChange={onPageChange}
+            count={totalPages}
+            size="small"
+            boundaryCount={1}
+            siblingCount={1}
+          />
         </Box>
       )}
     </Box>

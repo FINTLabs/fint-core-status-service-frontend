@@ -1,5 +1,17 @@
-import { Box, Detail, HGrid, Label, VStack } from "@navikt/ds-react";
-import { CheckmarkCircleIcon, ChevronRightIcon, HeartBrokenIcon } from "@navikt/aksel-icons";
+import {
+  Box,
+  Detail,
+  HGrid,
+  HStack,
+  InfoCard,
+  Label,
+  VStack,
+} from "@navikt/ds-react";
+import {
+  CheckmarkCircleIcon,
+  ExclamationmarkTriangleFillIcon,
+  HeartBrokenIcon,
+} from "@navikt/aksel-icons";
 import type { IContractStatus } from "~/types";
 
 interface AdapterCardsProps {
@@ -7,73 +19,74 @@ interface AdapterCardsProps {
   onCardClick: (adapter: IContractStatus) => void;
 }
 
+function getStatusConfig(status: IContractStatus["status"]) {
+  if (status === "NO_HEARTBEAT") {
+    return {
+      icon: <HeartBrokenIcon aria-hidden className="text-ax-danger-700" />,
+      dataColor: "danger" as const,
+    };
+  }
+  if (status === "HEALTHY" || status === "NOT_FOLLOWING_CONTRACT") {
+    return {
+      icon: <CheckmarkCircleIcon aria-hidden className="text-ax-success-700" />,
+      dataColor: "success" as const,
+    };
+  }
+  return {
+    icon: <CheckmarkCircleIcon aria-hidden className="text-ax-neutral-700" />,
+    dataColor: "info" as const,
+  };
+}
+
 export function AdapterCards({ data, onCardClick }: AdapterCardsProps) {
   return (
-    <HGrid gap="4" columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
-      {data.map((item, index) => (
-        <Box
-          key={item.organzation + item.domain + index}
-          background={"surface-subtle" as const}
-          padding="4"
-          borderRadius="large"
-          shadow="xsmall"
-          className={`cursor-pointer transition-all hover:shadow-medium relative ${
-            item.status === "HEALTHY" || item.status === "NOT_FOLLOWING_CONTRACT" ? "border-l-4 border-l-green-500" : "border-l-4 border-l-red-500"
-          }`}
-          onClick={() => onCardClick(item)}
-        >
-          <ChevronRightIcon className="absolute top-4 right-4 text-gray-400" fontSize="1.25rem" aria-hidden="true" />
-          <VStack gap="3">
-            {/* Status indicator */}
-            <Box className="flex items-center gap-2">
-              {(() => {
-                switch (item.status) {
-                  case "HEALTHY":
-                    return (
-                      <>
-                        <CheckmarkCircleIcon className="text-green-600" title="Aktiv" fontSize="1.5rem" />
-                        <Label className="text-sm font-semibold text-green-700">Aktiv</Label>
-                      </>
-                    );
-                  case "NOT_FOLLOWING_CONTRACT":
-                    return (
-                      <>
-                        <CheckmarkCircleIcon className="text-green-600" title="Aktiv" fontSize="1.5rem" />
-                        <Label className="text-sm font-semibold text-green-700">Aktiv</Label>
-                      </>
-                    );
-                  case "NO_HEARTBEAT":
-                    return (
-                      <>
-                        <HeartBrokenIcon className="text-red-600" title="Ingen drift puls" fontSize="1.5rem" />
-                        <Label className="text-sm font-semibold text-red-700">Ingen drift puls</Label>
-                      </>
-                    );
-                }
-              })()}
-            </Box>
+    <HGrid gap="space-16" columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
+      {data.map((item, index) => {
+        const { icon, dataColor } = getStatusConfig(item.status);
+        return (
+          <InfoCard
+            key={`${item.organzation}-${item.domain}-${index}`}
+            data-color={dataColor}
+            onClick={() => onCardClick(item)}
+          >
+            <InfoCard.Header icon={icon}>
+              <InfoCard.Title>
+                {item.organzation}
 
-            {/* Organization */}
-            <Box>
-              <span className="text-xs text-gray-600 uppercase tracking-wide">Organisasjon</span>
-              <Detail weight="semibold">{item.organzation}</Detail>
-            </Box>
+                <Detail>{item.domain}</Detail>
+              </InfoCard.Title>
+            </InfoCard.Header>
+            <InfoCard.Content>
+              <VStack gap="space-12">
+                <Box>
+                  <Label>Organisasjon</Label>
+                  <Detail weight="semibold">{item.organzation}</Detail>
+                </Box>
+                <Box>
+                  <Label>Domene</Label>
+                  <Detail weight="semibold">{item.domain}</Detail>
+                </Box>
+                <Box>
+                  <Label>Status</Label>
+                  <Detail>
+                    <HStack gap="space-8" align="center" data-color="warning">
+                      {item.status === "NOT_FOLLOWING_CONTRACT" && (
+                        <ExclamationmarkTriangleFillIcon
+                          title="a11y-title"
+                          fontSize="1.5rem"
+                          color="var(--ax-bg-warning-strong)"
+                        />
+                      )}
 
-            {/* Domain */}
-            <Box>
-              <span className="text-xs text-gray-600 uppercase tracking-wide">Domene</span>
-              <Detail weight="semibold">{item.domain}</Detail>
-            </Box>
-
-            {/* Contract warning for NOT_FOLLOWING_CONTRACT */}
-            {item.status === "NOT_FOLLOWING_CONTRACT" && (
-              <Box className="mt-2 pt-2 border-t border-gray-200">
-                <Detail className="text-xs text-red-600">Ikke følger kontrakt</Detail>
-              </Box>
-            )}
-          </VStack>
-        </Box>
-      ))}
+                      {item.status}
+                    </HStack>
+                  </Detail>
+                </Box>
+              </VStack>
+            </InfoCard.Content>
+          </InfoCard>
+        );
+      })}
     </HGrid>
   );
 }

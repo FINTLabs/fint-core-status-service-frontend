@@ -1,14 +1,23 @@
 import type { Route } from "./+types/contract.$orgId.$componentId";
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
-import { Await, type LoaderFunction, useAsyncValue, useLoaderData, useNavigation } from "react-router";
+import {
+  Await,
+  type LoaderFunction,
+  useAsyncValue,
+  useLoaderData,
+  useNavigation,
+} from "react-router";
 import type { IContractComponent } from "~/types";
 import { PageHeader } from "~/components/layout/PageHeader";
 import ContractApi from "~/api/ContractApi";
 import { selectedEnvCookie } from "~/utils/cookies";
 import { Alert, Box, Loader } from "@navikt/ds-react";
 import { InformationSquareIcon } from "@navikt/aksel-icons";
-import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
+import {
+  NovariSnackbar,
+  type NovariSnackbarItem,
+} from "novari-frontend-components";
 import { ContractComponentCards } from "~/components/adapters/ContractComponentCards";
 import { Breadcrumbs } from "~/components/layout/Breadcrumbs";
 
@@ -32,7 +41,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const url = new URL(request.url);
   const domainId = url.searchParams.get("domain") || "";
 
-  const response = ContractApi.getContractComponent(orgId || "", componentId || "", env);
+  const response = ContractApi.getContractComponent(
+    orgId || "",
+    componentId || "",
+    env,
+  );
 
   return {
     env,
@@ -49,7 +62,12 @@ export default function ContractComponent() {
     orgId: string;
     componentId: string;
     domainId: string;
-    response: Promise<{ success: boolean; message?: string; data?: IContractComponent[]; variant?: string }>;
+    response: Promise<{
+      success: boolean;
+      message?: string;
+      data?: IContractComponent[];
+      variant?: string;
+    }>;
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
@@ -62,14 +80,22 @@ export default function ContractComponent() {
   }
 
   const breadcrumbItems = [
-    { label: `${orgId} - ${domainId} `, href: `/adaptere/${orgId}/${domainId}` },
+    {
+      label: `${orgId} - ${domainId} `,
+      href: `/adaptere/${orgId}/${domainId}`,
+    },
     { label: `${componentId}`, href: "" },
   ];
 
   return (
     <>
-      <Box padding="8" paddingBlock="2">
-        <PageHeader title="Detaljer for komponent " description={`Detaljer for  ${orgId} : ${componentId} `} env={env} icon={InformationSquareIcon} />
+      <Box padding="space-32" paddingBlock="space-8">
+        <PageHeader
+          title="Detaljer for komponent "
+          description={`Detaljer for  ${orgId} : ${componentId} `}
+          env={env}
+          icon={InformationSquareIcon}
+        />
         <Breadcrumbs items={breadcrumbItems} />
         <Suspense
           fallback={
@@ -98,7 +124,11 @@ export default function ContractComponent() {
 }
 
 // ---------- Child component used inside <Await> ----------
-function ContractComponentResolved({ setAlerts }: { setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>> }) {
+function ContractComponentResolved({
+  setAlerts,
+}: {
+  setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
+}) {
   const response = useAsyncValue() as {
     success: boolean;
     message?: string;
@@ -112,8 +142,13 @@ function ContractComponentResolved({ setAlerts }: { setAlerts: React.Dispatch<Re
         ...prev,
         {
           id: `component-error-${Date.now()}`,
-          variant: (response?.variant || "error") as "error" | "warning" | "success" | "info",
-          message: response?.message || "Kunne ikke hente adapter komponent detaljer",
+          variant: (response?.variant || "error") as
+            | "error"
+            | "warning"
+            | "success"
+            | "info",
+          message:
+            response?.message || "Kunne ikke hente adapter komponent detaljer",
           header: "Connection Feil",
         },
       ]);

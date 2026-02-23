@@ -30,6 +30,7 @@ export function SyncPage({ initialData }: SyncPageProps) {
   const [orgFilter, setOrgFilter] = useState<string>("");
   const [domainFilter, setDomainFilter] = useState<string>("");
   const [pakkeFilter, setPakkeFilter] = useState<string>("");
+  const [resourceFilter, setResourceFilter] = useState<string>("");
   const [dateRange, setDateRange] = useState<{
     from: Date | undefined;
     to: Date | undefined;
@@ -39,12 +40,18 @@ export function SyncPage({ initialData }: SyncPageProps) {
     setCurrentPage(page);
   };
 
-  const handleSyncTypeFilterChange = (value: { full: boolean; delta: boolean }) => {
+  const handleSyncTypeFilterChange = (value: {
+    full: boolean;
+    delta: boolean;
+  }) => {
     setSyncTypeFilter(value);
     setCurrentPage(1);
   };
 
-  const handleStatusFilterChange = (value: { finished: boolean; ongoing: boolean }) => {
+  const handleStatusFilterChange = (value: {
+    finished: boolean;
+    ongoing: boolean;
+  }) => {
     setStatusFilter(value);
     setCurrentPage(1);
   };
@@ -64,7 +71,15 @@ export function SyncPage({ initialData }: SyncPageProps) {
     setCurrentPage(1);
   };
 
-  const handleDateRangeChange = (value: { from: Date | undefined; to: Date | undefined }) => {
+  const handleResourceFilterChange = (value: string) => {
+    setResourceFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleDateRangeChange = (value: {
+    from: Date | undefined;
+    to: Date | undefined;
+  }) => {
     setDateRange(value);
     setCurrentPage(1);
   };
@@ -75,6 +90,7 @@ export function SyncPage({ initialData }: SyncPageProps) {
     setOrgFilter("");
     setDomainFilter("");
     setPakkeFilter("");
+    setResourceFilter("");
     setDateRange({ from: undefined, to: undefined });
     setCurrentPage(1);
   };
@@ -104,15 +120,31 @@ export function SyncPage({ initialData }: SyncPageProps) {
       return false;
     }
 
-    if (orgFilter && !sync.orgId.toLowerCase().includes(orgFilter.toLowerCase())) {
+    if (
+      orgFilter &&
+      !sync.orgId.toLowerCase().includes(orgFilter.toLowerCase())
+    ) {
       return false;
     }
 
-    if (domainFilter && !sync.domain.toLowerCase().includes(domainFilter.toLowerCase())) {
+    if (
+      domainFilter &&
+      !sync.domain.toLowerCase().includes(domainFilter.toLowerCase())
+    ) {
       return false;
     }
 
-    if (pakkeFilter && !sync.package.toLowerCase().includes(pakkeFilter.toLowerCase())) {
+    if (
+      pakkeFilter &&
+      !sync.package.toLowerCase().includes(pakkeFilter.toLowerCase())
+    ) {
+      return false;
+    }
+
+    if (
+      resourceFilter &&
+      !sync.resource.toLowerCase().includes(resourceFilter.toLowerCase())
+    ) {
       return false;
     }
 
@@ -149,6 +181,9 @@ export function SyncPage({ initialData }: SyncPageProps) {
   const uniqueOrg = [...new Set(initialData.map((item) => item.orgId))];
   const uniqueDomain = [...new Set(initialData.map((item) => item.domain))];
   const uniquePakke = [...new Set(initialData.map((item) => item.package))];
+  const uniqueResource = [
+    ...new Set(initialData.map((item) => item.resource)),
+  ].sort((a, b) => a.localeCompare(b));
 
   // const breadcrumbItems = [
   //   { label: "Dashboard", href: "/" },
@@ -156,29 +191,42 @@ export function SyncPage({ initialData }: SyncPageProps) {
   // ];
 
   return (
-    <Box padding="8" paddingBlock="2">
+    <Box>
       <SyncFilter
         syncTypeFilter={syncTypeFilter}
         statusFilter={statusFilter}
         orgFilter={orgFilter}
         domainFilter={domainFilter}
         packageFilter={pakkeFilter}
+        resourceFilter={resourceFilter}
         dateRange={dateRange}
         uniqueOrg={uniqueOrg}
         uniqueDomain={uniqueDomain}
         uniquePacker={uniquePakke}
+        uniqueResource={uniqueResource}
         onSyncTypeFilterChange={handleSyncTypeFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
         onOrgFilterChange={handleOrgFilterChange}
         onDomainFilterChange={handleDomainFilterChange}
         onPackageFilterChange={handlePakkeFilterChange}
+        onResourceFilterChange={handleResourceFilterChange}
         onDateRangeChange={handleDateRangeChange}
         onClearFilters={handleClearFilters}
       />
-
-      <SyncTable data={filteredData} currentPage={currentPage} onPageChange={handlePageChange} itemsPerPage={itemsPerPage} onRowClick={handleRowClick} />
-
-      {selectedSync && <SyncModal isOpen={isModalOpen} onClose={handleCloseModal} syncData={selectedSync} />}
+      <SyncTable
+        data={filteredData}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+        itemsPerPage={itemsPerPage}
+        onRowClick={handleRowClick}
+      />
+      {selectedSync && (
+        <SyncModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          syncData={selectedSync}
+        />
+      )}
     </Box>
   );
 }

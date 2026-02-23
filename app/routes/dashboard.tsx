@@ -1,7 +1,16 @@
 import { DashboardPage } from "~/components/dashboard/DashboardPage";
-import { Await, type LoaderFunction, useAsyncValue, useLoaderData, useNavigation } from "react-router";
+import {
+  Await,
+  type LoaderFunction,
+  useAsyncValue,
+  useLoaderData,
+  useNavigation,
+} from "react-router";
 import StatsApi from "~/api/StatsApi";
-import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
+import {
+  NovariSnackbar,
+  type NovariSnackbarItem,
+} from "novari-frontend-components";
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
 import { Alert, Box, Loader } from "@navikt/ds-react";
@@ -10,7 +19,10 @@ import { DonutChartIcon } from "@navikt/aksel-icons";
 import type { IStats } from "~/types/Stats";
 
 export function meta() {
-  return [{ title: "Dashboard - Fint Core Status Service" }, { name: "description", content: "View statistics dashboard" }];
+  return [
+    { title: "Dashboard - Fint Core Status Service" },
+    { name: "description", content: "View statistics dashboard" },
+  ];
 }
 
 export const loader: LoaderFunction = async () => {
@@ -41,7 +53,11 @@ export default function Dashboard() {
 
   return (
     <>
-      <PageHeader title="Dashboard" description="Oversikt over statistikk fra alle miljøer i Fint Core systemet." icon={DonutChartIcon} />
+      <PageHeader
+        title="Dashboard"
+        description="Oversikt over statistikk fra alle miljøer i Fint Core systemet."
+        icon={DonutChartIcon}
+      />
       <Suspense
         fallback={
           <Box className="p-6 flex justify-center">
@@ -89,7 +105,8 @@ function DashboardResolved({
         {
           id: `beta-stats-error-${Date.now()}`,
           variant: "error",
-          message: betaResponse?.message || "Kunne ikke hente statistikk fra BETA.",
+          message:
+            betaResponse?.message || "Kunne ikke hente statistikk fra BETA.",
           header: "BETA Feil",
         },
       ]);
@@ -100,7 +117,8 @@ function DashboardResolved({
         {
           id: `api-stats-error-${Date.now()}`,
           variant: "error",
-          message: apiResponse?.message || "Kunne ikke hente statistikk fra API.",
+          message:
+            apiResponse?.message || "Kunne ikke hente statistikk fra API.",
           header: "API Feil",
         },
       ]);
@@ -111,12 +129,21 @@ function DashboardResolved({
         {
           id: `alpha-stats-error-${Date.now()}`,
           variant: "error",
-          message: alphaResponse?.message || "Kunne ikke hente statistikk fra ALPHA.",
+          message:
+            alphaResponse?.message || "Kunne ikke hente statistikk fra ALPHA.",
           header: "ALPHA Feil",
         },
       ]);
     }
-  }, [betaResponse?.success, apiResponse?.success, alphaResponse?.success, betaResponse?.message, apiResponse?.message, alphaResponse?.message, setAlerts]);
+  }, [
+    betaResponse?.success,
+    apiResponse?.success,
+    alphaResponse?.success,
+    betaResponse?.message,
+    apiResponse?.message,
+    alphaResponse?.message,
+    setAlerts,
+  ]);
 
   return (
     <>
@@ -132,4 +159,3 @@ function DashboardResolved({
     </>
   );
 }
-

@@ -1,8 +1,17 @@
 import { EventsPage } from "~/components/events/EventsPage";
-import { Await, type LoaderFunction, useAsyncValue, useLoaderData, useNavigation } from "react-router";
+import {
+  Await,
+  type LoaderFunction,
+  useAsyncValue,
+  useLoaderData,
+  useNavigation,
+} from "react-router";
 import EventsApi from "~/api/EventsApi";
 import { selectedEnvCookie } from "~/utils/cookies";
-import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
+import {
+  NovariSnackbar,
+  type NovariSnackbarItem,
+} from "novari-frontend-components";
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
 import { Alert, Box, Loader } from "@navikt/ds-react";
@@ -11,7 +20,10 @@ import { BellIcon } from "@navikt/aksel-icons";
 import type { IEvent } from "~/types/Event";
 
 export function meta() {
-  return [{ title: "Hendelser - Fint Core Status Service" }, { name: "description", content: "View event logs and operations" }];
+  return [
+    { title: "Hendelser - Fint Core Status Service" },
+    { name: "description", content: "View event logs and operations" },
+  ];
 }
 
 //TODO: add metrics
@@ -27,7 +39,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Events() {
   const { env, eventResponse } = useLoaderData() as {
     env: string;
-    eventResponse: Promise<{ success: boolean; message?: string; data?: IEvent[] }>;
+    eventResponse: Promise<{
+      success: boolean;
+      message?: string;
+      data?: IEvent[];
+    }>;
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
@@ -35,6 +51,7 @@ export default function Events() {
   const navigation = useNavigation();
   const isNavigating = Boolean(navigation.location);
 
+  //TODO: change to a better notice
   if (isNavigating) {
     return <Box>Loading stuff...</Box>;
   }
@@ -42,7 +59,12 @@ export default function Events() {
   //TODO: use suspense on all routes
   return (
     <>
-      <PageHeader title="Hendelser" description="Oversikt over hendelser og deres status i Fint Core systemet." env={env} icon={BellIcon} />
+      <PageHeader
+        title="Hendelser"
+        description="Oversikt over hendelser og deres status i Fint Core systemet."
+        env={env}
+        icon={BellIcon}
+      />
       <Suspense
         fallback={
           <Box className="p-6 flex justify-center">
@@ -68,7 +90,15 @@ export default function Events() {
 }
 
 // ---------- Child component used inside <Await> ----------
-function SyncResolved({ env, alerts, setAlerts }: { env: string; alerts: NovariSnackbarItem[]; setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>> }) {
+function SyncResolved({
+  env,
+  alerts,
+  setAlerts,
+}: {
+  env: string;
+  alerts: NovariSnackbarItem[];
+  setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
+}) {
   const response = useAsyncValue() as {
     success: boolean;
     message?: string;

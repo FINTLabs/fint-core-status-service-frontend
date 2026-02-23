@@ -1,6 +1,14 @@
-import { Box, Detail, HGrid, Label, Tooltip, VStack } from "@navikt/ds-react";
+import {
+  Box,
+  Detail,
+  HGrid,
+  HStack,
+  InfoCard,
+  Label,
+  Tooltip,
+} from "@navikt/ds-react";
 import { CalendarIcon, HeartBrokenIcon, HeartIcon } from "@navikt/aksel-icons";
-import { formatTimestampDetailed, formatDateRelative } from "~/utils/time";
+import { formatDateRelative, formatTimestampDetailed } from "~/utils/time";
 import type { IContractComponent } from "~/types";
 import { useMemo } from "react";
 
@@ -17,8 +25,12 @@ export function ContractComponentCards({ data }: ContractComponentCardsProps) {
       if (a.heartbeat && !b.heartbeat) return 1;
 
       // Second priority: if both have same heartbeat status, prioritize items with no syncs (0 or missing)
-      const aHasNoSyncs = (!a.lastDelta || a.lastDelta === 0) && (!a.lastFull || a.lastFull === 0);
-      const bHasNoSyncs = (!b.lastDelta || b.lastDelta === 0) && (!b.lastFull || b.lastFull === 0);
+      const aHasNoSyncs =
+        (!a.lastDelta || a.lastDelta === 0) &&
+        (!a.lastFull || a.lastFull === 0);
+      const bHasNoSyncs =
+        (!b.lastDelta || b.lastDelta === 0) &&
+        (!b.lastFull || b.lastFull === 0);
       if (aHasNoSyncs && !bHasNoSyncs) return -1;
       if (!aHasNoSyncs && bHasNoSyncs) return 1;
 
@@ -37,80 +49,51 @@ export function ContractComponentCards({ data }: ContractComponentCardsProps) {
 
   if (sortedData.length === 0) {
     return (
-      <Box background={"surface-subtle" as const} padding="space-16" borderRadius="large" shadow="xsmall">
-        <Box className="text-center text-gray-500">Ingen ressurser funnet</Box>
+      <Box padding="space-16" borderRadius="8" shadow="dialog">
+        <Box className="text-center text-ax-neutral-600">
+          Ingen ressurser funnet
+        </Box>
       </Box>
     );
   }
 
   return (
-    <HGrid gap="4" columns={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+    <HGrid gap="space-16" columns={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
       {sortedData.map((item, index) => {
-        const hasError = !item.heartbeat || ((!item.lastDelta || item.lastDelta === 0) && (!item.lastFull || item.lastFull === 0));
+        const hasError =
+          !item.heartbeat ||
+          ((!item.lastDelta || item.lastDelta === 0) &&
+            (!item.lastFull || item.lastFull === 0));
 
         return (
-          <Box
-            key={`${item.adapterId}-${index}`}
-            background={"surface-subtle" as const}
-            padding="4"
-            borderRadius="large"
-            shadow="xsmall"
-            className={`transition-all hover:shadow-medium ${hasError ? "border-l-4 border-l-red-500" : "border-l-4 border-l-green-500"}`}
-            data-cy="adapter-component-detail-card"
+          <InfoCard
+            key={`${item.adapterId}-${index}-${index}`}
+            data-color={hasError ? "danger" : "success"}
           >
-            <VStack gap="3">
-              {/* Heartbeat status */}
-              <Box className="flex items-center gap-2">
-                {item.heartbeat ? (
-                  <>
-                    <HeartIcon className="text-green-600" title="Aktiv" fontSize="1.5rem" />
-                    <Label className="text-sm font-semibold text-green-700">Aktiv</Label>
-                  </>
-                ) : (
-                  <>
-                    <HeartBrokenIcon className="text-red-600" title="Inaktiv" fontSize="1.5rem" />
-                    <Label className="text-sm font-semibold text-red-700">Inaktiv</Label>
-                  </>
-                )}
-              </Box>
-
-              {/* Adapter ID */}
-              <Box>
-                <span className="text-xs text-gray-600 uppercase tracking-wide">Adapter ID</span>
-                <Detail>{item.adapterId}</Detail>
-              </Box>
-
-              {/* Last Delta Sync */}
-              <Box>
-                <span className="text-xs text-gray-600 uppercase tracking-wide">Siste Delta</span>
-                {item.lastDelta && item.lastDelta !== 0 ? (
-                  <Box className="flex items-center gap-2">
-                    <Detail>{formatDateRelative(item.lastDelta)}</Detail>
-                    <Tooltip content={formatTimestampDetailed(item.lastDelta)}>
-                      <CalendarIcon title="a11y-title" fontSize="1.5rem" className="text-gray-500" />
-                    </Tooltip>
-                  </Box>
-                ) : (
-                  <Detail className="text-base text-gray-500">-</Detail>
-                )}
-              </Box>
-
-              {/* Last Full Sync */}
-              <Box>
-                <span className="text-xs text-gray-600 uppercase tracking-wide">Siste Full</span>
-                {item.lastFull && item.lastFull !== 0 ? (
-                  <Box className="flex items-center gap-2">
-                    <Detail className="text-base">{formatDateRelative(item.lastFull)}</Detail>
-                    <Tooltip content={formatTimestampDetailed(item.lastFull)}>
-                      <CalendarIcon title="a11y-title" fontSize="1.5rem" className="text-gray-500" />
-                    </Tooltip>
-                  </Box>
-                ) : (
-                  <Detail className="text-base text-gray-500">-</Detail>
-                )}
-              </Box>
-            </VStack>
-          </Box>
+            <InfoCard.Header
+              icon={hasError ? <HeartBrokenIcon /> : <HeartIcon />}
+            >
+              <InfoCard.Title>
+                Adapter ID <Detail>{item.adapterId}</Detail>
+              </InfoCard.Title>
+            </InfoCard.Header>
+            <InfoCard.Content>
+              <Label>Siste Delta</Label>
+              <HStack gap="space-8" align="center">
+                <Tooltip content={formatTimestampDetailed(item.lastDelta)}>
+                  <CalendarIcon title="a11y-title" fontSize="1.5rem" />
+                </Tooltip>
+                <Detail>{formatDateRelative(item.lastDelta)}</Detail>
+              </HStack>
+              <Label>Siste Full</Label>
+              <HStack gap="space-8" align="center">
+                <Tooltip content={formatTimestampDetailed(item.lastFull)}>
+                  <CalendarIcon title="a11y-title" fontSize="1.5rem" />
+                </Tooltip>
+                <Detail>{formatDateRelative(item.lastFull)}</Detail>
+              </HStack>
+            </InfoCard.Content>
+          </InfoCard>
         );
       })}
     </HGrid>

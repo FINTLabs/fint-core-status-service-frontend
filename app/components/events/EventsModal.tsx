@@ -1,4 +1,15 @@
-import { Modal, Button, Heading, Tabs, CopyButton, Box, HStack, Detail, VStack, Label } from "@navikt/ds-react";
+import {
+  Modal,
+  Button,
+  Heading,
+  Tabs,
+  CopyButton,
+  Box,
+  HStack,
+  Detail,
+  VStack,
+  Label,
+} from "@navikt/ds-react";
 import type { IRequestEvent, IResponseEvent } from "~/types/Event";
 
 interface HendelserModalProps {
@@ -8,7 +19,12 @@ interface HendelserModalProps {
   responseData: IResponseEvent | null;
 }
 
-export function EventsModal({ isOpen, onClose, requestData, responseData }: HendelserModalProps) {
+export function EventsModal({
+  isOpen,
+  onClose,
+  requestData,
+  responseData,
+}: HendelserModalProps) {
   const formatTimestamp = (timestamp?: number | null) => {
     if (!timestamp) {
       return "Ikke tilgjengelig";
@@ -30,17 +46,29 @@ export function EventsModal({ isOpen, onClose, requestData, responseData }: Hend
 
   const renderOperationBadge = (operation?: string | null) => {
     if (!operation) {
-      return <span className="text-gray-500">Ikke tilgjengelig</span>;
+      return <span className="text-ax-neutral-600">Ikke tilgjengelig</span>;
     }
 
-    const baseClasses = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium";
-    const colorClass = operation === "CREATE" ? "bg-green-100 text-green-800" : operation === "UPDATE" ? "bg-blue-100 text-blue-800" : "bg-red-100 text-red-800";
+    const baseClasses =
+      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium";
+    const colorClass =
+      operation === "CREATE"
+        ? "bg-ax-success-200 text-ax-success-900"
+        : operation === "UPDATE"
+          ? "bg-ax-accent-200 text-ax-accent-900"
+          : "bg-ax-danger-200 text-ax-danger-900";
 
     return <span className={`${baseClasses} ${colorClass}`}>{operation}</span>;
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose} aria-labelledby="hendelser-modal-title" aria-describedby="hendelser-modal-description" placement="top">
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      aria-labelledby="hendelser-modal-title"
+      aria-describedby="hendelser-modal-description"
+      placement="top"
+    >
       <Modal.Header>
         <Heading id="hendelser-modal-title" size="medium">
           Hendelse Detaljer:
@@ -49,7 +77,6 @@ export function EventsModal({ isOpen, onClose, requestData, responseData }: Hend
         {/*  {corrId}*/}
         {/*</Heading>*/}
       </Modal.Header>
-
       <Modal.Body>
         <Box id="hendelser-modal-description">
           <Tabs defaultValue="request" size="small">
@@ -62,10 +89,10 @@ export function EventsModal({ isOpen, onClose, requestData, responseData }: Hend
               <Box className="mt-4">
                 <h2 className="mb-3">Request Data</h2>
                 {requestData ? (
-                  <HStack gap="4" justify="space-around">
-                    <VStack gap="2">
+                  <HStack gap="space-16" justify="space-around">
+                    <VStack gap="space-8">
                       <Label size="small">Correlation ID:</Label>
-                      <Detail className={"bg-gray-100  p-2"}>{requestData.corrId}</Detail>
+                      <Detail>{requestData.corrId}</Detail>
                       <Label size="small">Organization:</Label>
                       <Detail>{requestData.orgId}</Detail>
                       <Label size="small">Domain:</Label>
@@ -73,9 +100,11 @@ export function EventsModal({ isOpen, onClose, requestData, responseData }: Hend
                       <Label size="small">Package:</Label>
                       <Detail>{requestData.packageName}</Detail>
                     </VStack>
-                    <VStack gap="2">
+                    <VStack gap="space-8">
                       <Label size="small">Operation:</Label>
-                      <Detail weight="semibold">{renderOperationBadge(requestData.operationType)}</Detail>
+                      <Detail weight="semibold">
+                        {renderOperationBadge(requestData.operationType)}
+                      </Detail>
                       <Label size="small">Created:</Label>
                       <Detail>{formatTimestamp(requestData.created)}</Detail>
                       <Label size="small">Time to Live:</Label>
@@ -83,20 +112,38 @@ export function EventsModal({ isOpen, onClose, requestData, responseData }: Hend
                     </VStack>
                   </HStack>
                 ) : (
-                  <p className="text-gray-500">No request data available</p>
+                  <p className="text-ax-neutral-600">
+                    No request data available
+                  </p>
                 )}
               </Box>
               <Box className="mt-4">
                 {requestData ? (
                   <>
-                    <HStack gap="4" justify="space-between" align="center" className="mb-2">
-                      <span className="font-medium text-gray-600">Raw JSON:</span>
-                      <CopyButton copyText={formatJson(requestData)} size="small" text="Kopier JSON" activeText="Kopiert!" />
+                    <HStack
+                      gap="space-16"
+                      justify="space-between"
+                      align="center"
+                      className="mb-2"
+                    >
+                      <span className="font-medium text-ax-neutral-700">
+                        Raw JSON:
+                      </span>
+                      <CopyButton
+                        copyText={formatJson(requestData)}
+                        size="small"
+                        text="Kopier JSON"
+                        activeText="Kopiert!"
+                      />
                     </HStack>
-                    <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-[6px] overflow-x-auto overflow-y-auto">{formatJson(requestData)}</pre>
+                    <pre className={"novari-json-box"}>
+                      {formatJson(requestData)}
+                    </pre>
                   </>
                 ) : (
-                  <p className="text-gray-500">No request data available</p>
+                  <p className="text-ax-neutral-600">
+                    No request data available
+                  </p>
                 )}
               </Box>
             </Tabs.Panel>
@@ -105,66 +152,103 @@ export function EventsModal({ isOpen, onClose, requestData, responseData }: Hend
               <Box className="mt-4">
                 <h2 className="mb-3">Response Data</h2>
                 {responseData ? (
-                  <HStack gap="4" justify="space-around">
-                    <VStack gap="2">
+                  <HStack gap="space-16" justify="space-around">
+                    <VStack gap="space-8">
                       <Label size="small">Correlation ID:</Label>
-                      <Detail className={"bg-gray-100  p-2"}>{responseData.corrId}</Detail>
+                      <Detail className={"bg-ax-neutral-200  p-2"}>
+                        {responseData.corrId}
+                      </Detail>
                       <Label size="small">Adapter ID:</Label>
                       <Detail>{responseData.adapterId}</Detail>
                       <Label size="small">Organization:</Label>
                       <Detail>{responseData.orgId}</Detail>
                     </VStack>
-                    <VStack gap="2">
+                    <VStack gap="space-8">
                       <Label size="small">Status:</Label>
                       <Detail weight="semibold">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            !responseData.failed && !responseData.rejected && !responseData.conflicted ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                            !responseData.failed &&
+                            !responseData.rejected &&
+                            !responseData.conflicted
+                              ? "bg-ax-success-200 text-ax-success-900"
+                              : "bg-ax-danger-200 text-ax-danger-900"
                           }`}
                         >
-                          {!responseData.failed && !responseData.rejected && !responseData.conflicted ? "Success" : "Failed"}
+                          {!responseData.failed &&
+                          !responseData.rejected &&
+                          !responseData.conflicted
+                            ? "Success"
+                            : "Failed"}
                         </span>
                       </Detail>
                       <Label size="small">Handled At:</Label>
                       <Detail>{formatTimestamp(responseData.handledAt)}</Detail>
                     </VStack>
-                    <VStack gap="2">
+                    <VStack gap="space-8">
                       {responseData.errorMessage && (
                         <Box className="col-span-2">
-                          <span className="font-medium text-gray-600">Error Message:</span>
-                          <Box className="mt-1 p-2 bg-red-50 border border-red-200 rounded text-red-800">{responseData.errorMessage}</Box>
+                          <span className="font-medium text-ax-neutral-700">
+                            Error Message:
+                          </span>
+                          <Box className="mt-1 p-2 bg-ax-danger-100 border border-ax-danger-300 rounded text-ax-danger-900">
+                            {responseData.errorMessage}
+                          </Box>
                         </Box>
                       )}
                       {responseData.rejectReason && (
                         <Box className="col-span-2">
-                          <span className="font-medium text-gray-600">Reject Reason:</span>
-                          <Box className="mt-1 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">{responseData.rejectReason}</Box>
+                          <span className="font-medium text-ax-neutral-700">
+                            Reject Reason:
+                          </span>
+                          <Box className="mt-1 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">
+                            {responseData.rejectReason}
+                          </Box>
                         </Box>
                       )}
                       {responseData.conflictReason && (
                         <Box className="col-span-2">
-                          <span className="font-medium text-gray-600">Conflict Reason:</span>
-                          <Box className="mt-1 p-2 bg-orange-50 border border-orange-200 rounded text-orange-800">{responseData.conflictReason}</Box>
+                          <span className="font-medium text-ax-neutral-700">
+                            Conflict Reason:
+                          </span>
+                          <Box className="mt-1 p-2 bg-ax-warning-100 border border-ax-warning-300 rounded text-ax-warning-900">
+                            {responseData.conflictReason}
+                          </Box>
                         </Box>
                       )}
                     </VStack>
                     <Box className="mt-4">
-                      <HStack gap="4" justify="space-between" align="center" className="mb-2">
-                        <span className="font-medium text-gray-600">Raw JSON:</span>
-                        <CopyButton copyText={formatJson(responseData)} size="small" text="Kopier JSON" activeText="Kopiert!" />
+                      <HStack
+                        gap="space-16"
+                        justify="space-between"
+                        align="center"
+                        className="mb-2"
+                      >
+                        <span className="font-medium text-ax-neutral-700">
+                          Raw JSON:
+                        </span>
+                        <CopyButton
+                          copyText={formatJson(responseData)}
+                          size="small"
+                          text="Kopier JSON"
+                          activeText="Kopiert!"
+                        />
                       </HStack>
-                      <pre className="mt-2 p-4 bg-gray-50 border rounded-lg text-[10px] overflow-x-auto overflow-y-auto max-h-96 max-w-150">{formatJson(responseData)}</pre>
+                      <pre className={"novari-json-box"}>
+                        {formatJson(responseData)}
+                      </pre>
                     </Box>
                   </HStack>
                 ) : (
-                  <p className="text-gray-500">No response data available</p>
+                  <p className="text-ax-neutral-600">
+                    No response data available
+                  </p>
                 )}
               </Box>
             </Tabs.Panel>
           </Tabs>
         </Box>
       </Modal.Body>
-
       <Modal.Footer>
         <Button variant="tertiary" onClick={onClose}>
           Lukk

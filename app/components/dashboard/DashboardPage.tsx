@@ -1,4 +1,4 @@
-import { Box, Alert, Heading } from "@navikt/ds-react";
+import { Alert, Box, Heading, HStack } from "@navikt/ds-react";
 import type { IStats } from "~/types/Stats";
 import { DashboardStats } from "~/components/dashboard/DashboardStats";
 
@@ -11,11 +11,18 @@ interface DashboardPageProps {
   alphaError?: string;
 }
 
-export function DashboardPage({ betaStats, apiStats, alphaStats, betaError, apiError, alphaError }: DashboardPageProps) {
+export function DashboardPage({
+  betaStats,
+  apiStats,
+  alphaStats,
+  betaError,
+  apiError,
+  alphaError,
+}: DashboardPageProps) {
   return (
-    <Box padding="8" paddingBlock="2">
+    <HStack gap="space-16" justify="center">
       {apiError ? (
-        <Box padding="4">
+        <Box padding="space-16">
           <Heading level="2" size="medium" spacing>
             API
           </Heading>
@@ -25,7 +32,7 @@ export function DashboardPage({ betaStats, apiStats, alphaStats, betaError, apiE
         <DashboardStats stats={apiStats} env="API" />
       ) : null}
       {betaError ? (
-        <Box padding="4" >
+        <Box padding="space-16">
           <Heading level="2" size="medium" spacing>
             BETA
           </Heading>
@@ -34,11 +41,8 @@ export function DashboardPage({ betaStats, apiStats, alphaStats, betaError, apiE
       ) : betaStats ? (
         <DashboardStats stats={betaStats} env="BETA" />
       ) : null}
-
-
-
       {alphaError ? (
-        <Box padding="4">
+        <Box padding="space-16">
           <Heading level="2" size="medium" spacing>
             ALPHA
           </Heading>
@@ -47,6 +51,6 @@ export function DashboardPage({ betaStats, apiStats, alphaStats, betaError, apiE
       ) : alphaStats ? (
         <DashboardStats stats={alphaStats} env="ALPHA" />
       ) : null}
-    </Box>
+    </HStack>
   );
 }

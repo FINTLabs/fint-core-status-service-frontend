@@ -16,13 +16,13 @@ import { Box, Page } from "@navikt/ds-react";
 import { Footer } from "./components/layout/Footer";
 
 import type { Route } from "./+types/root";
-import "./app.css";
+// import "./app.css";
 import themeHref from "./styles/novari-theme.css?url";
 import akselHref from "@navikt/ds-css?url";
 import { selectedEnvCookie } from "~/utils/cookies";
 import { AuthProperties } from "~/utils/auth";
 import type { IUserSession } from "~/types";
-import { NovariHeader } from "novari-frontend-components";
+import { NovariHeader, ThemeProvider } from "novari-frontend-components";
 import { EnvironmentSelector } from "~/components/common/EnvironmentSelector";
 
 //TODO: fix MSW for local development
@@ -69,14 +69,8 @@ async function initializeMSW() {
 initializeMSW();
 
 export const links: Route.LinksFunction = () => [
-  {
-    rel: "stylesheet",
-    href: themeHref,
-  },
-  {
-    rel: "stylesheet",
-    href: akselHref,
-  },
+  { rel: "stylesheet", href: akselHref, as: "style" }, // Aksel first
+  { rel: "stylesheet", href: themeHref, as: "style" }, // novari-theme.css
 ];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -102,7 +96,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         headers: {
           "Set-Cookie": newCookieHeader,
         },
-      }
+      },
     );
   }
 
@@ -121,7 +115,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
         <title>Status</title>
       </head>
-      <body data-theme="novari">
+      <body>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -136,56 +130,68 @@ export default function App() {
   }>();
   const location = useLocation();
   const navigate = useNavigate();
+  // const theme: "light" | "dark" = "light";
 
   return (
-    <Page
-      footer={
-        <Box padding="1" as="footer" className={"novari-footer"}>
-          <Page.Block>
-            <Footer />
+    <ThemeProvider>
+      <div data-color="brand-magenta">
+        <Page
+          footer={
+            <Box padding="space-4" as="footer" className={"novari-footer"}>
+              <Page.Block>
+                <Footer />
+              </Page.Block>
+            </Box>
+          }
+        >
+          <Page.Block as="header">
+            {/*<Theme theme="light">*/}
+            <Box as="nav" data-cy="novari-header" shadow="dialog">
+              <NovariHeader
+                appName="Fint Core Status Service"
+                menu={[
+                  {
+                    label: "Dashboard",
+                    action: "/",
+                  },
+                  {
+                    label: "Adaptere",
+                    action: "/adaptere",
+                  },
+                  {
+                    label: "Hendelser",
+                    action: "/hendelser",
+                  },
+                  {
+                    label: "Synkronisering",
+                    action: "/sync",
+                  },
+                ]}
+                isLoggedIn={true}
+                onLogout={() => {}}
+                onLogin={() => {}}
+                onMenuClick={(action) => navigate(action)}
+                displayName={""}
+                className={"novari-header"}
+                showLogoWithTitle={true}
+              >
+                <EnvironmentSelector
+                  userSession={userSession}
+                  navigateTo={location.pathname}
+                />
+              </NovariHeader>
+            </Box>
+            {/*</Theme>*/}
           </Page.Block>
-        </Box>
-      }
-    >
-      <Box background={"bg-default"} as="nav" data-cy="novari-header">
-        <Page.Block as="header">
-          <NovariHeader
-            appName="Fint Core Status Service"
-            menu={[
-              {
-                label: "Dashboard",
-                action: "/",
-              },
-              {
-                label: "Adaptere",
-                action: "/adaptere",
-              },
-              {
-                label: "Hendelser",
-                action: "/hendelser",
-              },
-              {
-                label: "Synkronisering",
-                action: "/sync",
-              },
-            ]}
-            isLoggedIn={true}
-            onLogout={() => {}}
-            onLogin={() => {}}
-            onMenuClick={(action) => navigate(action)}
-            displayName={""}
-          >
-            <EnvironmentSelector userSession={userSession} navigateTo={location.pathname} />
-          </NovariHeader>
-        </Page.Block>
-      </Box>
 
-      <Box padding="8" paddingBlock="2" as="main">
-        <Page.Block gutters width="2xl">
-          <Outlet context={userSession} />
-        </Page.Block>
-      </Box>
-    </Page>
+          <Box padding="space-32" paddingBlock="space-8" as="main">
+            <Page.Block gutters width="2xl">
+              <Outlet context={userSession} />
+            </Page.Block>
+          </Box>
+        </Page>
+      </div>
+    </ThemeProvider>
   );
 }
 
@@ -195,7 +201,10 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
-    details = error.status === 404 ? "The requested page could not be found." : error.statusText || details;
+    details =
+      error.status === 404
+        ? "The requested page could not be found."
+        : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
   }
@@ -205,7 +214,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       {/*<Header />*/}
       <Page.Block as="main" width="xl" gutters>
         <Box className="py-8">
-          <h1 className="text-3xl font-bold mb-4">{message}</h1>
+          <h1 className="text-3xl font-ax-bold mb-4">{message}</h1>
           <p className="text-lg mb-4">{details}</p>
         </Box>
       </Page.Block>

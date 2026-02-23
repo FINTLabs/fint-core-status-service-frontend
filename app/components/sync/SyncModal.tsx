@@ -1,4 +1,17 @@
-import { BodyLong, Box, Button, Heading, HStack, Modal, Table, VStack, BodyShort, CopyButton } from "@navikt/ds-react";
+import {
+  Box,
+  Button,
+  CopyButton,
+  Detail,
+  Heading,
+  HGrid,
+  HStack,
+  Label,
+  Modal,
+  Table,
+  Tag,
+  VStack,
+} from "@navikt/ds-react";
 import type { ISyncData } from "~/types";
 
 interface SyncModalProps {
@@ -35,172 +48,145 @@ export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
   };
 
   const calculateProgress = () => {
-    return Math.round((syncData.entitiesAquired / syncData.totalEntities) * 100);
+    return Math.round(
+      (syncData.entitiesAquired / syncData.totalEntities) * 100,
+    );
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose} width="medium" data-cy="sync-modal" aria-label="Synkronisering Detaljer">
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      width="medium"
+      data-cy="sync-modal"
+      aria-label="Synkronisering Detaljer"
+    >
       <Modal.Header>
-        <VStack gap="2">
+        <VStack gap="space-8">
           <Heading level="2" size="medium">
             Synkronisering Detaljer
           </Heading>
-          <VStack gap="1">
+          <VStack gap="space-4">
             <Box>
-              <BodyShort size="small" textColor="subtle">
-                Correlation ID
-              </BodyShort>
-              <HStack align="center" gap="2">
-                <BodyShort size="small" className="font-mono ">
-                  {syncData.corrId}
-                </BodyShort>
+              <Label>Correlation ID</Label>
+              <HStack align="center" gap="space-8">
+                <Detail>{syncData.corrId}</Detail>
                 <CopyButton copyText={syncData.corrId} size={"small"} />
               </HStack>
             </Box>
             <Box>
-              <BodyShort size="small" textColor="subtle">
-                Adapter ID
-              </BodyShort>
-              <BodyShort size="small" className="break-all">
-                {syncData.adapterId}
-              </BodyShort>
+              <Label>Adapter ID</Label>
+              <Detail>{syncData.adapterId}</Detail>
             </Box>
           </VStack>
         </VStack>
       </Modal.Header>
-
       <Modal.Body>
-        <Box>
-          {/* Overview Section */}
-          <Box marginBlock="4">
-            <Heading level="3" size="small" spacing>
-              Oversikt
-            </Heading>
-
-            <Box className="grid grid-cols-2 gap-4">
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Organisasjon
-                </BodyLong>
-                <BodyLong size="small">{syncData.orgId}</BodyLong>
-              </Box>
-
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Domene
-                </BodyLong>
-                <BodyLong size="small">{syncData.domain}</BodyLong>
-              </Box>
-
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Pakke
-                </BodyLong>
-                <BodyLong size="small">{syncData.package}</BodyLong>
-              </Box>
-
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Ressurs
-                </BodyLong>
-                <BodyLong size="small">{syncData.resource}</BodyLong>
-              </Box>
-
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Type
-                </BodyLong>
-                <BodyLong size="small">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      syncData.syncType === "FULL" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"
-                    }`}
-                  >
-                    {syncData.syncType}
-                  </span>
-                </BodyLong>
-              </Box>
-
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Status
-                </BodyLong>
-                <BodyLong size="small">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      syncData.finished ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                    }`}
-                  >
-                    {syncData.finished ? "Fullført" : "Pågår"}
-                  </span>
-                </BodyLong>
-              </Box>
-
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Fremdrift
-                </BodyLong>
-                <BodyLong size="small">
-                  {syncData.entitiesAquired} / {syncData.totalEntities} entiteter ({calculateProgress()}%)
-                </BodyLong>
-              </Box>
-
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Sider
-                </BodyLong>
-                <BodyLong size="small">
-                  {syncData.pagesAcquired} / {syncData.totalPages} sider
-                </BodyLong>
-              </Box>
-
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Varighet
-                </BodyLong>
-                <BodyLong size="small">{calculateDuration(syncData.pages)}</BodyLong>
-              </Box>
-
-              <Box>
-                <BodyLong size="small" className="text-gray-500">
-                  Sist oppdatert
-                </BodyLong>
-                <BodyLong size="small">{formatTime(syncData.lastPageTime)}</BodyLong>
-              </Box>
-            </Box>
+        <Heading level="3" size="small" spacing data-color={"brand-magenta"}>
+          Oversikt
+        </Heading>
+        <HGrid gap="space-16" columns={2}>
+          <Box>
+            <Label>Organisasjon</Label>
+            <Detail>{syncData.orgId}</Detail>
           </Box>
 
-          {/* Pages Table */}
-          <Box marginBlock="4">
-            <Heading level="3" size="small" spacing>
-              Sider ({syncData.pages.length})
-            </Heading>
+          <Box>
+            <Label>Domene</Label>
+            <Detail>{syncData.domain}</Detail>
+          </Box>
 
-            <Table size="small">
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell>Side Nr.</Table.HeaderCell>
-                  <Table.HeaderCell>Størrelse</Table.HeaderCell>
-                  <Table.HeaderCell>Tidspunkt</Table.HeaderCell>
+          <Box>
+            <Label>Pakke</Label>
+            <Detail>{syncData.package}</Detail>
+          </Box>
+
+          <Box>
+            <Label>Ressurs</Label>
+            <Detail>{syncData.resource}</Detail>
+          </Box>
+
+          <Box>
+            <Label>Type </Label>
+            <Tag
+              variant="outline"
+              size="xsmall"
+              data-color={syncData.syncType === "FULL" ? "info" : "meta-purple"}
+            >
+              {syncData.syncType}
+            </Tag>
+          </Box>
+
+          <Box>
+            <Label>Status </Label>
+            <Tag
+              variant="outline"
+              size="xsmall"
+              data-color={syncData.finished ? "success" : "warning"}
+            >
+              {syncData.finished ? "Fullført" : "Pågår"}
+            </Tag>
+          </Box>
+
+          <Box>
+            <Label>Fremdrift</Label>
+            <Detail>
+              {syncData.entitiesAquired} / {syncData.totalEntities} entiteter (
+              {calculateProgress()}%)
+            </Detail>
+          </Box>
+
+          <Box>
+            <Label>Sider</Label>
+            <Detail>
+              {syncData.pagesAcquired} / {syncData.totalPages} sider
+            </Detail>
+          </Box>
+
+          <Box>
+            <Label>Varighet</Label>
+            <Detail>{calculateDuration(syncData.pages)}</Detail>
+          </Box>
+
+          <Box>
+            <Label>Sist oppdatert</Label>
+            <Detail>{formatTime(syncData.lastPageTime)}</Detail>
+          </Box>
+        </HGrid>
+
+        {/* Pages Table */}
+        <Box marginBlock="space-16">
+          <Heading level="3" size="small" spacing data-color={"brand-magenta"}>
+            Sider ({syncData.pages.length})
+          </Heading>
+
+          <Table size="small">
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Side Nr.</Table.HeaderCell>
+                <Table.HeaderCell>Størrelse</Table.HeaderCell>
+                <Table.HeaderCell>Tidspunkt</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {syncData.pages.map((page, index) => (
+                <Table.Row key={index}>
+                  <Table.DataCell>{page.pageNumber}</Table.DataCell>
+                  <Table.DataCell>{page.pageSize} entiteter</Table.DataCell>
+                  <Table.DataCell>{formatTime(page.time)}</Table.DataCell>
                 </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {syncData.pages.map((page, index) => (
-                  <Table.Row key={index}>
-                    <Table.DataCell>{page.pageNumber}</Table.DataCell>
-                    <Table.DataCell>{page.pageSize} entiteter</Table.DataCell>
-                    <Table.DataCell>{formatTime(page.time)}</Table.DataCell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </Box>
+              ))}
+            </Table.Body>
+          </Table>
         </Box>
       </Modal.Body>
-
       <Modal.Footer>
-        <HStack gap="4" justify="end">
-          <Button variant="tertiary" onClick={onClose} data-cy="sync-modal-close">
+        <HStack gap="space-16" justify="end">
+          <Button
+            variant="tertiary"
+            onClick={onClose}
+            data-cy="sync-modal-close"
+          >
             Lukk
           </Button>
         </HStack>

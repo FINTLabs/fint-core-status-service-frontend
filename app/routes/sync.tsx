@@ -1,10 +1,19 @@
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
-import { Await, type LoaderFunction, useAsyncValue, useLoaderData, useNavigation } from "react-router";
+import {
+  Await,
+  type LoaderFunction,
+  useAsyncValue,
+  useLoaderData,
+  useNavigation,
+} from "react-router";
 import SyncApi from "~/api/SyncApi";
 import { SyncPage } from "~/components/sync/SyncPage";
 import type { ISyncData } from "~/types";
-import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
+import {
+  NovariSnackbar,
+  type NovariSnackbarItem,
+} from "novari-frontend-components";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { ArrowsSquarepathIcon } from "@navikt/aksel-icons";
 import { Alert, Box, Loader } from "@navikt/ds-react";
@@ -22,7 +31,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Sync() {
   const { env, syncResponse } = useLoaderData() as {
     env: string;
-    syncResponse: Promise<{ success: boolean; message?: string; data?: ISyncData[] }>;
+    syncResponse: Promise<{
+      success: boolean;
+      message?: string;
+      data?: ISyncData[];
+    }>;
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
@@ -36,7 +49,12 @@ export default function Sync() {
 
   return (
     <>
-      <PageHeader title="Synkronisering" description="Oversikt over synkroniseringer og status i Fint Core systemet." env={env} icon={ArrowsSquarepathIcon} />
+      <PageHeader
+        title="Synkronisering"
+        description="Oversikt over synkroniseringer og status i Fint Core systemet."
+        env={env}
+        icon={ArrowsSquarepathIcon}
+      />
 
       <Suspense
         fallback={
@@ -61,7 +79,15 @@ export default function Sync() {
 }
 
 // ---------- Child component used inside <Await> ----------
-function SyncResolved({ env, alerts, setAlerts }: { env: string; alerts: NovariSnackbarItem[]; setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>> }) {
+function SyncResolved({
+  env,
+  alerts,
+  setAlerts,
+}: {
+  env: string;
+  alerts: NovariSnackbarItem[];
+  setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
+}) {
   const response = useAsyncValue() as {
     success: boolean;
     message?: string;
