@@ -13,6 +13,7 @@ import {
   VStack,
 } from "@navikt/ds-react";
 import type { ISyncData } from "~/types";
+import { formatTimestampDetailed } from "~/utils/time";
 
 interface SyncModalProps {
   isOpen: boolean;
@@ -21,18 +22,6 @@ interface SyncModalProps {
 }
 
 export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
-  const formatTime = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString("no-NO", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  };
-
   const calculateDuration = (pages: ISyncData["pages"]) => {
     if (pages.length === 0) return "N/A";
     const firstPageTime = pages[0].time;
@@ -150,7 +139,7 @@ export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
 
           <Box>
             <Label>Sist oppdatert</Label>
-            <Detail>{formatTime(syncData.lastPageTime)}</Detail>
+            <Detail>{formatTimestampDetailed(syncData.lastPageTime)}</Detail>
           </Box>
         </HGrid>
 
@@ -160,7 +149,7 @@ export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
             Sider ({syncData.pages.length})
           </Heading>
 
-          <Table size="small">
+          <Table size="small" zebraStripes={true}>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>Side Nr.</Table.HeaderCell>
@@ -173,7 +162,9 @@ export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
                 <Table.Row key={index}>
                   <Table.DataCell>{page.pageNumber}</Table.DataCell>
                   <Table.DataCell>{page.pageSize} entiteter</Table.DataCell>
-                  <Table.DataCell>{formatTime(page.time)}</Table.DataCell>
+                  <Table.DataCell>
+                    {formatTimestampDetailed(page.time)}
+                  </Table.DataCell>
                 </Table.Row>
               ))}
             </Table.Body>

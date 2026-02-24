@@ -2,6 +2,7 @@ import { Box, Pagination, ProgressBar, Table, Tag } from "@navikt/ds-react";
 import { ArrowCirclepathIcon, CheckmarkCircleIcon } from "@navikt/aksel-icons";
 import type { ISyncData } from "~/types";
 import { useMemo, useState } from "react";
+import { formatTimestampDetailed } from "~/utils/time";
 
 interface SyncTableProps {
   data: ISyncData[];
@@ -48,17 +49,6 @@ export function SyncTable({
         return { orderBy: sortKey, direction: "ascending" };
       }
       return undefined;
-    });
-  };
-
-  const formatTime = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString("no-NO", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
 
@@ -148,7 +138,9 @@ export function SyncTable({
                   <Box>{calculateProgress(sync)}%</Box>
                 </Box>
               </Table.DataCell>
-              <Table.DataCell>{formatTime(sync.lastPageTime)}</Table.DataCell>
+              <Table.DataCell>
+                {formatTimestampDetailed(sync.lastPageTime)}
+              </Table.DataCell>
             </Table.Row>
           ))}
         </Table.Body>
