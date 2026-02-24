@@ -60,7 +60,7 @@ export function EventsModal({
 
     return <span className={`${baseClasses} ${colorClass}`}>{operation}</span>;
   };
-
+  //TODO: refactor, move req and response to own components, fix layout of request and response data
   return (
     <Modal
       open={isOpen}

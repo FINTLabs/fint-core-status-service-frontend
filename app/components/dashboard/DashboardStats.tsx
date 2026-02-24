@@ -30,9 +30,9 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
       <InfoCard.Header icon={<SealCheckmarkFillIcon />}>
         <InfoCard.Title>Miljø Oversikt - {env}</InfoCard.Title>
       </InfoCard.Header>
-      <InfoCard.Content>
-        <HGrid gap="space-24" columns={3} className={"h-full"}>
-          <VStack gap={"space-16"} className={"h-full"}>
+      <InfoCard.Content className={"full-width"}>
+        <HGrid gap="space-24" columns={3}>
+          <VStack gap={"space-16"}>
             <Box
               padding={"space-16"}
               borderRadius="12"

@@ -1,6 +1,15 @@
-import { Await, type LoaderFunction, useAsyncValue, useLoaderData, useNavigation } from "react-router";
+import {
+  Await,
+  type LoaderFunction,
+  useAsyncValue,
+  useLoaderData,
+  useNavigation,
+} from "react-router";
 import { selectedEnvCookie } from "~/utils/cookies";
-import { NovariSnackbar, type NovariSnackbarItem } from "novari-frontend-components";
+import {
+  NovariSnackbar,
+  type NovariSnackbarItem,
+} from "novari-frontend-components";
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
 import { Alert, Box, Loader } from "@navikt/ds-react";
@@ -11,7 +20,10 @@ import type { IContractStatus } from "~/types";
 import { AdapterPage } from "~/components/adapters/AdapterPage";
 
 export function meta() {
-  return [{ title: "Adaptere - Fint Core Status Service" }, { name: "description", content: "View adapter status and configuration" }];
+  return [
+    { title: "Adaptere - Fint Core Status Service" },
+    { name: "description", content: "View adapter status and configuration" },
+  ];
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -26,7 +38,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Adapter() {
   const { env, response } = useLoaderData() as {
     env: string;
-    response: Promise<{ success: boolean; message?: string; data?: IContractStatus[]; variant?: string }>;
+    response: Promise<{
+      success: boolean;
+      message?: string;
+      data?: IContractStatus[];
+      variant?: string;
+    }>;
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
@@ -40,7 +57,12 @@ export default function Adapter() {
 
   return (
     <>
-      <PageHeader title="Status adaptere" description="Oversikt over adaptere og status i Fint Core systemet." env={env} icon={ComponentIcon} />
+      <PageHeader
+        title="Status adaptere"
+        description="Oversikt over adaptere og status i Fint Core systemet."
+        env={env}
+        icon={ComponentIcon}
+      />
       <Suspense
         fallback={
           <Box className="p-6 flex justify-center">
@@ -66,7 +88,14 @@ export default function Adapter() {
 }
 
 // ---------- Child component used inside <Await> ----------
-function SyncResolved({ alerts, setAlerts }: { env: string; alerts: NovariSnackbarItem[]; setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>> }) {
+function SyncResolved({
+  alerts,
+  setAlerts,
+}: {
+  env: string;
+  alerts: NovariSnackbarItem[];
+  setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
+}) {
   const response = useAsyncValue() as {
     success: boolean;
     message?: string;
@@ -80,7 +109,11 @@ function SyncResolved({ alerts, setAlerts }: { env: string; alerts: NovariSnackb
         ...prev,
         {
           id: `sync-error-${Date.now()}`,
-          variant: (response?.variant || "error") as "error" | "warning" | "success" | "info",
+          variant: (response?.variant || "error") as
+            | "error"
+            | "warning"
+            | "success"
+            | "info",
           message: response?.message || "Kunne ikke hente adapters.",
           header: "Connection Feil",
         },

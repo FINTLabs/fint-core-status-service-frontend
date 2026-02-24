@@ -7,10 +7,7 @@ import {
   Table,
   Tag,
 } from "@navikt/ds-react";
-import {
-  CheckmarkCircleFillIcon,
-  XMarkOctagonFillIcon,
-} from "@navikt/aksel-icons";
+import { CheckmarkCircleIcon, XMarkOctagonIcon } from "@navikt/aksel-icons";
 import type { IEvent } from "~/types/Event";
 
 interface HendelserTableProps {
@@ -65,13 +62,13 @@ export function EventsTable({
               >
                 <Table.DataCell>
                   {!event.hasError ? (
-                    <CheckmarkCircleFillIcon
+                    <CheckmarkCircleIcon
                       title="OK"
                       fontSize="1.5rem"
                       color="var(--ax-bg-success-strong)"
                     />
                   ) : (
-                    <XMarkOctagonFillIcon
+                    <XMarkOctagonIcon
                       title="Error"
                       fontSize="1.25rem"
                       color="var(--ax-bg-danger-strong)"

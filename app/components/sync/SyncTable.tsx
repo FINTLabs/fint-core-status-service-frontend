@@ -1,10 +1,7 @@
-import { Box, Pagination, Table, ProgressBar, Tag } from "@navikt/ds-react";
-import {
-  CheckmarkCircleFillIcon,
-  ArrowCirclepathIcon,
-} from "@navikt/aksel-icons";
+import { Box, Pagination, ProgressBar, Table, Tag } from "@navikt/ds-react";
+import { ArrowCirclepathIcon, CheckmarkCircleIcon } from "@navikt/aksel-icons";
 import type { ISyncData } from "~/types";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 interface SyncTableProps {
   data: ISyncData[];
@@ -108,7 +105,7 @@ export function SyncTable({
             >
               <Table.DataCell>
                 {sync.finished ? (
-                  <CheckmarkCircleFillIcon
+                  <CheckmarkCircleIcon
                     color="var(--ax-bg-success-strong)"
                     title="Fullført"
                     fontSize="1.25rem"

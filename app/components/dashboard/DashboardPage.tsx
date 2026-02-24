@@ -1,4 +1,4 @@
-import { Alert, Box, Heading, HStack } from "@navikt/ds-react";
+import { Alert, Box, Heading, VStack } from "@navikt/ds-react";
 import type { IStats } from "~/types/Stats";
 import { DashboardStats } from "~/components/dashboard/DashboardStats";
 
@@ -11,6 +11,7 @@ interface DashboardPageProps {
   alphaError?: string;
 }
 
+//TODO: fix loading when errors
 export function DashboardPage({
   betaStats,
   apiStats,
@@ -20,7 +21,12 @@ export function DashboardPage({
   alphaError,
 }: DashboardPageProps) {
   return (
-    <HStack gap="space-16" justify="center" className={"h-full"}>
+    <VStack
+      gap="space-16"
+      justify="center"
+      className={"w-full"}
+      paddingInline="space-96"
+    >
       {apiError ? (
         <Box padding="space-16">
           <Heading level="2" size="medium" spacing>
@@ -51,6 +57,6 @@ export function DashboardPage({
       ) : alphaStats ? (
         <DashboardStats stats={alphaStats} env="ALPHA" />
       ) : null}
-    </HStack>
+    </VStack>
   );
 }

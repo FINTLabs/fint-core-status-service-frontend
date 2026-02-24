@@ -16,9 +16,9 @@ import { Box, Page } from "@navikt/ds-react";
 import { Footer } from "./components/layout/Footer";
 
 import type { Route } from "./+types/root";
-// import "./app.css";
-import themeHref from "./styles/novari-theme.css?url";
 import akselHref from "@navikt/ds-css?url";
+import themeHref from "./styles/novari-theme.css?url";
+import tailwindHref from "./app.css?url";
 import { selectedEnvCookie } from "~/utils/cookies";
 import { AuthProperties } from "~/utils/auth";
 import type { IUserSession } from "~/types";
@@ -69,8 +69,9 @@ async function initializeMSW() {
 initializeMSW();
 
 export const links: Route.LinksFunction = () => [
-  { rel: "stylesheet", href: akselHref, as: "style" }, // Aksel first
+  { rel: "stylesheet", href: tailwindHref, as: "style" }, // Tailwind utilities
   { rel: "stylesheet", href: themeHref, as: "style" }, // novari-theme.css
+  { rel: "stylesheet", href: akselHref, as: "style" }, // Aksel last (takes precedence)
 ];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
