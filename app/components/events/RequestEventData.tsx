@@ -39,7 +39,7 @@ export function RequestEventData({ requestData }: RequestEventDataProps) {
               <Label size="small">Created:</Label>
               <Detail>{formatTimestampDetailed(requestData.created)}</Detail>
               <Label size="small">Time to Live:</Label>
-              <Detail>{requestData.timeToLive}</Detail>
+              <Detail>{formatTimestampDetailed(requestData.timeToLive)}</Detail>
             </VStack>
           </HStack>
         ) : (
