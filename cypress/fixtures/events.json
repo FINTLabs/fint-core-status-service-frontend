@@ -10,7 +10,7 @@
       "domainName": "administrasjon",
       "packageName": "personal",
       "resourceName": "fravar",
-      "operationType": null,
+      "operationType": "CREATE",
       "created": 1764335290739,
       "timeToLive": 0,
       "value": ""
@@ -78,7 +78,7 @@
       "domainName": "administrasjon",
       "packageName": "personal",
       "resourceName": "variabellonn",
-      "operationType": "DELETE",
+      "operationType": "UPDATE",
       "created": 1763969888832,
       "timeToLive": 0,
       "value": ""

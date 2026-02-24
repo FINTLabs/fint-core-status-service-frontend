@@ -4,16 +4,15 @@ import {
   HStack,
   InfoCard,
   Label,
-  Tooltip,
+  VStack,
 } from "@navikt/ds-react";
 import {
-  CalendarIcon,
   CheckmarkCircleFillIcon,
   CheckmarkCircleIcon,
   ExclamationmarkTriangleFillIcon,
 } from "@navikt/aksel-icons";
 import type { IContractDomain } from "~/types";
-import { formatDateRelative, formatTimestampDetailed } from "~/utils/time";
+import { formatDateRelative } from "~/utils/time";
 import { useMemo } from "react";
 
 interface ContractDomainCardsProps {
@@ -92,40 +91,34 @@ export function ContractDomainCards({
               </InfoCard.Title>
             </InfoCard.Header>
             <InfoCard.Content>
-              <Label>Siste Delta</Label>
-              <HStack gap="space-8" align="center">
-                <Tooltip content={formatTimestampDetailed(item.lastDeltaSync)}>
-                  <CalendarIcon title="a11y-title" fontSize="1.5rem" />
-                </Tooltip>
-                <Detail>{formatDateRelative(item.lastDeltaSync)}</Detail>
-              </HStack>
-              <Label>Siste Full</Label>
-              <HStack gap="space-8" align="center">
-                <Tooltip content={formatTimestampDetailed(item.lastFullSync)}>
-                  <CalendarIcon title="a11y-title" fontSize="1.5rem" />
-                </Tooltip>
-                <Detail>{formatDateRelative(item.lastFullSync)}</Detail>
-              </HStack>
-              <hr />
-              {item.answersEvents ? (
+              <VStack gap="space-12">
+                <Label>Siste Delta</Label>
+                {formatDateRelative(item.lastDeltaSync)}
+                <Label>Siste Full</Label>
+                {formatDateRelative(item.lastFullSync)}
+                <hr />
                 <HStack gap="space-8" align="center" paddingBlock={"space-16"}>
-                  <CheckmarkCircleFillIcon
-                    color="var(--ax-bg-success-strong)"
-                    title="Besvarer hendelser"
-                    fontSize="1.25rem"
-                  />
-                  <Label>Besvarer hendelser</Label>
+                  {item.answersEvents ? (
+                    <>
+                      <CheckmarkCircleFillIcon
+                        color="var(--ax-bg-success-strong)"
+                        title="Besvarer hendelser"
+                        fontSize="1.25rem"
+                      />
+                      <Label>Besvarer hendelser</Label>
+                    </>
+                  ) : (
+                    <>
+                      <ExclamationmarkTriangleFillIcon
+                        color="var(--ax-bg-warning-strong)"
+                        title="Besvarer ikke hendelser"
+                        fontSize="1.25rem"
+                      />
+                      <Label>Besvarer ikke hendelser</Label>
+                    </>
+                  )}
                 </HStack>
-              ) : (
-                <HStack>
-                  <ExclamationmarkTriangleFillIcon
-                    color="var(--ax-bg-warning-strong)"
-                    title="Besvarer ikke hendelser"
-                    fontSize="1.25rem"
-                  />
-                  <Label>Besvarer ikke hendelser</Label>
-                </HStack>
-              )}
+              </VStack>
             </InfoCard.Content>
           </InfoCard>
         );

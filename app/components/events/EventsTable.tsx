@@ -5,10 +5,11 @@ import {
   Loader,
   Pagination,
   Table,
-  Tag,
 } from "@navikt/ds-react";
 import { CheckmarkCircleIcon, XMarkOctagonIcon } from "@navikt/aksel-icons";
 import type { IEvent } from "~/types/Event";
+import { OperationBadge } from "~/components/events/eventUtils";
+import { formatTimestampDetailed } from "~/utils/time";
 
 interface HendelserTableProps {
   data: IEvent[];
@@ -84,36 +85,11 @@ export function EventsTable({
                   </HStack>
                 </Table.DataCell>
                 <Table.DataCell>
-                  {(() => {
-                    if (!event.requestEvent) {
-                      return (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-ax-neutral-200 text-ax-neutral-900">
-                          N/A
-                        </span>
-                      );
-                    }
-
-                    const operationType =
-                      event.requestEvent.operationType?.toUpperCase() ?? "";
-
-                    const colorMap: Record<
-                      string,
-                      "neutral" | "info" | "success" | "warning" | "danger"
-                    > = {
-                      CREATE: "warning",
-                      UPDATE: "info",
-                      DELETE: "danger",
-                      VALIDATE: "success",
-                    };
-
-                    const color = colorMap[operationType] ?? "neutral";
-
-                    return (
-                      <Tag variant="outline" data-color={color} size="xsmall">
-                        {event.requestEvent.operationType ?? "N/A"}
-                      </Tag>
-                    );
-                  })()}
+                  {event.requestEvent?.operationType && (
+                    <OperationBadge
+                      operation={event.requestEvent?.operationType}
+                    />
+                  )}
                 </Table.DataCell>
                 <Table.DataCell>
                   <span className="text-ax-neutral-800">
@@ -126,13 +102,7 @@ export function EventsTable({
                   </span>
                 </Table.DataCell>
                 <Table.DataCell>
-                  <span className="text-ax-neutral-800">
-                    {event.requestEvent?.created
-                      ? new Date(event.requestEvent.created).toLocaleString(
-                          "no-NO",
-                        )
-                      : "N/A"}
-                  </span>
+                  {formatTimestampDetailed(event.requestEvent?.created)}
                 </Table.DataCell>
               </Table.Row>
             ))}

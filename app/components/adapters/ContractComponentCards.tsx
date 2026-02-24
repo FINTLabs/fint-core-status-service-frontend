@@ -1,14 +1,6 @@
-import {
-  Box,
-  Detail,
-  HGrid,
-  HStack,
-  InfoCard,
-  Label,
-  Tooltip,
-} from "@navikt/ds-react";
-import { CalendarIcon, HeartBrokenIcon, HeartIcon } from "@navikt/aksel-icons";
-import { formatDateRelative, formatTimestampDetailed } from "~/utils/time";
+import { Box, Detail, HGrid, InfoCard, Label, VStack } from "@navikt/ds-react";
+import { HeartBrokenIcon, HeartIcon } from "@navikt/aksel-icons";
+import { formatDateRelative } from "~/utils/time";
 import type { IContractComponent } from "~/types";
 import { useMemo } from "react";
 
@@ -58,7 +50,7 @@ export function ContractComponentCards({ data }: ContractComponentCardsProps) {
   }
 
   return (
-    <HGrid gap="space-16" columns={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+    <HGrid gap="space-16" columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
       {sortedData.map((item, index) => {
         const hasError =
           !item.heartbeat ||
@@ -78,20 +70,12 @@ export function ContractComponentCards({ data }: ContractComponentCardsProps) {
               </InfoCard.Title>
             </InfoCard.Header>
             <InfoCard.Content>
-              <Label>Siste Delta</Label>
-              <HStack gap="space-8" align="center">
-                <Tooltip content={formatTimestampDetailed(item.lastDelta)}>
-                  <CalendarIcon title="a11y-title" fontSize="1.5rem" />
-                </Tooltip>
-                <Detail>{formatDateRelative(item.lastDelta)}</Detail>
-              </HStack>
-              <Label>Siste Full</Label>
-              <HStack gap="space-8" align="center">
-                <Tooltip content={formatTimestampDetailed(item.lastFull)}>
-                  <CalendarIcon title="a11y-title" fontSize="1.5rem" />
-                </Tooltip>
-                <Detail>{formatDateRelative(item.lastFull)}</Detail>
-              </HStack>
+              <VStack gap="space-12">
+                <Label>Siste Delta</Label>
+                {formatDateRelative(item.lastDelta)}
+                <Label>Siste Full</Label>
+                {formatDateRelative(item.lastFull)}
+              </VStack>
             </InfoCard.Content>
           </InfoCard>
         );
