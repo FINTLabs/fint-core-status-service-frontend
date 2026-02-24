@@ -23,7 +23,7 @@ export function EventsModal({
       aria-labelledby="hendelser-modal-title"
       aria-describedby="hendelser-modal-description"
       placement="top"
-      className={"min-w-[40vw]"}
+      className="min-w-150"
     >
       <Modal.Header>
         <Heading id="hendelser-modal-title" size="medium">
