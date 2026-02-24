@@ -1,7 +1,12 @@
+/*.aksel-button[data-variant="tertiary"] {*/
+/*  color: #7F78E8;*/
+/*}*/
+
 .novari-header {
   background-color: var(--ax-bg-brand-beige-soft);
 }
 
+/*--color-primary: #7F78E8;*/
  .novari-header-title  {
   color: #6B133D;
 }

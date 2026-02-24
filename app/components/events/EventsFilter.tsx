@@ -143,7 +143,7 @@ export function EventsFilter({
           <HGrid gap="space-24" columns={3}>
             {/* Operation Type Filter */}
             <CheckboxGroup
-              data-color={"brand-magenta"}
+              // data-color={"brand-magenta"}
               legend="Operasjon"
               size="small"
               value={Object.entries(operationFilter)
@@ -166,7 +166,7 @@ export function EventsFilter({
 
             {/* Status Filter */}
             <CheckboxGroup
-              data-color={"brand-magenta"}
+              // data-color={"brand-magenta"}
               legend="Status"
               size="small"
               value={Object.entries(statusFilter)
@@ -205,7 +205,7 @@ export function EventsFilter({
               variant="tertiary"
               size="small"
               onClick={handleClearFilters}
-              data-color={"brand-magenta"}
+              // data-color={"brand-magenta"}
             >
               Tøm filtre
             </Button>

@@ -152,7 +152,7 @@ export function SyncFilter({
           <HGrid columns={3} gap="space-24">
             {" "}
             <CheckboxGroup
-              data-color={"brand-magenta"}
+              // data-color={"brand-magenta"}
               legend="Synkroniseringstype"
               size="small"
               value={Object.entries(syncTypeFilter)
@@ -169,7 +169,7 @@ export function SyncFilter({
               <Checkbox value="delta">Delta</Checkbox>
             </CheckboxGroup>
             <CheckboxGroup
-              data-color={"brand-magenta"}
+              // data-color={"brand-magenta"}
               legend="Status"
               size="small"
               value={Object.entries(statusFilter)

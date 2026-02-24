@@ -85,7 +85,7 @@ export function AdapterFilter({
                 variant="tertiary"
                 size="small"
                 onClick={handleClearFilters}
-                data-color={"brand-magenta"}
+                // data-color={"brand-magenta"}
               >
                 Tøm filtre
               </Button>
