@@ -34,6 +34,7 @@ export function OperationBadge({ operation }: { operation?: string | null }) {
     UPDATE: "info",
     DELETE: "danger",
     VALIDATE: "success",
+    UNKNOWN: "neutral",
   };
 
   const color = colorMap[operationType] ?? "neutral";

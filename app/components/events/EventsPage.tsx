@@ -21,9 +21,16 @@ export function EventsPage({ initialData }: EventPageProps) {
     UPDATE: boolean;
     DELETE: boolean;
     VALIDATE: boolean;
-  }>({ CREATE: true, UPDATE: true, DELETE: true, VALIDATE: true });
-  const [organisasjonFilter, setOrganisasjonFilter] = useState<string>("");
-  const [ressursFilter, setRessursFilter] = useState<string>("");
+    UNKNOWN: boolean;
+  }>({
+    CREATE: true,
+    UPDATE: true,
+    DELETE: true,
+    VALIDATE: true,
+    UNKNOWN: true,
+  });
+  const [orgFilter, setOrgFilter] = useState<string>("");
+  const [resourceFilter, setResourceFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<{
     ok: boolean;
     error: boolean;
@@ -43,9 +50,10 @@ export function EventsPage({ initialData }: EventPageProps) {
       UPDATE: true,
       DELETE: true,
       VALIDATE: true,
+      UNKNOWN: true,
     });
-    setOrganisasjonFilter("");
-    setRessursFilter("");
+    setOrgFilter("");
+    setResourceFilter("");
     setStatusFilter({ ok: true, error: true });
     setCurrentPage(1);
   };
@@ -116,12 +124,15 @@ export function EventsPage({ initialData }: EventPageProps) {
       }
 
       // Organisation filter
-      if (organisasjonFilter && event.orgId !== organisasjonFilter) {
+      if (orgFilter && event.orgId !== orgFilter) {
         return false;
       }
 
       // Resource filter
-      if (ressursFilter && event.requestEvent.resourceName !== ressursFilter) {
+      if (
+        resourceFilter &&
+        event.requestEvent.resourceName !== resourceFilter
+      ) {
         return false;
       }
 
@@ -173,8 +184,8 @@ export function EventsPage({ initialData }: EventPageProps) {
     initialData,
     searchFilter,
     operationFilter,
-    organisasjonFilter,
-    ressursFilter,
+    orgFilter,
+    resourceFilter,
     statusFilter,
     dateRange,
   ]);
@@ -196,18 +207,19 @@ export function EventsPage({ initialData }: EventPageProps) {
     UPDATE: boolean;
     DELETE: boolean;
     VALIDATE: boolean;
+    UNKNOWN: boolean;
   }) => {
     setOperationFilter(value);
     setCurrentPage(1);
   };
 
-  const handleOrganisasjonFilterChange = (value: string) => {
-    setOrganisasjonFilter(value);
+  const handleOrgFilterChange = (value: string) => {
+    setOrgFilter(value);
     setCurrentPage(1);
   };
 
-  const handleRessursFilterChange = (value: string) => {
-    setRessursFilter(value);
+  const handleResourceFilterChange = (value: string) => {
+    setResourceFilter(value);
     setCurrentPage(1);
   };
 
@@ -224,7 +236,7 @@ export function EventsPage({ initialData }: EventPageProps) {
         .filter((id): id is string => Boolean(id)),
     ),
   ].sort();
-  const uniqueRessurser = [
+  const uniqueResource = [
     ...new Set(
       initialData
         .map((event) => event.requestEvent?.resourceName)
@@ -239,16 +251,16 @@ export function EventsPage({ initialData }: EventPageProps) {
         searchFilter={searchFilter}
         dateRange={dateRange}
         operationFilter={operationFilter}
-        orgFilter={organisasjonFilter}
-        resourceFilter={ressursFilter}
+        orgFilter={orgFilter}
+        resourceFilter={resourceFilter}
         statusFilter={statusFilter}
         uniqueOrg={uniqueOrganisasjoner}
-        uniqueResource={uniqueRessurser}
+        uniqueResource={uniqueResource}
         onSearchFilterChange={handleSearchFilterChange}
         onDateRangeChange={handleDateRangeChange}
         onOperationFilterChange={handleOperationFilterChange}
-        onOrgFilterChange={handleOrganisasjonFilterChange}
-        onResourceFilterChange={handleRessursFilterChange}
+        onOrgFilterChange={handleOrgFilterChange}
+        onResourceFilterChange={handleResourceFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
         onClearFilters={handleClearFilters}
       />

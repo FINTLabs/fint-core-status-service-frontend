@@ -23,7 +23,9 @@ const apiManagers = {
 } as const;
 
 class EventsApi {
-  static async getAllEvents(env: "beta" | "api" | "alpha" = "api"): Promise<ApiResponse<IEvent[]>> {
+  static async getAllEvents(
+    env: "beta" | "api" | "alpha" = "api",
+  ): Promise<ApiResponse<IEvent[]>> {
     const token = AuthProperties.getToken();
     const apiManager = apiManagers[env];
 

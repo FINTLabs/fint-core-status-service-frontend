@@ -40,6 +40,7 @@ interface EventsFilterProps {
     UPDATE: boolean;
     DELETE: boolean;
     VALIDATE: boolean;
+    UNKNOWN: boolean;
   }) => void;
   onOrgFilterChange: (value: string) => void;
   onResourceFilterChange: (value: string) => void;
@@ -155,6 +156,7 @@ export function EventsFilter({
                   UPDATE: values.includes("UPDATE"),
                   DELETE: values.includes("DELETE"),
                   VALIDATE: values.includes("VALIDATE"),
+                  UNKNOWN: values.includes("UNKNOWN"),
                 });
               }}
             >
@@ -162,6 +164,7 @@ export function EventsFilter({
               <Checkbox value="UPDATE">UPDATE</Checkbox>
               <Checkbox value="DELETE">DELETE</Checkbox>
               <Checkbox value="VALIDATE">VALIDATE</Checkbox>
+              <Checkbox value="UNKNOWN">UNKNOWN</Checkbox>
             </CheckboxGroup>
 
             {/* Status Filter */}
