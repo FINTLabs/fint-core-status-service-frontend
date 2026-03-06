@@ -24,6 +24,9 @@ import { AuthProperties } from "~/utils/auth";
 import type { IUserSession } from "~/types";
 import { NovariHeader, ThemeProvider } from "novari-frontend-components";
 import { EnvironmentSelector } from "~/components/common/EnvironmentSelector";
+import { useTrackAnalyticsPageViews } from "~/hooks/useTrackAnalyticsPageViews";
+import AnalyticsApi from "~/api/AnalyticsApi";
+import { useEffect } from "react";
 
 //TODO: fix MSW for local development
 
@@ -132,66 +135,65 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
   // const theme: "light" | "dark" = "light";
+  useTrackAnalyticsPageViews("novari.no");
 
   return (
     <ThemeProvider>
-      <div data-color="brand-magenta">
-        <Page
-          footer={
-            <Box padding="space-4" as="footer" className={"novari-footer"}>
-              <Page.Block>
-                <Footer />
-              </Page.Block>
-            </Box>
-          }
-        >
-          <Page.Block as="header">
-            {/*<Theme theme="light">*/}
-            <Box as="nav" data-cy="novari-header" shadow="dialog">
-              <NovariHeader
-                appName="Fint Core Status Service"
-                menu={[
-                  {
-                    label: "Dashboard",
-                    action: "/",
-                  },
-                  {
-                    label: "Adaptere",
-                    action: "/adaptere",
-                  },
-                  {
-                    label: "Hendelser",
-                    action: "/hendelser",
-                  },
-                  {
-                    label: "Synkronisering",
-                    action: "/sync",
-                  },
-                ]}
-                isLoggedIn={true}
-                onLogout={() => {}}
-                onLogin={() => {}}
-                onMenuClick={(action) => navigate(action)}
-                displayName={""}
-                className={"novari-header"}
-                showLogoWithTitle={true}
-              >
-                <EnvironmentSelector
-                  userSession={userSession}
-                  navigateTo={location.pathname}
-                />
-              </NovariHeader>
-            </Box>
-            {/*</Theme>*/}
-          </Page.Block>
-
-          <Box padding="space-32" paddingBlock="space-8" as="main">
-            <Page.Block gutters width="2xl">
-              <Outlet context={userSession} />
+      <Page
+        footer={
+          <Box padding="space-4" as="footer" className={"novari-footer"}>
+            <Page.Block>
+              <Footer />
             </Page.Block>
           </Box>
-        </Page>
-      </div>
+        }
+      >
+        <Page.Block as="header">
+          {/*<Theme theme="light">*/}
+          <Box as="nav" data-cy="novari-header" shadow="dialog">
+            <NovariHeader
+              appName="Fint Core Status Service"
+              menu={[
+                {
+                  label: "Dashboard",
+                  action: "/",
+                },
+                {
+                  label: "Adaptere",
+                  action: "/adaptere",
+                },
+                {
+                  label: "Hendelser",
+                  action: "/hendelser",
+                },
+                {
+                  label: "Synkronisering",
+                  action: "/sync",
+                },
+              ]}
+              isLoggedIn={true}
+              onLogout={() => {}}
+              onLogin={() => {}}
+              onMenuClick={(action) => navigate(action)}
+              displayName={""}
+              className={"novari-header"}
+              showLogoWithTitle={true}
+            >
+              <EnvironmentSelector
+                userSession={userSession}
+                navigateTo={location.pathname}
+              />
+            </NovariHeader>
+          </Box>
+          {/*</Theme>*/}
+        </Page.Block>
+
+        <Box padding="space-32" paddingBlock="space-8" as="main">
+          <Page.Block gutters width="2xl">
+            <Outlet context={userSession} />
+          </Page.Block>
+        </Box>
+      </Page>
     </ThemeProvider>
   );
 }
@@ -199,7 +201,13 @@ export default function App() {
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";
   let details = "An unexpected error occurred.";
-
+  useEffect(() => {
+    void AnalyticsApi.trackError({
+      path: location.pathname,
+      message: details,
+      statusCode: 500,
+    });
+  }, []);
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
     details =

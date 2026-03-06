@@ -5,6 +5,7 @@ import {
   useAsyncValue,
   useLoaderData,
   useNavigation,
+  useRevalidator,
 } from "react-router";
 import EventsApi from "~/api/EventsApi";
 import { selectedEnvCookie } from "~/utils/cookies";
@@ -14,9 +15,9 @@ import {
 } from "novari-frontend-components";
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
-import { Alert, Box, Loader } from "@navikt/ds-react";
+import { Alert, Box, Button, Loader } from "@navikt/ds-react";
 import { PageHeader } from "~/components/layout/PageHeader";
-import { BellIcon } from "@navikt/aksel-icons";
+import { BellIcon, ArrowCirclepathIcon } from "@navikt/aksel-icons";
 import type { IEvent } from "~/types/Event";
 
 export function meta() {
@@ -26,7 +27,6 @@ export function meta() {
   ];
 }
 
-//TODO: add metrics
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
   const env = await selectedEnvCookie.parse(cookieHeader);
@@ -49,7 +49,9 @@ export default function Events() {
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
   const navigation = useNavigation();
+  const revalidator = useRevalidator();
   const isNavigating = Boolean(navigation.location);
+  const isRefreshing = revalidator.state === "loading";
 
   //TODO: change to a better notice
   if (isNavigating) {
@@ -64,6 +66,17 @@ export default function Events() {
         description="Oversikt over hendelser og deres status i Fint Core systemet."
         env={env}
         icon={BellIcon}
+        actions={
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={() => revalidator.revalidate()}
+            loading={isRefreshing}
+            icon={<ArrowCirclepathIcon aria-hidden />}
+          >
+            Oppdater
+          </Button>
+        }
       />
       <Suspense
         fallback={

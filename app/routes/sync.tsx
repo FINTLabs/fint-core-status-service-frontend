@@ -6,6 +6,7 @@ import {
   useAsyncValue,
   useLoaderData,
   useNavigation,
+  useRevalidator,
 } from "react-router";
 import SyncApi from "~/api/SyncApi";
 import { SyncPage } from "~/components/sync/SyncPage";
@@ -15,8 +16,8 @@ import {
   type NovariSnackbarItem,
 } from "novari-frontend-components";
 import { PageHeader } from "~/components/layout/PageHeader";
-import { ArrowsSquarepathIcon } from "@navikt/aksel-icons";
-import { Alert, Box, Loader } from "@navikt/ds-react";
+import { ArrowsSquarepathIcon, ArrowCirclepathIcon } from "@navikt/aksel-icons";
+import { Alert, Box, Button, Loader } from "@navikt/ds-react";
 import { selectedEnvCookie } from "~/utils/cookies";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -41,7 +42,9 @@ export default function Sync() {
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
   const navigation = useNavigation();
+  const revalidator = useRevalidator();
   const isNavigating = Boolean(navigation.location);
+  const isRefreshing = revalidator.state === "loading";
 
   if (isNavigating) {
     return <Box>Loading stuff...</Box>;
@@ -54,6 +57,17 @@ export default function Sync() {
         description="Oversikt over synkroniseringer og status i Fint Core systemet."
         env={env}
         icon={ArrowsSquarepathIcon}
+        actions={
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={() => revalidator.revalidate()}
+            loading={isRefreshing}
+            icon={<ArrowCirclepathIcon aria-hidden />}
+          >
+            Oppdater
+          </Button>
+        }
       />
 
       <Suspense

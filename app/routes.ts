@@ -8,11 +8,15 @@ export default [
   route("adaptere", "routes/adapter.tsx"),
 
   // contract/$orgId/$componentId
-  route("contract/:orgId/:componentId", "routes/contract.$orgId.$componentId.tsx"),
+  route(
+    "contract/:orgId/:componentId",
+    "routes/contract.$orgId.$componentId.tsx",
+  ),
 
   // adaptere/$orgId/$domain
   route("adaptere/:orgId/:domain", "routes/adapter.$orgId.$domain.tsx"),
 
   route("hendelser", "routes/events.tsx"),
   route("sync", "routes/sync.tsx"),
+  route("_analytics/events", "routes/api.events.tsx"),
 ] satisfies RouteConfig;

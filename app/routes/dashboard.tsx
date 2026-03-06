@@ -5,6 +5,7 @@ import {
   useAsyncValue,
   useLoaderData,
   useNavigation,
+  useRevalidator,
 } from "react-router";
 import StatsApi from "~/api/StatsApi";
 import {
@@ -13,9 +14,9 @@ import {
 } from "novari-frontend-components";
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
-import { Alert, Box, Loader } from "@navikt/ds-react";
+import { Alert, Box, Button, Loader } from "@navikt/ds-react";
 import { PageHeader } from "~/components/layout/PageHeader";
-import { DonutChartIcon } from "@navikt/aksel-icons";
+import { DonutChartIcon, ArrowCirclepathIcon } from "@navikt/aksel-icons";
 import type { IStats } from "~/types/Stats";
 
 export function meta() {
@@ -45,7 +46,9 @@ export default function Dashboard() {
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
   const navigation = useNavigation();
+  const revalidator = useRevalidator();
   const isNavigating = Boolean(navigation.location);
+  const isRefreshing = revalidator.state === "loading";
 
   if (isNavigating) {
     return <Box>Loading stuff...</Box>;
@@ -57,6 +60,17 @@ export default function Dashboard() {
         title="Dashboard"
         description="Oversikt over statistikk fra alle miljøer i Fint Core systemet."
         icon={DonutChartIcon}
+        actions={
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={() => revalidator.revalidate()}
+            loading={isRefreshing}
+            icon={<ArrowCirclepathIcon aria-hidden />}
+          >
+            Oppdater
+          </Button>
+        }
       />
       <Suspense
         fallback={

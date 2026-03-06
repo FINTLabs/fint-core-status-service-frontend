@@ -4,6 +4,7 @@ import {
   useAsyncValue,
   useLoaderData,
   useNavigation,
+  useRevalidator,
 } from "react-router";
 import { selectedEnvCookie } from "~/utils/cookies";
 import {
@@ -12,9 +13,9 @@ import {
 } from "novari-frontend-components";
 import * as React from "react";
 import { Suspense, useEffect, useState } from "react";
-import { Alert, Box, Loader } from "@navikt/ds-react";
+import { Alert, Box, Button, Loader } from "@navikt/ds-react";
 import { PageHeader } from "~/components/layout/PageHeader";
-import { ComponentIcon } from "@navikt/aksel-icons";
+import { ComponentIcon, ArrowCirclepathIcon } from "@navikt/aksel-icons";
 import ContractApi from "~/api/ContractApi";
 import type { IContractStatus } from "~/types";
 import { AdapterPage } from "~/components/adapters/AdapterPage";
@@ -49,7 +50,9 @@ export default function Adapter() {
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
 
   const navigation = useNavigation();
+  const revalidator = useRevalidator();
   const isNavigating = Boolean(navigation.location);
+  const isRefreshing = revalidator.state === "loading";
 
   if (isNavigating) {
     return <Box>Loading stuff...</Box>;
@@ -62,6 +65,17 @@ export default function Adapter() {
         description="Oversikt over adaptere og status i Fint Core systemet."
         env={env}
         icon={ComponentIcon}
+        actions={
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={() => revalidator.revalidate()}
+            loading={isRefreshing}
+            icon={<ArrowCirclepathIcon aria-hidden />}
+          >
+            Oppdater
+          </Button>
+        }
       />
       <Suspense
         fallback={
