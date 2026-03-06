@@ -18,5 +18,4 @@ export default [
 
   route("hendelser", "routes/events.tsx"),
   route("sync", "routes/sync.tsx"),
-  route("_analytics/events", "routes/api.events.tsx"),
 ] satisfies RouteConfig;

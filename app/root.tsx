@@ -24,9 +24,6 @@ import { AuthProperties } from "~/utils/auth";
 import type { IUserSession } from "~/types";
 import { NovariHeader, ThemeProvider } from "novari-frontend-components";
 import { EnvironmentSelector } from "~/components/common/EnvironmentSelector";
-import { useTrackAnalyticsPageViews } from "~/hooks/useTrackAnalyticsPageViews";
-import AnalyticsApi from "~/api/AnalyticsApi";
-import { useEffect } from "react";
 
 //TODO: fix MSW for local development
 
@@ -135,7 +132,6 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
   // const theme: "light" | "dark" = "light";
-  useTrackAnalyticsPageViews("novari.no");
 
   return (
     <ThemeProvider>
@@ -201,13 +197,7 @@ export default function App() {
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";
   let details = "An unexpected error occurred.";
-  useEffect(() => {
-    void AnalyticsApi.trackError({
-      path: location.pathname,
-      message: details,
-      statusCode: 500,
-    });
-  }, []);
+
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
     details =
