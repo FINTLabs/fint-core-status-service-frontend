@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { SyncFilter } from "./SyncFilter";
 import { SyncTable } from "./SyncTable";
@@ -8,91 +8,80 @@ import type { ISyncData } from "~/types";
 interface SyncPageProps {
   initialData: ISyncData[];
   env: string;
+  dateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  };
+  onDateRangeChange: (value: {
+    from: Date | undefined;
+    to: Date | undefined;
+  }) => void;
 }
 
-export function SyncPage({ initialData }: SyncPageProps) {
+interface SyncFiltersState {
+  syncTypeFilter: {
+    full: boolean;
+    delta: boolean;
+  };
+  statusFilter: {
+    finished: boolean;
+    ongoing: boolean;
+  };
+  orgFilter: string;
+  domainFilter: string;
+  packageFilter: string;
+  resourceFilter: string;
+  dateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  };
+}
+
+export function SyncPage({
+  initialData,
+  dateRange,
+  onDateRangeChange,
+}: SyncPageProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSync, setSelectedSync] = useState<ISyncData | null>(null);
 
-  const [syncTypeFilter, setSyncTypeFilter] = useState<{
-    full: boolean;
-    delta: boolean;
-  }>({ full: true, delta: true });
+  const [appliedFilters, setAppliedFilters] = useState<SyncFiltersState>({
+    syncTypeFilter: { full: true, delta: true },
+    statusFilter: { finished: true, ongoing: true },
+    orgFilter: "",
+    domainFilter: "",
+    packageFilter: "",
+    resourceFilter: "",
+    dateRange,
+  });
 
-  const [statusFilter, setStatusFilter] = useState<{
-    finished: boolean;
-    ongoing: boolean;
-  }>({ finished: true, ongoing: true });
-
-  const [orgFilter, setOrgFilter] = useState<string>("");
-  const [domainFilter, setDomainFilter] = useState<string>("");
-  const [pakkeFilter, setPakkeFilter] = useState<string>("");
-  const [resourceFilter, setResourceFilter] = useState<string>("");
-  const [dateRange, setDateRange] = useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({ from: undefined, to: undefined });
+  useEffect(() => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      dateRange,
+    }));
+  }, [dateRange]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  const handleSyncTypeFilterChange = (value: {
-    full: boolean;
-    delta: boolean;
-  }) => {
-    setSyncTypeFilter(value);
+  const handleApplyFilters = (value: SyncFiltersState) => {
+    setAppliedFilters(value);
     setCurrentPage(1);
-  };
 
-  const handleStatusFilterChange = (value: {
-    finished: boolean;
-    ongoing: boolean;
-  }) => {
-    setStatusFilter(value);
-    setCurrentPage(1);
-  };
+    const currentFrom = dateRange.from?.getTime();
+    const currentTo = dateRange.to?.getTime();
+    const nextFrom = value.dateRange.from?.getTime();
+    const nextTo = value.dateRange.to?.getTime();
+    const hasDateChange = currentFrom !== nextFrom || currentTo !== nextTo;
 
-  const handleOrgFilterChange = (value: string) => {
-    setOrgFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleDomainFilterChange = (value: string) => {
-    setDomainFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handlePakkeFilterChange = (value: string) => {
-    setPakkeFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleResourceFilterChange = (value: string) => {
-    setResourceFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleDateRangeChange = (value: {
-    from: Date | undefined;
-    to: Date | undefined;
-  }) => {
-    setDateRange(value);
-    setCurrentPage(1);
-  };
-
-  const handleClearFilters = () => {
-    setSyncTypeFilter({ full: true, delta: true });
-    setStatusFilter({ finished: true, ongoing: true });
-    setOrgFilter("");
-    setDomainFilter("");
-    setPakkeFilter("");
-    setResourceFilter("");
-    setDateRange({ from: undefined, to: undefined });
-    setCurrentPage(1);
+    if (hasDateChange) {
+      onDateRangeChange(value.dateRange);
+    }
   };
 
   const handleRowClick = (sync: ISyncData) => {
@@ -106,68 +95,74 @@ export function SyncPage({ initialData }: SyncPageProps) {
   };
 
   const filteredData = initialData.filter((sync) => {
-    if (!syncTypeFilter.full && sync.syncType === "FULL") {
+    if (!appliedFilters.syncTypeFilter.full && sync.syncType === "FULL") {
       return false;
     }
-    if (!syncTypeFilter.delta && sync.syncType === "DELTA") {
+    if (!appliedFilters.syncTypeFilter.delta && sync.syncType === "DELTA") {
       return false;
     }
 
-    if (!statusFilter.finished && sync.finished) {
+    if (!appliedFilters.statusFilter.finished && sync.finished) {
       return false;
     }
-    if (!statusFilter.ongoing && !sync.finished) {
+    if (!appliedFilters.statusFilter.ongoing && !sync.finished) {
       return false;
     }
 
     if (
-      orgFilter &&
-      !sync.orgId.toLowerCase().includes(orgFilter.toLowerCase())
+      appliedFilters.orgFilter &&
+      !sync.orgId.toLowerCase().includes(appliedFilters.orgFilter.toLowerCase())
     ) {
       return false;
     }
 
     if (
-      domainFilter &&
-      !sync.domain.toLowerCase().includes(domainFilter.toLowerCase())
+      appliedFilters.domainFilter &&
+      !sync.domain
+        .toLowerCase()
+        .includes(appliedFilters.domainFilter.toLowerCase())
     ) {
       return false;
     }
 
     if (
-      pakkeFilter &&
-      !sync.package.toLowerCase().includes(pakkeFilter.toLowerCase())
+      appliedFilters.packageFilter &&
+      !sync.package
+        .toLowerCase()
+        .includes(appliedFilters.packageFilter.toLowerCase())
     ) {
       return false;
     }
 
     if (
-      resourceFilter &&
-      !sync.resource.toLowerCase().includes(resourceFilter.toLowerCase())
+      appliedFilters.resourceFilter &&
+      !sync.resource
+        .toLowerCase()
+        .includes(appliedFilters.resourceFilter.toLowerCase())
     ) {
       return false;
     }
 
     // Date range filter
-    if (dateRange.from || dateRange.to) {
+    if (appliedFilters.dateRange.from || appliedFilters.dateRange.to) {
       const syncDate = new Date(sync.lastPageTime);
-      if (dateRange.from && dateRange.to) {
+      if (appliedFilters.dateRange.from && appliedFilters.dateRange.to) {
         // Set time to start of day for 'from' and end of day for 'to'
-        const fromDate = new Date(dateRange.from);
+        const fromDate = new Date(appliedFilters.dateRange.from);
         fromDate.setHours(0, 0, 0, 0);
-        const toDate = new Date(dateRange.to);
+        const toDate = new Date(appliedFilters.dateRange.to);
         toDate.setHours(23, 59, 59, 999);
         if (syncDate < fromDate || syncDate > toDate) {
           return false;
         }
-      } else if (dateRange.from) {
-        const fromDate = new Date(dateRange.from);
+      } else if (appliedFilters.dateRange.from) {
+        const fromDate = new Date(appliedFilters.dateRange.from);
         fromDate.setHours(0, 0, 0, 0);
         if (syncDate < fromDate) {
           return false;
         }
-      } else if (dateRange.to) {
-        const toDate = new Date(dateRange.to);
+      } else if (appliedFilters.dateRange.to) {
+        const toDate = new Date(appliedFilters.dateRange.to);
         toDate.setHours(23, 59, 59, 999);
         if (syncDate > toDate) {
           return false;
@@ -185,32 +180,27 @@ export function SyncPage({ initialData }: SyncPageProps) {
     ...new Set(initialData.map((item) => item.resource)),
   ].sort((a, b) => a.localeCompare(b));
 
-  // const breadcrumbItems = [
-  //   { label: "Dashboard", href: "/" },
-  //   { label: "Synkronisering", href: "/sync" },
-  // ];
+  function handleClearFilters() {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      syncTypeFilter: { full: true, delta: true },
+      statusFilter: { finished: true, ongoing: true },
+      orgFilter: "",
+      domainFilter: "",
+      packageFilter: "",
+      resourceFilter: "",
+    }));
+  }
 
   return (
     <Box>
       <SyncFilter
-        syncTypeFilter={syncTypeFilter}
-        statusFilter={statusFilter}
-        orgFilter={orgFilter}
-        domainFilter={domainFilter}
-        packageFilter={pakkeFilter}
-        resourceFilter={resourceFilter}
-        dateRange={dateRange}
+        filters={appliedFilters}
         uniqueOrg={uniqueOrg}
         uniqueDomain={uniqueDomain}
         uniquePacker={uniquePakke}
         uniqueResource={uniqueResource}
-        onSyncTypeFilterChange={handleSyncTypeFilterChange}
-        onStatusFilterChange={handleStatusFilterChange}
-        onOrgFilterChange={handleOrgFilterChange}
-        onDomainFilterChange={handleDomainFilterChange}
-        onPackageFilterChange={handlePakkeFilterChange}
-        onResourceFilterChange={handleResourceFilterChange}
-        onDateRangeChange={handleDateRangeChange}
+        onApplyFilters={handleApplyFilters}
         onClearFilters={handleClearFilters}
       />
       <SyncTable

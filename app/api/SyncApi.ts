@@ -22,7 +22,10 @@ const apiManagers = {
 } as const;
 
 class SyncApi {
-  static async getAllSync(env: "beta" | "api" | "alpha"): Promise<ApiResponse<ISyncData[]>> {
+  static async getAllSync(
+    env: "beta" | "api" | "alpha",
+    range?: { fromDate?: number; toDate?: number },
+  ): Promise<ApiResponse<ISyncData[]>> {
     const token = AuthProperties.getToken();
     const apiManager = apiManagers[env];
 
@@ -35,9 +38,21 @@ class SyncApi {
       };
     }
 
+    const queryParams = new URLSearchParams();
+    if (typeof range?.fromDate === "number") {
+      queryParams.set("fromDate", String(range.fromDate));
+    }
+    if (typeof range?.toDate === "number") {
+      queryParams.set("toDate", String(range.toDate));
+    }
+
+    const endpoint = queryParams.size
+      ? `/page-metadata?${queryParams.toString()}`
+      : "/page-metadata";
+
     return await apiManager.call<ISyncData[]>({
       method: "GET",
-      endpoint: "/page-metadata",
+      endpoint,
       functionName: "getAllSync",
       customErrorMessage: "Kunne ikke hente synkroniseringer",
       customSuccessMessage: "Synkroniseringer hentet vellykket",

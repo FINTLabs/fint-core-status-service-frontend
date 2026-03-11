@@ -1,4 +1,6 @@
+import React, { useEffect, useState } from "react";
 import {
+  Button,
   Checkbox,
   CheckboxGroup,
   DatePicker,
@@ -12,69 +14,70 @@ import {
 import { FunnelIcon } from "@navikt/aksel-icons";
 
 interface SyncFilterProps {
-  syncTypeFilter: {
-    full: boolean;
-    delta: boolean;
+  filters: {
+    syncTypeFilter: {
+      full: boolean;
+      delta: boolean;
+    };
+    statusFilter: {
+      finished: boolean;
+      ongoing: boolean;
+    };
+    orgFilter: string;
+    domainFilter: string;
+    packageFilter: string;
+    resourceFilter: string;
+    dateRange: { from: Date | undefined; to: Date | undefined };
   };
-  statusFilter: {
-    finished: boolean;
-    ongoing: boolean;
-  };
-  orgFilter: string;
-  domainFilter: string;
-  packageFilter: string;
-  resourceFilter: string;
-  dateRange: { from: Date | undefined; to: Date | undefined };
   uniqueOrg: string[];
   uniqueDomain: string[];
   uniquePacker: string[];
   uniqueResource: string[];
-  onSyncTypeFilterChange: (value: { full: boolean; delta: boolean }) => void;
-  onStatusFilterChange: (value: {
-    finished: boolean;
-    ongoing: boolean;
-  }) => void;
-  onOrgFilterChange: (value: string) => void;
-  onDomainFilterChange: (value: string) => void;
-  onPackageFilterChange: (value: string) => void;
-  onResourceFilterChange: (value: string) => void;
-  onDateRangeChange: (value: {
-    from: Date | undefined;
-    to: Date | undefined;
-  }) => void;
+  onApplyFilters: (value: SyncFilterProps["filters"]) => void;
   onClearFilters: () => void;
 }
 
 export function SyncFilter({
-  syncTypeFilter,
-  statusFilter,
-  orgFilter,
-  domainFilter,
-  packageFilter,
-  resourceFilter,
-  dateRange,
+  filters,
   uniqueOrg,
   uniqueDomain,
   uniquePacker,
   uniqueResource,
-  onSyncTypeFilterChange,
-  onStatusFilterChange,
-  onOrgFilterChange,
-  onDomainFilterChange,
-  onPackageFilterChange,
-  onResourceFilterChange,
-  onDateRangeChange,
-  onClearFilters: _onClearFilters,
+  onApplyFilters,
+  onClearFilters,
 }: SyncFilterProps) {
+  const [syncTypeFilter, setSyncTypeFilter] = useState(filters.syncTypeFilter);
+  const [statusFilter, setStatusFilter] = useState(filters.statusFilter);
+  const [orgFilter, setOrgFilter] = useState(filters.orgFilter);
+  const [domainFilter, setDomainFilter] = useState(filters.domainFilter);
+  const [packageFilter, setPackageFilter] = useState(filters.packageFilter);
+  const [resourceFilter, setResourceFilter] = useState(filters.resourceFilter);
+  const [dateRange, setDateRange] = useState(filters.dateRange);
+
+  useEffect(() => {
+    setSyncTypeFilter(filters.syncTypeFilter);
+    setStatusFilter(filters.statusFilter);
+    setOrgFilter(filters.orgFilter);
+    setDomainFilter(filters.domainFilter);
+    setPackageFilter(filters.packageFilter);
+    setResourceFilter(filters.resourceFilter);
+    setDateRange(filters.dateRange);
+  }, [filters]);
+
   const { datepickerProps, toInputProps, fromInputProps } = useRangeDatepicker({
     onRangeChange: (value) => {
-      onDateRangeChange({
+      setDateRange({
         from: value?.from,
         to: value?.to,
       });
     },
-    defaultSelected: dateRange.from && dateRange.to ? dateRange : undefined,
+    defaultSelected: dateRange.from || dateRange.to ? dateRange : undefined,
   });
+
+  const handleClearFilters = () => {
+    // Let parent handle clearing all filter state
+    onClearFilters();
+  };
 
   return (
     // <Box className="mb-4">
@@ -93,7 +96,7 @@ export function SyncFilter({
               label="Organisasjon"
               size="small"
               value={orgFilter}
-              onChange={(e) => onOrgFilterChange(e.target.value)}
+              onChange={(e) => setOrgFilter(e.target.value)}
               id="organisation-filter"
             >
               <option value="">Alle organisasjoner</option>
@@ -108,7 +111,7 @@ export function SyncFilter({
               label="Domene"
               size="small"
               value={domainFilter}
-              onChange={(e) => onDomainFilterChange(e.target.value)}
+              onChange={(e) => setDomainFilter(e.target.value)}
               id="domain-filter"
             >
               <option value="">Alle domener</option>
@@ -123,7 +126,7 @@ export function SyncFilter({
               label="Pakke"
               size="small"
               value={packageFilter}
-              onChange={(e) => onPackageFilterChange(e.target.value)}
+              onChange={(e) => setPackageFilter(e.target.value)}
               id="package-filter"
             >
               <option value="">Alle pakker</option>
@@ -138,7 +141,7 @@ export function SyncFilter({
               label="Ressurs"
               size="small"
               value={resourceFilter}
-              onChange={(e) => onResourceFilterChange(e.target.value)}
+              onChange={(e) => setResourceFilter(e.target.value)}
               id="resource-filter"
             >
               <option value="">Alle ressurser</option>
@@ -159,7 +162,7 @@ export function SyncFilter({
                 .filter(([, value]) => value)
                 .map(([key]) => key)}
               onChange={(values: string[]) => {
-                onSyncTypeFilterChange({
+                setSyncTypeFilter({
                   full: values.includes("full"),
                   delta: values.includes("delta"),
                 });
@@ -176,7 +179,7 @@ export function SyncFilter({
                 .filter(([, value]) => value)
                 .map(([key]) => key)}
               onChange={(values: string[]) => {
-                onStatusFilterChange({
+                setStatusFilter({
                   finished: values.includes("finished"),
                   ongoing: values.includes("ongoing"),
                 });
@@ -185,7 +188,10 @@ export function SyncFilter({
               <Checkbox value="finished">Fullført</Checkbox>
               <Checkbox value="ongoing">Pågår</Checkbox>
             </CheckboxGroup>
-            <DatePicker {...datepickerProps}>
+            <DatePicker
+              key={`${dateRange.from?.getTime() ?? "none"}-${dateRange.to?.getTime() ?? "none"}`}
+              {...datepickerProps}
+            >
               <DatePicker.Input
                 {...fromInputProps}
                 label="Fra dato"
@@ -198,6 +204,34 @@ export function SyncFilter({
               />
             </DatePicker>
           </HGrid>
+          <HStack justify="space-between">
+            <Button
+              variant="tertiary"
+              size="small"
+              onClick={handleClearFilters}
+              // data-color={"brand-magenta"}
+            >
+              Tøm filtre
+            </Button>
+            <Button
+              size="small"
+              variant="tertiary"
+              icon={<FunnelIcon aria-hidden />}
+              onClick={() =>
+                onApplyFilters({
+                  syncTypeFilter,
+                  statusFilter,
+                  orgFilter,
+                  domainFilter,
+                  packageFilter,
+                  resourceFilter,
+                  dateRange,
+                })
+              }
+            >
+              Kjør filter
+            </Button>
+          </HStack>
         </VStack>
       </ExpansionCard.Content>
     </ExpansionCard>

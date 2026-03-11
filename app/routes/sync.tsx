@@ -7,6 +7,7 @@ import {
   useLoaderData,
   useNavigation,
   useRevalidator,
+  useSearchParams,
 } from "react-router";
 import SyncApi from "~/api/SyncApi";
 import { SyncPage } from "~/components/sync/SyncPage";
@@ -23,8 +24,19 @@ import { selectedEnvCookie } from "~/utils/cookies";
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
   const env = await selectedEnvCookie.parse(cookieHeader);
+  const url = new URL(request.url);
 
-  const syncResponse = SyncApi.getAllSync(env);
+  const fromParam = url.searchParams.get("fromDate");
+  const toParam = url.searchParams.get("toDate");
+
+  const fromDate =
+    fromParam && !Number.isNaN(Number(fromParam))
+      ? Number(fromParam)
+      : undefined;
+  const toDate =
+    toParam && !Number.isNaN(Number(toParam)) ? Number(toParam) : undefined;
+
+  const syncResponse = SyncApi.getAllSync(env, { fromDate, toDate });
 
   return { env, syncResponse };
 };
@@ -40,11 +52,54 @@ export default function Sync() {
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const navigation = useNavigation();
   const revalidator = useRevalidator();
   const isNavigating = Boolean(navigation.location);
   const isRefreshing = revalidator.state === "loading";
+
+  const fromDateParam = searchParams.get("fromDate");
+  const toDateParam = searchParams.get("toDate");
+  const fromTimestamp =
+    fromDateParam && !Number.isNaN(Number(fromDateParam))
+      ? Number(fromDateParam)
+      : undefined;
+  const toTimestamp =
+    toDateParam && !Number.isNaN(Number(toDateParam))
+      ? Number(toDateParam)
+      : undefined;
+
+  const dateRange = {
+    from:
+      typeof fromTimestamp === "number" ? new Date(fromTimestamp) : undefined,
+    to: typeof toTimestamp === "number" ? new Date(toTimestamp) : undefined,
+  };
+
+  const handleDateRangeChange = (value: {
+    from: Date | undefined;
+    to: Date | undefined;
+  }) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    if (value.from) {
+      const fromDate = new Date(value.from);
+      fromDate.setHours(0, 0, 0, 0);
+      nextSearchParams.set("fromDate", String(fromDate.getTime()));
+    } else {
+      nextSearchParams.delete("fromDate");
+    }
+
+    if (value.to) {
+      const toDate = new Date(value.to);
+      toDate.setHours(23, 59, 59, 999);
+      nextSearchParams.set("toDate", String(toDate.getTime()));
+    } else {
+      nextSearchParams.delete("toDate");
+    }
+
+    setSearchParams(nextSearchParams);
+  };
 
   if (isNavigating) {
     return <Box>Loading stuff...</Box>;
@@ -85,7 +140,13 @@ export default function Sync() {
             </Alert>
           }
         >
-          <SyncResolved env={env} alerts={alerts} setAlerts={setAlerts} />
+          <SyncResolved
+            env={env}
+            alerts={alerts}
+            setAlerts={setAlerts}
+            dateRange={dateRange}
+            onDateRangeChange={handleDateRangeChange}
+          />
         </Await>
       </Suspense>
     </>
@@ -97,10 +158,20 @@ function SyncResolved({
   env,
   alerts,
   setAlerts,
+  dateRange,
+  onDateRangeChange,
 }: {
   env: string;
   alerts: NovariSnackbarItem[];
   setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
+  dateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  };
+  onDateRangeChange: (value: {
+    from: Date | undefined;
+    to: Date | undefined;
+  }) => void;
 }) {
   const response = useAsyncValue() as {
     success: boolean;
@@ -124,7 +195,12 @@ function SyncResolved({
 
   return (
     <>
-      <SyncPage initialData={response?.data ?? []} env={env} />
+      <SyncPage
+        initialData={response?.data ?? []}
+        env={env}
+        dateRange={dateRange}
+        onDateRangeChange={onDateRangeChange}
+      />
       <NovariSnackbar items={alerts} />
     </>
   );
