@@ -181,15 +181,17 @@ export function SyncPage({
   ].sort((a, b) => a.localeCompare(b));
 
   function handleClearFilters() {
-    setAppliedFilters((prev) => ({
-      ...prev,
+    setAppliedFilters({
       syncTypeFilter: { full: true, delta: true },
       statusFilter: { finished: true, ongoing: true },
       orgFilter: "",
       domainFilter: "",
       packageFilter: "",
       resourceFilter: "",
-    }));
+      dateRange: { from: undefined, to: undefined },
+    });
+    onDateRangeChange({ from: undefined, to: undefined });
+    setCurrentPage(1);
   }
 
   return (

@@ -229,7 +229,7 @@ export function SyncFilter({
                 })
               }
             >
-              Kjør filter
+              Bruk filter
             </Button>
           </HStack>
         </VStack>
