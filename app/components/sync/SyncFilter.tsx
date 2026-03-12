@@ -63,7 +63,13 @@ export function SyncFilter({
     setResourceFilter(filters.resourceFilter);
     setDateRange(filters.dateRange);
   }, [filters]);
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  thirtyDaysAgo.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
 
+  const disabledDays = [{ before: thirtyDaysAgo }, { after: today }];
   const { datepickerProps, toInputProps, fromInputProps } = useRangeDatepicker({
     onRangeChange: (value) => {
       setDateRange({
@@ -72,6 +78,7 @@ export function SyncFilter({
       });
     },
     defaultSelected: dateRange.from || dateRange.to ? dateRange : undefined,
+    disabled: disabledDays,
   });
 
   const handleClearFilters = () => {
