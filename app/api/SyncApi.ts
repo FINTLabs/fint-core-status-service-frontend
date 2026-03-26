@@ -40,10 +40,10 @@ class SyncApi {
 
     const queryParams = new URLSearchParams();
     if (typeof range?.fromDate === "number") {
-      queryParams.set("fromDate", String(range.fromDate));
+      queryParams.set("from", String(range.fromDate));
     }
     if (typeof range?.toDate === "number") {
-      queryParams.set("toDate", String(range.toDate));
+      queryParams.set("to", String(range.toDate));
     }
 
     const endpoint = queryParams.size
