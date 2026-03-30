@@ -31,9 +31,9 @@ export function PageHeader({
             {title}
             {env && (
               <span
+                className={"novari-header-title"}
                 style={{
                   fontSize: "2rem",
-                  color: "var(--ax-text-default)",
                 }}
               >
                 : {env}
