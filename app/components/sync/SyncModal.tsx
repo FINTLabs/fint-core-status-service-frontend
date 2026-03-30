@@ -7,6 +7,7 @@ import {
   HGrid,
   HStack,
   Label,
+  Link,
   Modal,
   Table,
   Tag,
@@ -14,6 +15,7 @@ import {
 } from "@navikt/ds-react";
 import type { ISyncData } from "~/types";
 import { formatTimestampDetailed } from "~/utils/time";
+import { ChevronRightDoubleCircleIcon } from "@navikt/aksel-icons";
 
 interface SyncModalProps {
   isOpen: boolean;
@@ -65,7 +67,12 @@ export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
             </Box>
             <Box>
               <Label>Adapter ID</Label>
-              <Detail>{syncData.adapterId}</Detail>
+              <Detail>
+                <Link href={`/adaptere/${syncData.orgId}/${syncData.domain}`}>
+                  {syncData.adapterId}
+                  <ChevronRightDoubleCircleIcon title="View Adapter details" />
+                </Link>
+              </Detail>
             </Box>
           </VStack>
         </VStack>
