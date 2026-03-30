@@ -25,6 +25,7 @@ const apiManagers = {
 class EventsApi {
   static async getAllEvents(
     env: "beta" | "api" | "alpha" = "api",
+    range?: { fromDate?: number; toDate?: number },
   ): Promise<ApiResponse<IEvent[]>> {
     const token = AuthProperties.getToken();
     const apiManager = apiManagers[env];
@@ -38,9 +39,21 @@ class EventsApi {
       };
     }
 
+    const queryParams = new URLSearchParams();
+    if (typeof range?.fromDate === "number") {
+      queryParams.set("from", String(range.fromDate));
+    }
+    if (typeof range?.toDate === "number") {
+      queryParams.set("to", String(range.toDate));
+    }
+
+    const endpoint = queryParams.size
+      ? `/event?${queryParams.toString()}`
+      : "/event";
+
     return await apiManager.call<IEvent[]>({
       method: "GET",
-      endpoint: "/event",
+      endpoint,
       functionName: "getAllEvents",
       customErrorMessage: "Kunne ikke hente hendelser",
       customSuccessMessage: "Hendelser hentet vellykket",

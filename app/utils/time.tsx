@@ -1,6 +1,56 @@
 import { HStack, Tooltip } from "@navikt/ds-react";
 import { CalendarIcon } from "@navikt/aksel-icons";
 
+export const formatTimeValue = (value: Date | undefined): string => {
+  if (!value) {
+    return "";
+  }
+
+  const hours = String(value.getHours()).padStart(2, "0");
+  const minutes = String(value.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
+
+export const applyTimeToDate = (
+  value: Date | undefined,
+  time: string,
+  endOfDayWhenMissing: boolean,
+): Date | undefined => {
+  if (!value) {
+    return undefined;
+  }
+
+  const next = new Date(value);
+  if (time) {
+    const [hours, minutes] = time.split(":");
+    const parsedHours = Number(hours);
+    const parsedMinutes = Number(minutes);
+
+    if (!Number.isNaN(parsedHours) && !Number.isNaN(parsedMinutes)) {
+      next.setHours(parsedHours, parsedMinutes, 0, 0);
+      return next;
+    }
+  }
+
+  if (endOfDayWhenMissing) {
+    next.setHours(23, 59, 59, 999);
+  } else {
+    next.setHours(0, 0, 0, 0);
+  }
+  return next;
+};
+
+export const createLast30DaysDisabledDays = (now = new Date()) => {
+  const thirtyDaysAgo = new Date(now);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  thirtyDaysAgo.setHours(0, 0, 0, 0);
+
+  const today = new Date(now);
+  today.setHours(23, 59, 59, 999);
+
+  return [{ before: thirtyDaysAgo }, { after: today }];
+};
+
 export const formatTimestampDetailed = (
   value?: number | null,
 ): React.ReactNode => {

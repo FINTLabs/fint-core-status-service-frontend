@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Checkbox,
   CheckboxGroup,
@@ -9,85 +8,88 @@ import {
   HStack,
   Search,
   Select,
+  TextField,
   useRangeDatepicker,
   VStack,
 } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
+import { useEffect, useState } from "react";
+import {
+  applyTimeToDate,
+  createLast30DaysDisabledDays,
+  formatTimeValue,
+} from "~/utils/time";
 
 interface EventsFilterProps {
-  searchFilter: string;
-  dateRange: { from?: Date; to?: Date } | undefined;
-  operationFilter: {
-    CREATE: boolean;
-    UPDATE: boolean;
-    DELETE: boolean;
-    VALIDATE: boolean;
-  };
-  orgFilter: string;
-  resourceFilter: string;
-  statusFilter: {
-    ok: boolean;
-    error: boolean;
+  filters: {
+    searchFilter: string;
+    dateRange: { from: Date | undefined; to: Date | undefined };
+    operationFilter: {
+      CREATE: boolean;
+      UPDATE: boolean;
+      DELETE: boolean;
+      VALIDATE: boolean;
+      UNKNOWN: boolean;
+    };
+    orgFilter: string;
+    resourceFilter: string;
+    statusFilter: {
+      ok: boolean;
+      error: boolean;
+    };
   };
   uniqueOrg: string[];
   uniqueResource: string[];
-  onSearchFilterChange: (value: string) => void;
-  onDateRangeChange: (
-    dateRange: { from?: Date; to?: Date } | undefined,
-  ) => void;
-  onOperationFilterChange: (value: {
-    CREATE: boolean;
-    UPDATE: boolean;
-    DELETE: boolean;
-    VALIDATE: boolean;
-    UNKNOWN: boolean;
-  }) => void;
-  onOrgFilterChange: (value: string) => void;
-  onResourceFilterChange: (value: string) => void;
-  onStatusFilterChange: (value: { ok: boolean; error: boolean }) => void;
+  onApplyFilters: (value: EventsFilterProps["filters"]) => void;
   onClearFilters: () => void;
 }
 
 export function EventsFilter({
-  searchFilter,
-  dateRange,
-  operationFilter,
-  orgFilter,
-  resourceFilter,
-  statusFilter,
+  filters,
   uniqueOrg,
   uniqueResource,
-  onSearchFilterChange,
-  onDateRangeChange,
-  onOperationFilterChange,
-  onOrgFilterChange,
-  onResourceFilterChange,
-  onStatusFilterChange,
+  onApplyFilters,
   onClearFilters,
 }: EventsFilterProps) {
+  const [searchFilter, setSearchFilter] = useState(filters.searchFilter);
+  const [dateRange, setDateRange] = useState(filters.dateRange);
+  const [operationFilter, setOperationFilter] = useState(
+    filters.operationFilter,
+  );
+  const [orgFilter, setOrgFilter] = useState(filters.orgFilter);
+  const [resourceFilter, setResourceFilter] = useState(filters.resourceFilter);
+  const [statusFilter, setStatusFilter] = useState(filters.statusFilter);
+  const [fromTime, setFromTime] = useState(
+    formatTimeValue(filters.dateRange.from),
+  );
+  const [toTime, setToTime] = useState(formatTimeValue(filters.dateRange.to));
+
+  useEffect(() => {
+    setSearchFilter(filters.searchFilter);
+    setDateRange(filters.dateRange);
+    setOperationFilter(filters.operationFilter);
+    setOrgFilter(filters.orgFilter);
+    setResourceFilter(filters.resourceFilter);
+    setStatusFilter(filters.statusFilter);
+    setFromTime(formatTimeValue(filters.dateRange.from));
+    setToTime(formatTimeValue(filters.dateRange.to));
+  }, [filters]);
+
+  const disabledDays = createLast30DaysDisabledDays();
   const { datepickerProps, toInputProps, fromInputProps } = useRangeDatepicker({
     fromDate: new Date("2020-01-01"),
     toDate: new Date("2030-12-31"),
     onRangeChange: (value) => {
-      onDateRangeChange({
+      setDateRange({
         from: value?.from,
         to: value?.to,
       });
     },
-    defaultSelected: dateRange
-      ? { from: dateRange.from, to: dateRange.to }
-      : undefined,
+    defaultSelected: dateRange.from || dateRange.to ? dateRange : undefined,
+    disabled: disabledDays,
   });
 
   const handleClearFilters = () => {
-    // Clear date picker inputs
-    fromInputProps.onChange?.({
-      target: { value: "" },
-    } as React.ChangeEvent<HTMLInputElement>);
-    toInputProps.onChange?.({
-      target: { value: "" },
-    } as React.ChangeEvent<HTMLInputElement>);
-    // Let parent handle clearing all filter state
     onClearFilters();
   };
 
@@ -100,12 +102,11 @@ export function EventsFilter({
         </HStack>
       </ExpansionCard.Header>
       <ExpansionCard.Content>
-        {/* Search Filter */}
         <VStack gap="space-16">
           <Search
             label="Søk hendelser"
             value={searchFilter}
-            onChange={onSearchFilterChange}
+            onChange={setSearchFilter}
             placeholder="Søk hendelser..."
             variant="secondary"
             size="small"
@@ -115,7 +116,7 @@ export function EventsFilter({
               label="Organisasjon"
               size="small"
               value={orgFilter}
-              onChange={(e) => onOrgFilterChange(e.target.value)}
+              onChange={(e) => setOrgFilter(e.target.value)}
               id="organisation-filter"
             >
               <option value="">Alle organisasjoner</option>
@@ -129,7 +130,7 @@ export function EventsFilter({
               label="Ressurser"
               size="small"
               value={resourceFilter}
-              onChange={(e) => onResourceFilterChange(e.target.value)}
+              onChange={(e) => setResourceFilter(e.target.value)}
               id="resource-filter"
             >
               <option value="">Alle ressurser</option>
@@ -142,16 +143,14 @@ export function EventsFilter({
           </HGrid>
 
           <HGrid gap="space-24" columns={3}>
-            {/* Operation Type Filter */}
             <CheckboxGroup
-              // data-color={"brand-magenta"}
               legend="Operasjon"
               size="small"
               value={Object.entries(operationFilter)
                 .filter(([, value]) => value)
                 .map(([key]) => key)}
               onChange={(values: string[]) => {
-                onOperationFilterChange({
+                setOperationFilter({
                   CREATE: values.includes("CREATE"),
                   UPDATE: values.includes("UPDATE"),
                   DELETE: values.includes("DELETE"),
@@ -167,16 +166,14 @@ export function EventsFilter({
               <Checkbox value="UNKNOWN">UNKNOWN</Checkbox>
             </CheckboxGroup>
 
-            {/* Status Filter */}
             <CheckboxGroup
-              // data-color={"brand-magenta"}
               legend="Status"
               size="small"
               value={Object.entries(statusFilter)
                 .filter(([, value]) => value)
                 .map(([key]) => key)}
               onChange={(values: string[]) => {
-                onStatusFilterChange({
+                setStatusFilter({
                   ok: values.includes("ok"),
                   error: values.includes("error"),
                 });
@@ -185,34 +182,69 @@ export function EventsFilter({
               <Checkbox value="ok">OK</Checkbox>
               <Checkbox value="error">Feil</Checkbox>
             </CheckboxGroup>
-            {/* Date Range and Status Filter Row */}
-            <HGrid gap="space-24" columns={2}>
-              {/* Date Range Filter */}
-              <DatePicker {...datepickerProps}>
+            <DatePicker
+              key={`${dateRange.from?.getTime() ?? "none"}-${dateRange.to?.getTime() ?? "none"}`}
+              {...datepickerProps}
+            >
+              <HGrid columns={2} gap="space-24">
                 <DatePicker.Input
                   {...fromInputProps}
                   label="Fra dato"
                   size="small"
+                />
+                <TextField
+                  label="Fra tid"
+                  size="small"
+                  type="time"
+                  value={fromTime}
+                  onChange={(event) => setFromTime(event.target.value)}
                 />
                 <DatePicker.Input
                   {...toInputProps}
                   label="Til dato"
                   size="small"
                 />
-              </DatePicker>
-            </HGrid>
+                <TextField
+                  label="Til tid"
+                  size="small"
+                  type="time"
+                  value={toTime}
+                  onChange={(event) => setToTime(event.target.value)}
+                />
+              </HGrid>
+            </DatePicker>
           </HGrid>
-          {/* Clear Filters Button */}
-          <Box>
+          <HStack justify="space-between">
             <Button
               variant="tertiary"
               size="small"
               onClick={handleClearFilters}
-              // data-color={"brand-magenta"}
             >
               Tøm filtre
             </Button>
-          </Box>
+            <Button
+              size="small"
+              variant="tertiary"
+              icon={<FunnelIcon aria-hidden />}
+              onClick={() => {
+                const appliedDateRange = {
+                  from: applyTimeToDate(dateRange.from, fromTime, false),
+                  to: applyTimeToDate(dateRange.to, toTime, true),
+                };
+
+                onApplyFilters({
+                  searchFilter,
+                  dateRange: appliedDateRange,
+                  operationFilter,
+                  orgFilter,
+                  resourceFilter,
+                  statusFilter,
+                });
+              }}
+            >
+              Bruk filter
+            </Button>
+          </HStack>
         </VStack>
       </ExpansionCard.Content>
     </ExpansionCard>

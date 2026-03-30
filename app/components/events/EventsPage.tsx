@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { EventsFilter } from "./EventsFilter";
 import { EventsModal } from "./EventsModal";
@@ -9,32 +9,38 @@ import type { IEvent } from "~/types/Event";
 interface EventPageProps {
   initialData: IEvent[];
   env: string;
+  dateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  };
+  onDateRangeChange: (value: {
+    from: Date | undefined;
+    to: Date | undefined;
+  }) => void;
 }
 
-export function EventsPage({ initialData }: EventPageProps) {
-  const [searchFilter, setSearchFilter] = useState<string>("");
-  const [dateRange, setDateRange] = useState<
-    { from?: Date; to?: Date } | undefined
-  >(undefined);
-  const [operationFilter, setOperationFilter] = useState<{
-    CREATE: boolean;
-    UPDATE: boolean;
-    DELETE: boolean;
-    VALIDATE: boolean;
-    UNKNOWN: boolean;
-  }>({
-    CREATE: true,
-    UPDATE: true,
-    DELETE: true,
-    VALIDATE: true,
-    UNKNOWN: true,
+export function EventsPage({
+  initialData,
+  dateRange,
+  onDateRangeChange,
+}: EventPageProps) {
+  const routeFromTimestamp = dateRange.from?.getTime();
+  const routeToTimestamp = dateRange.to?.getTime();
+
+  const [appliedFilters, setAppliedFilters] = useState({
+    searchFilter: "",
+    dateRange,
+    operationFilter: {
+      CREATE: true,
+      UPDATE: true,
+      DELETE: true,
+      VALIDATE: true,
+      UNKNOWN: true,
+    },
+    orgFilter: "",
+    resourceFilter: "",
+    statusFilter: { ok: true, error: true },
   });
-  const [orgFilter, setOrgFilter] = useState<string>("");
-  const [resourceFilter, setResourceFilter] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<{
-    ok: boolean;
-    error: boolean;
-  }>({ ok: true, error: true });
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
@@ -42,19 +48,59 @@ export function EventsPage({ initialData }: EventPageProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
 
-  const handleClearFilters = () => {
-    setSearchFilter("");
-    setDateRange(undefined);
-    setOperationFilter({
-      CREATE: true,
-      UPDATE: true,
-      DELETE: true,
-      VALIDATE: true,
-      UNKNOWN: true,
+  useEffect(() => {
+    setAppliedFilters((prev) => {
+      const prevFromTimestamp = prev.dateRange.from?.getTime();
+      const prevToTimestamp = prev.dateRange.to?.getTime();
+      const hasDateRangeChange =
+        prevFromTimestamp !== routeFromTimestamp ||
+        prevToTimestamp !== routeToTimestamp;
+
+      if (!hasDateRangeChange) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        dateRange: {
+          from: dateRange.from,
+          to: dateRange.to,
+        },
+      };
     });
-    setOrgFilter("");
-    setResourceFilter("");
-    setStatusFilter({ ok: true, error: true });
+  }, [routeFromTimestamp, routeToTimestamp, dateRange.from, dateRange.to]);
+
+  const handleApplyFilters = (value: typeof appliedFilters) => {
+    setAppliedFilters(value);
+    setCurrentPage(1);
+
+    const currentFrom = appliedFilters.dateRange.from?.getTime();
+    const currentTo = appliedFilters.dateRange.to?.getTime();
+    const nextFrom = value.dateRange.from?.getTime();
+    const nextTo = value.dateRange.to?.getTime();
+    const hasDateChange = currentFrom !== nextFrom || currentTo !== nextTo;
+
+    if (hasDateChange) {
+      onDateRangeChange(value.dateRange);
+    }
+  };
+
+  const handleClearFilters = () => {
+    setAppliedFilters({
+      searchFilter: "",
+      dateRange: { from: undefined, to: undefined },
+      operationFilter: {
+        CREATE: true,
+        UPDATE: true,
+        DELETE: true,
+        VALIDATE: true,
+        UNKNOWN: true,
+      },
+      orgFilter: "",
+      resourceFilter: "",
+      statusFilter: { ok: true, error: true },
+    });
+    onDateRangeChange({ from: undefined, to: undefined });
     setCurrentPage(1);
   };
 
@@ -96,8 +142,8 @@ export function EventsPage({ initialData }: EventPageProps) {
       }
 
       // Search filter
-      if (searchFilter) {
-        const searchTerm = searchFilter.toLowerCase();
+      if (appliedFilters.searchFilter) {
+        const searchTerm = appliedFilters.searchFilter.toLowerCase();
         const matchesCorrId = event.corrId?.toLowerCase().includes(searchTerm);
         const matchesOrgId = event.orgId?.toLowerCase().includes(searchTerm);
         const matchesResource = event.requestEvent.resourceName
@@ -115,56 +161,55 @@ export function EventsPage({ initialData }: EventPageProps) {
         }
       }
 
-      // Operation filter
       const operationType = event.requestEvent.operationType
         ? event.requestEvent.operationType.toUpperCase()
         : "";
-      if (!operationFilter[operationType as keyof typeof operationFilter]) {
-        return false;
-      }
-
-      // Organisation filter
-      if (orgFilter && event.orgId !== orgFilter) {
-        return false;
-      }
-
-      // Resource filter
       if (
-        resourceFilter &&
-        event.requestEvent.resourceName !== resourceFilter
+        !appliedFilters.operationFilter[
+          operationType as keyof typeof appliedFilters.operationFilter
+        ]
       ) {
         return false;
       }
 
-      // Status filter
-      if (!statusFilter.ok && !event.hasError) {
+      if (
+        appliedFilters.orgFilter &&
+        event.orgId !== appliedFilters.orgFilter
+      ) {
         return false;
       }
-      if (!statusFilter.error && event.hasError) {
+
+      if (
+        appliedFilters.resourceFilter &&
+        event.requestEvent.resourceName !== appliedFilters.resourceFilter
+      ) {
+        return false;
+      }
+
+      if (!appliedFilters.statusFilter.ok && !event.hasError) {
+        return false;
+      }
+      if (!appliedFilters.statusFilter.error && event.hasError) {
         return false;
       }
 
       // Date range filter
-      if (dateRange?.from || dateRange?.to) {
+      if (appliedFilters.dateRange.from || appliedFilters.dateRange.to) {
         const eventDate = new Date(event.requestEvent.created);
 
-        if (dateRange.from && dateRange.to) {
-          const fromDate = new Date(dateRange.from);
-          fromDate.setHours(0, 0, 0, 0);
-          const toDate = new Date(dateRange.to);
-          toDate.setHours(23, 59, 59, 999);
+        if (appliedFilters.dateRange.from && appliedFilters.dateRange.to) {
+          const fromDate = new Date(appliedFilters.dateRange.from);
+          const toDate = new Date(appliedFilters.dateRange.to);
           if (eventDate < fromDate || eventDate > toDate) {
             return false;
           }
-        } else if (dateRange.from) {
-          const fromDate = new Date(dateRange.from);
-          fromDate.setHours(0, 0, 0, 0);
+        } else if (appliedFilters.dateRange.from) {
+          const fromDate = new Date(appliedFilters.dateRange.from);
           if (eventDate < fromDate) {
             return false;
           }
-        } else if (dateRange.to) {
-          const toDate = new Date(dateRange.to);
-          toDate.setHours(23, 59, 59, 999);
+        } else if (appliedFilters.dateRange.to) {
+          const toDate = new Date(appliedFilters.dateRange.to);
           if (eventDate > toDate) {
             return false;
           }
@@ -180,56 +225,9 @@ export function EventsPage({ initialData }: EventPageProps) {
       const bDate = b.requestEvent?.created || 0;
       return bDate - aDate; // Descending order (newest first)
     });
-  }, [
-    initialData,
-    searchFilter,
-    operationFilter,
-    orgFilter,
-    resourceFilter,
-    statusFilter,
-    dateRange,
-  ]);
+  }, [initialData, appliedFilters]);
 
-  const handleSearchFilterChange = (value: string) => {
-    setSearchFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleDateRangeChange = (
-    range: { from?: Date; to?: Date } | undefined,
-  ) => {
-    setDateRange(range);
-    setCurrentPage(1);
-  };
-
-  const handleOperationFilterChange = (value: {
-    CREATE: boolean;
-    UPDATE: boolean;
-    DELETE: boolean;
-    VALIDATE: boolean;
-    UNKNOWN: boolean;
-  }) => {
-    setOperationFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleOrgFilterChange = (value: string) => {
-    setOrgFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleResourceFilterChange = (value: string) => {
-    setResourceFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleStatusFilterChange = (value: { ok: boolean; error: boolean }) => {
-    setStatusFilter(value);
-    setCurrentPage(1);
-  };
-
-  // Extract unique values for filters
-  const uniqueOrganisasjoner = [
+  const uniqueOrganisation = [
     ...new Set(
       initialData
         .map((event) => event.orgId)
@@ -248,20 +246,10 @@ export function EventsPage({ initialData }: EventPageProps) {
   return (
     <Box padding="space-32" paddingBlock="space-8">
       <EventsFilter
-        searchFilter={searchFilter}
-        dateRange={dateRange}
-        operationFilter={operationFilter}
-        orgFilter={orgFilter}
-        resourceFilter={resourceFilter}
-        statusFilter={statusFilter}
-        uniqueOrg={uniqueOrganisasjoner}
+        filters={appliedFilters}
+        uniqueOrg={uniqueOrganisation}
         uniqueResource={uniqueResource}
-        onSearchFilterChange={handleSearchFilterChange}
-        onDateRangeChange={handleDateRangeChange}
-        onOperationFilterChange={handleOperationFilterChange}
-        onOrgFilterChange={handleOrgFilterChange}
-        onResourceFilterChange={handleResourceFilterChange}
-        onStatusFilterChange={handleStatusFilterChange}
+        onApplyFilters={handleApplyFilters}
         onClearFilters={handleClearFilters}
       />
       <EventsTable

@@ -26,8 +26,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   const env = await selectedEnvCookie.parse(cookieHeader);
   const url = new URL(request.url);
 
-  const fromParam = url.searchParams.get("fromDate");
-  const toParam = url.searchParams.get("toDate");
+  const fromParam = url.searchParams.get("from");
+  const toParam = url.searchParams.get("to");
 
   const fromDate =
     fromParam && !Number.isNaN(Number(fromParam))
@@ -59,16 +59,14 @@ export default function Sync() {
   const isNavigating = Boolean(navigation.location);
   const isRefreshing = revalidator.state === "loading";
 
-  const fromDateParam = searchParams.get("fromDate");
-  const toDateParam = searchParams.get("toDate");
+  const fromParam = searchParams.get("from");
+  const toParam = searchParams.get("to");
   const fromTimestamp =
-    fromDateParam && !Number.isNaN(Number(fromDateParam))
-      ? Number(fromDateParam)
+    fromParam && !Number.isNaN(Number(fromParam))
+      ? Number(fromParam)
       : undefined;
   const toTimestamp =
-    toDateParam && !Number.isNaN(Number(toDateParam))
-      ? Number(toDateParam)
-      : undefined;
+    toParam && !Number.isNaN(Number(toParam)) ? Number(toParam) : undefined;
 
   const dateRange = {
     from:
@@ -83,19 +81,15 @@ export default function Sync() {
     const nextSearchParams = new URLSearchParams(searchParams);
 
     if (value.from) {
-      const fromDate = new Date(value.from);
-      fromDate.setHours(0, 0, 0, 0);
-      nextSearchParams.set("fromDate", String(fromDate.getTime()));
+      nextSearchParams.set("from", String(value.from.getTime()));
     } else {
-      nextSearchParams.delete("fromDate");
+      nextSearchParams.delete("from");
     }
 
     if (value.to) {
-      const toDate = new Date(value.to);
-      toDate.setHours(23, 59, 59, 999);
-      nextSearchParams.set("toDate", String(toDate.getTime()));
+      nextSearchParams.set("to", String(value.to.getTime()));
     } else {
-      nextSearchParams.delete("toDate");
+      nextSearchParams.delete("to");
     }
 
     setSearchParams(nextSearchParams);

@@ -8,10 +8,16 @@ import {
   HGrid,
   HStack,
   Select,
+  TextField,
   useRangeDatepicker,
   VStack,
 } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
+import {
+  applyTimeToDate,
+  createLast30DaysDisabledDays,
+  formatTimeValue,
+} from "~/utils/time";
 
 interface SyncFilterProps {
   filters: {
@@ -53,6 +59,10 @@ export function SyncFilter({
   const [packageFilter, setPackageFilter] = useState(filters.packageFilter);
   const [resourceFilter, setResourceFilter] = useState(filters.resourceFilter);
   const [dateRange, setDateRange] = useState(filters.dateRange);
+  const [fromTime, setFromTime] = useState(
+    formatTimeValue(filters.dateRange.from),
+  );
+  const [toTime, setToTime] = useState(formatTimeValue(filters.dateRange.to));
 
   useEffect(() => {
     setSyncTypeFilter(filters.syncTypeFilter);
@@ -62,14 +72,10 @@ export function SyncFilter({
     setPackageFilter(filters.packageFilter);
     setResourceFilter(filters.resourceFilter);
     setDateRange(filters.dateRange);
+    setFromTime(formatTimeValue(filters.dateRange.from));
+    setToTime(formatTimeValue(filters.dateRange.to));
   }, [filters]);
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  thirtyDaysAgo.setHours(0, 0, 0, 0);
-  const today = new Date();
-  today.setHours(23, 59, 59, 999);
-
-  const disabledDays = [{ before: thirtyDaysAgo }, { after: today }];
+  const disabledDays = createLast30DaysDisabledDays();
   const { datepickerProps, toInputProps, fromInputProps } = useRangeDatepicker({
     onRangeChange: (value) => {
       setDateRange({
@@ -87,8 +93,6 @@ export function SyncFilter({
   };
 
   return (
-    // <Box className="mb-4">
-    // </Box>
     <ExpansionCard aria-label="Filtrer synkroniseringer" size="small">
       <ExpansionCard.Header>
         <HStack gap="space-8">
@@ -160,7 +164,6 @@ export function SyncFilter({
             </Select>
           </HGrid>
           <HGrid columns={3} gap="space-24">
-            {" "}
             <CheckboxGroup
               // data-color={"brand-magenta"}
               legend="Synkroniseringstype"
@@ -179,7 +182,6 @@ export function SyncFilter({
               <Checkbox value="delta">Delta</Checkbox>
             </CheckboxGroup>
             <CheckboxGroup
-              // data-color={"brand-magenta"}
               legend="Status"
               size="small"
               value={Object.entries(statusFilter)
@@ -195,20 +197,37 @@ export function SyncFilter({
               <Checkbox value="finished">Fullført</Checkbox>
               <Checkbox value="ongoing">Pågår</Checkbox>
             </CheckboxGroup>
+
             <DatePicker
               key={`${dateRange.from?.getTime() ?? "none"}-${dateRange.to?.getTime() ?? "none"}`}
               {...datepickerProps}
             >
-              <DatePicker.Input
-                {...fromInputProps}
-                label="Fra dato"
-                size="small"
-              />
-              <DatePicker.Input
-                {...toInputProps}
-                label="Til dato"
-                size="small"
-              />
+              <HGrid columns={2} gap="space-24">
+                <DatePicker.Input
+                  {...fromInputProps}
+                  label="Fra dato"
+                  size="small"
+                />
+                <TextField
+                  label="Fra tid"
+                  size="small"
+                  type="time"
+                  value={fromTime}
+                  onChange={(event) => setFromTime(event.target.value)}
+                />
+                <DatePicker.Input
+                  {...toInputProps}
+                  label="Til dato"
+                  size="small"
+                />
+                <TextField
+                  label="Til tid"
+                  size="small"
+                  type="time"
+                  value={toTime}
+                  onChange={(event) => setToTime(event.target.value)}
+                />
+              </HGrid>
             </DatePicker>
           </HGrid>
           <HStack justify="space-between">
@@ -224,7 +243,12 @@ export function SyncFilter({
               size="small"
               variant="tertiary"
               icon={<FunnelIcon aria-hidden />}
-              onClick={() =>
+              onClick={() => {
+                const appliedDateRange = {
+                  from: applyTimeToDate(dateRange.from, fromTime, false),
+                  to: applyTimeToDate(dateRange.to, toTime, true),
+                };
+
                 onApplyFilters({
                   syncTypeFilter,
                   statusFilter,
@@ -232,9 +256,9 @@ export function SyncFilter({
                   domainFilter,
                   packageFilter,
                   resourceFilter,
-                  dateRange,
-                })
-              }
+                  dateRange: appliedDateRange,
+                });
+              }}
             >
               Bruk filter
             </Button>

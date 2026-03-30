@@ -6,6 +6,7 @@ import {
   useLoaderData,
   useNavigation,
   useRevalidator,
+  useSearchParams,
 } from "react-router";
 import EventsApi from "~/api/EventsApi";
 import { selectedEnvCookie } from "~/utils/cookies";
@@ -30,8 +31,18 @@ export function meta() {
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
   const env = await selectedEnvCookie.parse(cookieHeader);
+  const url = new URL(request.url);
 
-  const eventResponse = EventsApi.getAllEvents(env);
+  const fromParam = url.searchParams.get("from");
+  const toParam = url.searchParams.get("to");
+  const fromDate =
+    fromParam && !Number.isNaN(Number(fromParam))
+      ? Number(fromParam)
+      : undefined;
+  const toDate =
+    toParam && !Number.isNaN(Number(toParam)) ? Number(toParam) : undefined;
+
+  const eventResponse = EventsApi.getAllEvents(env, { fromDate, toDate });
 
   return { env, eventResponse };
 };
@@ -47,11 +58,48 @@ export default function Events() {
   };
 
   const [alerts, setAlerts] = useState<NovariSnackbarItem[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const navigation = useNavigation();
   const revalidator = useRevalidator();
   const isNavigating = Boolean(navigation.location);
   const isRefreshing = revalidator.state === "loading";
+
+  const fromParam = searchParams.get("from");
+  const toParam = searchParams.get("to");
+  const fromTimestamp =
+    fromParam && !Number.isNaN(Number(fromParam))
+      ? Number(fromParam)
+      : undefined;
+  const toTimestamp =
+    toParam && !Number.isNaN(Number(toParam)) ? Number(toParam) : undefined;
+
+  const dateRange = {
+    from:
+      typeof fromTimestamp === "number" ? new Date(fromTimestamp) : undefined,
+    to: typeof toTimestamp === "number" ? new Date(toTimestamp) : undefined,
+  };
+
+  const handleDateRangeChange = (value: {
+    from: Date | undefined;
+    to: Date | undefined;
+  }) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    if (value.from) {
+      nextSearchParams.set("from", String(value.from.getTime()));
+    } else {
+      nextSearchParams.delete("from");
+    }
+
+    if (value.to) {
+      nextSearchParams.set("to", String(value.to.getTime()));
+    } else {
+      nextSearchParams.delete("to");
+    }
+
+    setSearchParams(nextSearchParams);
+  };
 
   //TODO: change to a better notice
   if (isNavigating) {
@@ -95,7 +143,13 @@ export default function Events() {
             </Box>
           }
         >
-          <SyncResolved env={env} alerts={alerts} setAlerts={setAlerts} />
+          <SyncResolved
+            env={env}
+            alerts={alerts}
+            setAlerts={setAlerts}
+            dateRange={dateRange}
+            onDateRangeChange={handleDateRangeChange}
+          />
         </Await>
       </Suspense>
     </>
@@ -107,10 +161,20 @@ function SyncResolved({
   env,
   alerts,
   setAlerts,
+  dateRange,
+  onDateRangeChange,
 }: {
   env: string;
   alerts: NovariSnackbarItem[];
   setAlerts: React.Dispatch<React.SetStateAction<NovariSnackbarItem[]>>;
+  dateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  };
+  onDateRangeChange: (value: {
+    from: Date | undefined;
+    to: Date | undefined;
+  }) => void;
 }) {
   const response = useAsyncValue() as {
     success: boolean;
@@ -134,7 +198,12 @@ function SyncResolved({
 
   return (
     <>
-      <EventsPage initialData={response.data || []} env={env} />
+      <EventsPage
+        initialData={response.data || []}
+        env={env}
+        dateRange={dateRange}
+        onDateRangeChange={onDateRangeChange}
+      />
       <NovariSnackbar items={alerts} />
     </>
   );

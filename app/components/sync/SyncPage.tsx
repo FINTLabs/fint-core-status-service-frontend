@@ -147,23 +147,18 @@ export function SyncPage({
     if (appliedFilters.dateRange.from || appliedFilters.dateRange.to) {
       const syncDate = new Date(sync.lastPageTime);
       if (appliedFilters.dateRange.from && appliedFilters.dateRange.to) {
-        // Set time to start of day for 'from' and end of day for 'to'
         const fromDate = new Date(appliedFilters.dateRange.from);
-        fromDate.setHours(0, 0, 0, 0);
         const toDate = new Date(appliedFilters.dateRange.to);
-        toDate.setHours(23, 59, 59, 999);
         if (syncDate < fromDate || syncDate > toDate) {
           return false;
         }
       } else if (appliedFilters.dateRange.from) {
         const fromDate = new Date(appliedFilters.dateRange.from);
-        fromDate.setHours(0, 0, 0, 0);
         if (syncDate < fromDate) {
           return false;
         }
       } else if (appliedFilters.dateRange.to) {
         const toDate = new Date(appliedFilters.dateRange.to);
-        toDate.setHours(23, 59, 59, 999);
         if (syncDate > toDate) {
           return false;
         }
