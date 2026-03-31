@@ -31,6 +31,7 @@ interface SyncFiltersState {
   domainFilter: string;
   packageFilter: string;
   resourceFilter: string;
+  adapterIdFilter: string;
   dateRange: {
     from: Date | undefined;
     to: Date | undefined;
@@ -55,6 +56,7 @@ export function SyncPage({
     domainFilter: "",
     packageFilter: "",
     resourceFilter: "",
+    adapterIdFilter: "",
     dateRange,
   });
 
@@ -143,6 +145,15 @@ export function SyncPage({
       return false;
     }
 
+    if (
+      appliedFilters.adapterIdFilter &&
+      !sync.adapterId
+        .toLowerCase()
+        .includes(appliedFilters.adapterIdFilter.toLowerCase())
+    ) {
+      return false;
+    }
+
     // Date range filter
     if (appliedFilters.dateRange.from || appliedFilters.dateRange.to) {
       const syncDate = new Date(sync.lastPageTime);
@@ -183,6 +194,7 @@ export function SyncPage({
       domainFilter: "",
       packageFilter: "",
       resourceFilter: "",
+      adapterIdFilter: "",
       dateRange: { from: undefined, to: undefined },
     });
     onDateRangeChange({ from: undefined, to: undefined });

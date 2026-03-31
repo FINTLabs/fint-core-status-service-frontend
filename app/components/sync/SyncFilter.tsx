@@ -33,6 +33,7 @@ interface SyncFilterProps {
     domainFilter: string;
     packageFilter: string;
     resourceFilter: string;
+    adapterIdFilter: string;
     dateRange: { from: Date | undefined; to: Date | undefined };
   };
   uniqueOrg: string[];
@@ -58,6 +59,9 @@ export function SyncFilter({
   const [domainFilter, setDomainFilter] = useState(filters.domainFilter);
   const [packageFilter, setPackageFilter] = useState(filters.packageFilter);
   const [resourceFilter, setResourceFilter] = useState(filters.resourceFilter);
+  const [adapterIdFilter, setAdapterIdFilter] = useState(
+    filters.adapterIdFilter,
+  );
   const [dateRange, setDateRange] = useState(filters.dateRange);
   const [fromTime, setFromTime] = useState(
     formatTimeValue(filters.dateRange.from),
@@ -71,6 +75,7 @@ export function SyncFilter({
     setDomainFilter(filters.domainFilter);
     setPackageFilter(filters.packageFilter);
     setResourceFilter(filters.resourceFilter);
+    setAdapterIdFilter(filters.adapterIdFilter);
     setDateRange(filters.dateRange);
     setFromTime(formatTimeValue(filters.dateRange.from));
     setToTime(formatTimeValue(filters.dateRange.to));
@@ -102,7 +107,7 @@ export function SyncFilter({
       </ExpansionCard.Header>
       <ExpansionCard.Content>
         <VStack gap="space-16">
-          <HGrid columns={4} gap="space-24">
+          <HGrid columns={5} gap="space-24">
             <Select
               label="Organisasjon"
               size="small"
@@ -162,6 +167,13 @@ export function SyncFilter({
                 </option>
               ))}
             </Select>
+
+            <TextField
+              label="Adapter ID"
+              size="small"
+              value={adapterIdFilter}
+              onChange={(event) => setAdapterIdFilter(event.target.value)}
+            />
           </HGrid>
           <HGrid columns={3} gap="space-24">
             <CheckboxGroup
@@ -256,6 +268,7 @@ export function SyncFilter({
                   domainFilter,
                   packageFilter,
                   resourceFilter,
+                  adapterIdFilter,
                   dateRange: appliedDateRange,
                 });
               }}
