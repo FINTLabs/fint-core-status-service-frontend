@@ -15,7 +15,6 @@ import {
 } from "@navikt/ds-react";
 import type { ISyncData } from "~/types";
 import { formatTimestampDetailed } from "~/utils/time";
-import { ChevronRightDoubleCircleIcon } from "@navikt/aksel-icons";
 
 interface SyncModalProps {
   isOpen: boolean;
@@ -67,12 +66,14 @@ export function SyncModal({ isOpen, onClose, syncData }: SyncModalProps) {
             </Box>
             <Box>
               <Label>Adapter ID</Label>
-              <Detail>
-                <Link href={`/adaptere/${syncData.orgId}/${syncData.domain}`}>
-                  {syncData.adapterId}
-                  <ChevronRightDoubleCircleIcon title="View Adapter details" />
-                </Link>
-              </Detail>
+              <HStack align="center" gap="space-8">
+                <Detail>
+                  <Link href={`/adaptere/${syncData.orgId}/${syncData.domain}`}>
+                    {syncData.adapterId}
+                  </Link>
+                </Detail>
+                <CopyButton copyText={syncData.adapterId} size={"small"} />
+              </HStack>
             </Box>
           </VStack>
         </VStack>
