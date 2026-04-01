@@ -180,10 +180,10 @@ export function SyncPage({
   });
 
   const uniqueOrg = [...new Set(initialData.map((item) => item.orgId))];
-  const uniqueDomain = [...new Set(initialData.map((item) => item.domain))];
-  const uniquePakke = [...new Set(initialData.map((item) => item.package))];
+  const uniqueDomain = [...new Set(filteredData.map((item) => item.domain))];
+  const uniquePakke = [...new Set(filteredData.map((item) => item.package))];
   const uniqueResource = [
-    ...new Set(initialData.map((item) => item.resource)),
+    ...new Set(filteredData.map((item) => item.resource)),
   ].sort((a, b) => a.localeCompare(b));
 
   function handleClearFilters() {
