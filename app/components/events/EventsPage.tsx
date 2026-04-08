@@ -85,22 +85,66 @@ export function EventsPage({
     }
   };
 
-  const handleClearFilters = () => {
-    setAppliedFilters({
-      searchFilter: "",
-      dateRange: { from: undefined, to: undefined },
-      operationFilter: {
-        CREATE: true,
-        UPDATE: true,
-        DELETE: true,
-        VALIDATE: true,
-        UNKNOWN: true,
-      },
-      orgFilter: "",
-      resourceFilter: "",
-      statusFilter: { ok: true, error: true },
-    });
-    onDateRangeChange({ from: undefined, to: undefined });
+  const handleSearchFilterChange = (value: string) => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      searchFilter: value,
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilterChange = (value: "all" | "ok" | "error") => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      statusFilter:
+        value === "all"
+          ? { ok: true, error: true }
+          : {
+              ok: value === "ok",
+              error: value === "error",
+            },
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleOperationFilterChange = (
+    value: "all" | "CREATE" | "UPDATE" | "DELETE" | "VALIDATE" | "UNKNOWN",
+  ) => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      operationFilter:
+        value === "all"
+          ? {
+              CREATE: true,
+              UPDATE: true,
+              DELETE: true,
+              VALIDATE: true,
+              UNKNOWN: true,
+            }
+          : {
+              CREATE: value === "CREATE",
+              UPDATE: value === "UPDATE",
+              DELETE: value === "DELETE",
+              VALIDATE: value === "VALIDATE",
+              UNKNOWN: value === "UNKNOWN",
+            },
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleOrgFilterChange = (value: string) => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      orgFilter: value,
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleResourceFilterChange = (value: string) => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      resourceFilter: value,
+    }));
     setCurrentPage(1);
   };
 
@@ -247,10 +291,7 @@ export function EventsPage({
     <Box padding="space-32" paddingBlock="space-8">
       <EventsFilter
         filters={appliedFilters}
-        uniqueOrg={uniqueOrganisation}
-        uniqueResource={uniqueResource}
         onApplyFilters={handleApplyFilters}
-        onClearFilters={handleClearFilters}
       />
       <EventsTable
         data={filteredData}
@@ -259,6 +300,44 @@ export function EventsPage({
         currentPage={currentPage}
         onPageChange={handlePageChange}
         itemsPerPage={itemsPerPage}
+        searchFilter={appliedFilters.searchFilter}
+        onSearchFilterChange={handleSearchFilterChange}
+        uniqueOrg={uniqueOrganisation}
+        uniqueResource={uniqueResource}
+        activeFilters={{
+          status:
+            appliedFilters.statusFilter.ok && appliedFilters.statusFilter.error
+              ? "all"
+              : appliedFilters.statusFilter.ok
+                ? "ok"
+                : appliedFilters.statusFilter.error
+                  ? "error"
+                  : "none",
+          operation:
+            appliedFilters.operationFilter.CREATE &&
+            appliedFilters.operationFilter.UPDATE &&
+            appliedFilters.operationFilter.DELETE &&
+            appliedFilters.operationFilter.VALIDATE &&
+            appliedFilters.operationFilter.UNKNOWN
+              ? "all"
+              : appliedFilters.operationFilter.CREATE
+                ? "CREATE"
+                : appliedFilters.operationFilter.UPDATE
+                  ? "UPDATE"
+                  : appliedFilters.operationFilter.DELETE
+                    ? "DELETE"
+                    : appliedFilters.operationFilter.VALIDATE
+                      ? "VALIDATE"
+                      : appliedFilters.operationFilter.UNKNOWN
+                        ? "UNKNOWN"
+                        : "none",
+          org: appliedFilters.orgFilter,
+          resource: appliedFilters.resourceFilter,
+        }}
+        onStatusFilterChange={handleStatusFilterChange}
+        onOperationFilterChange={handleOperationFilterChange}
+        onOrgFilterChange={handleOrgFilterChange}
+        onResourceFilterChange={handleResourceFilterChange}
       />
 
       {selectedEvent && selectedEvent.requestEvent && (

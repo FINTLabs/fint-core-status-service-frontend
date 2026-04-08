@@ -4,11 +4,13 @@ import {
   HStack,
   Loader,
   Pagination,
+  Search,
   Table,
 } from "@navikt/ds-react";
 import { CheckmarkCircleIcon, XMarkOctagonIcon } from "@navikt/aksel-icons";
 import type { IEvent } from "~/types/Event";
 import { OperationBadge } from "~/components/events/eventUtils";
+import { FilterActionMenu } from "~/components/common/FilterActionMenu";
 import { formatTimestampDetailed } from "~/utils/time";
 
 interface HendelserTableProps {
@@ -18,6 +20,29 @@ interface HendelserTableProps {
   currentPage: number;
   onPageChange: (page: number) => void;
   itemsPerPage: number;
+  searchFilter: string;
+  onSearchFilterChange: (value: string) => void;
+  uniqueOrg: string[];
+  uniqueResource: string[];
+  activeFilters: {
+    status: "all" | "ok" | "error" | "none";
+    operation:
+      | "all"
+      | "CREATE"
+      | "UPDATE"
+      | "DELETE"
+      | "VALIDATE"
+      | "UNKNOWN"
+      | "none";
+    org: string;
+    resource: string;
+  };
+  onStatusFilterChange: (value: "all" | "ok" | "error") => void;
+  onOperationFilterChange: (
+    value: "all" | "CREATE" | "UPDATE" | "DELETE" | "VALIDATE" | "UNKNOWN",
+  ) => void;
+  onOrgFilterChange: (value: string) => void;
+  onResourceFilterChange: (value: string) => void;
 }
 
 export function EventsTable({
@@ -27,6 +52,15 @@ export function EventsTable({
   currentPage,
   onPageChange,
   itemsPerPage,
+  searchFilter,
+  onSearchFilterChange,
+  uniqueOrg,
+  uniqueResource,
+  activeFilters,
+  onStatusFilterChange,
+  onOperationFilterChange,
+  onOrgFilterChange,
+  onResourceFilterChange,
 }: HendelserTableProps) {
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -41,15 +75,106 @@ export function EventsTable({
         shadow="dialog"
         marginBlock={"space-16"}
       >
+        <Box marginBlock="space-16">
+          <Search
+            label="Søk hendelser ID"
+            value={searchFilter}
+            onChange={onSearchFilterChange}
+            placeholder="Søk hendelser ID..."
+            variant="secondary"
+            size="small"
+          />
+        </Box>
         {loading && <Loader size="small" />}
         <Table size="small" zebraStripes={true}>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Status</Table.HeaderCell>
+              <Table.HeaderCell>
+                <HStack gap="space-4" align="center">
+                  <span>Status</span>
+                  <FilterActionMenu
+                    title="Status"
+                    options={[
+                      { value: "ok", label: "OK" },
+                      { value: "error", label: "Feil" },
+                    ]}
+                    selectedValue={
+                      activeFilters.status === "all" ||
+                      activeFilters.status === "none"
+                        ? undefined
+                        : activeFilters.status
+                    }
+                    onSelect={(value) =>
+                      onStatusFilterChange(value as "all" | "ok" | "error")
+                    }
+                    onClear={() => onStatusFilterChange("all")}
+                  />
+                </HStack>
+              </Table.HeaderCell>
               <Table.HeaderCell>Hendelse ID</Table.HeaderCell>
-              <Table.HeaderCell>Operasjon</Table.HeaderCell>
-              <Table.HeaderCell>Organisasjon</Table.HeaderCell>
-              <Table.HeaderCell>Ressurser</Table.HeaderCell>
+              <Table.HeaderCell>
+                <HStack gap="space-4" align="center">
+                  <span>Operasjon</span>
+                  <FilterActionMenu
+                    title="Operasjon"
+                    options={[
+                      { value: "CREATE", label: "CREATE" },
+                      { value: "UPDATE", label: "UPDATE" },
+                      { value: "DELETE", label: "DELETE" },
+                      { value: "VALIDATE", label: "VALIDATE" },
+                      { value: "UNKNOWN", label: "UNKNOWN" },
+                    ]}
+                    selectedValue={
+                      activeFilters.operation === "all" ||
+                      activeFilters.operation === "none"
+                        ? undefined
+                        : activeFilters.operation
+                    }
+                    onSelect={(value) =>
+                      onOperationFilterChange(
+                        value as
+                          | "all"
+                          | "CREATE"
+                          | "UPDATE"
+                          | "DELETE"
+                          | "VALIDATE"
+                          | "UNKNOWN",
+                      )
+                    }
+                    onClear={() => onOperationFilterChange("all")}
+                  />
+                </HStack>
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <HStack gap="space-4" align="center">
+                  <span>Organisasjon</span>
+                  <FilterActionMenu
+                    title="Organisasjon"
+                    options={uniqueOrg.map((org) => ({
+                      value: org,
+                      label: org,
+                    }))}
+                    selectedValue={activeFilters.org || undefined}
+                    onSelect={onOrgFilterChange}
+                    onClear={() => onOrgFilterChange("")}
+                  />
+                </HStack>
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <HStack gap="space-4" align="center">
+                  <span>Ressurser</span>
+                  <FilterActionMenu
+                    title="Ressurser"
+                    options={uniqueResource.map((resource) => ({
+                      value: resource,
+                      label: resource,
+                    }))}
+                    selectedValue={activeFilters.resource || undefined}
+                    onSelect={onResourceFilterChange}
+                    onClear={() => onResourceFilterChange("")}
+                  />
+                </HStack>
+              </Table.HeaderCell>
               <Table.HeaderCell>Request Dato</Table.HeaderCell>
             </Table.Row>
           </Table.Header>

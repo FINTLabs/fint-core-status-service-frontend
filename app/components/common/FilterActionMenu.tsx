@@ -15,7 +15,7 @@ interface SyncActionMenuProps {
   onClear: () => void;
 }
 
-export function SyncActionMenu({
+export function FilterActionMenu({
   title,
   options,
   selectedValue,

@@ -3,15 +3,15 @@ import {
   HStack,
   Pagination,
   ProgressBar,
+  Search,
   Table,
   Tag,
-  TextField,
 } from "@navikt/ds-react";
 import { ArrowCirclepathIcon, CheckmarkCircleIcon } from "@navikt/aksel-icons";
 import type { ISyncData } from "~/types";
 import { useMemo, useState } from "react";
 import { formatTimestampDetailed } from "~/utils/time";
-import { SyncActionMenu } from "~/components/sync/SyncActionMenu";
+import { FilterActionMenu } from "~/components/common/FilterActionMenu";
 
 interface SyncTableProps {
   data: ISyncData[];
@@ -106,11 +106,13 @@ export function SyncTable({
       marginBlock={"space-16"}
     >
       <Box marginBlock="space-16">
-        <TextField
+        <Search
           label="Adapter ID"
           size="small"
           value={adapterIdFilter}
-          onChange={(event) => onAdapterIdFilterChange(event.target.value)}
+          onChange={onAdapterIdFilterChange}
+          placeholder="Søk adapter ID..."
+          variant="secondary"
         />
       </Box>
       <Table
@@ -124,7 +126,7 @@ export function SyncTable({
             <Table.HeaderCell>
               <HStack gap="space-4" align="center">
                 <span>Status</span>
-                <SyncActionMenu
+                <FilterActionMenu
                   title="Status"
                   options={[
                     { value: "finished", label: "Fullfort" },
@@ -148,7 +150,7 @@ export function SyncTable({
             <Table.HeaderCell>
               <HStack gap="space-4" align="center">
                 <span>Organisasjon</span>
-                <SyncActionMenu
+                <FilterActionMenu
                   title="Organisasjon"
                   options={uniqueOrg.map((org) => ({ value: org, label: org }))}
                   selectedValue={activeFilters.org || undefined}
@@ -160,7 +162,7 @@ export function SyncTable({
             <Table.HeaderCell>
               <HStack gap="space-4" align="center">
                 <span>Domene</span>
-                <SyncActionMenu
+                <FilterActionMenu
                   title="Domene"
                   options={uniqueDomain.map((domain) => ({
                     value: domain,
@@ -175,7 +177,7 @@ export function SyncTable({
             <Table.HeaderCell>
               <HStack gap="space-4" align="center">
                 <span>Pakke</span>
-                <SyncActionMenu
+                <FilterActionMenu
                   title="Pakke"
                   options={uniquePackage.map((pkg) => ({
                     value: pkg,
@@ -190,7 +192,7 @@ export function SyncTable({
             <Table.HeaderCell>
               <HStack gap="space-4" align="center">
                 <span>Ressurs</span>
-                <SyncActionMenu
+                <FilterActionMenu
                   title="Ressurs"
                   options={uniqueResource.map((resource) => ({
                     value: resource,
@@ -205,7 +207,7 @@ export function SyncTable({
             <Table.HeaderCell>
               <HStack gap="space-4" align="center">
                 <span>Type</span>
-                <SyncActionMenu
+                <FilterActionMenu
                   title="Type"
                   options={[
                     { value: "FULL", label: "FULL" },

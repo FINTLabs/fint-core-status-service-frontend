@@ -1,13 +1,9 @@
 import {
+  Box,
   Button,
-  Checkbox,
-  CheckboxGroup,
   DatePicker,
-  ExpansionCard,
   HGrid,
   HStack,
-  Search,
-  Select,
   TextField,
   useRangeDatepicker,
   VStack,
@@ -22,55 +18,20 @@ import {
 
 interface EventsFilterProps {
   filters: {
-    searchFilter: string;
     dateRange: { from: Date | undefined; to: Date | undefined };
-    operationFilter: {
-      CREATE: boolean;
-      UPDATE: boolean;
-      DELETE: boolean;
-      VALIDATE: boolean;
-      UNKNOWN: boolean;
-    };
-    orgFilter: string;
-    resourceFilter: string;
-    statusFilter: {
-      ok: boolean;
-      error: boolean;
-    };
   };
-  uniqueOrg: string[];
-  uniqueResource: string[];
   onApplyFilters: (value: EventsFilterProps["filters"]) => void;
-  onClearFilters: () => void;
 }
 
-export function EventsFilter({
-  filters,
-  uniqueOrg,
-  uniqueResource,
-  onApplyFilters,
-  onClearFilters,
-}: EventsFilterProps) {
-  const [searchFilter, setSearchFilter] = useState(filters.searchFilter);
+export function EventsFilter({ filters, onApplyFilters }: EventsFilterProps) {
   const [dateRange, setDateRange] = useState(filters.dateRange);
-  const [operationFilter, setOperationFilter] = useState(
-    filters.operationFilter,
-  );
-  const [orgFilter, setOrgFilter] = useState(filters.orgFilter);
-  const [resourceFilter, setResourceFilter] = useState(filters.resourceFilter);
-  const [statusFilter, setStatusFilter] = useState(filters.statusFilter);
   const [fromTime, setFromTime] = useState(
     formatTimeValue(filters.dateRange.from),
   );
   const [toTime, setToTime] = useState(formatTimeValue(filters.dateRange.to));
 
   useEffect(() => {
-    setSearchFilter(filters.searchFilter);
     setDateRange(filters.dateRange);
-    setOperationFilter(filters.operationFilter);
-    setOrgFilter(filters.orgFilter);
-    setResourceFilter(filters.resourceFilter);
-    setStatusFilter(filters.statusFilter);
     setFromTime(formatTimeValue(filters.dateRange.from));
     setToTime(formatTimeValue(filters.dateRange.to));
   }, [filters]);
@@ -89,164 +50,77 @@ export function EventsFilter({
     disabled: disabledDays,
   });
 
-  const handleClearFilters = () => {
-    onClearFilters();
+  const handleClearDates = () => {
+    const clearedDateRange = { from: undefined, to: undefined };
+    setDateRange(clearedDateRange);
+    setFromTime("");
+    setToTime("");
+
+    onApplyFilters({
+      ...filters,
+      dateRange: clearedDateRange,
+    });
   };
 
   return (
-    <ExpansionCard aria-label="Filtrer hendelser" size="small" className="mb-4">
-      <ExpansionCard.Header>
-        <HStack gap="space-8">
-          <FunnelIcon aria-hidden fontSize="1.5rem" />
-          <ExpansionCard.Title size="small">Filtrer</ExpansionCard.Title>
-        </HStack>
-      </ExpansionCard.Header>
-      <ExpansionCard.Content>
-        <VStack gap="space-16">
-          <Search
-            label="Søk hendelser"
-            value={searchFilter}
-            onChange={setSearchFilter}
-            placeholder="Søk hendelser..."
-            variant="secondary"
+    <VStack gap="space-16">
+      <Box
+        padding="space-16"
+        borderRadius="8"
+        shadow="dialog"
+        marginBlock="space-16"
+      >
+        <DatePicker
+          key={`${dateRange.from?.getTime() ?? "none"}-${dateRange.to?.getTime() ?? "none"}`}
+          {...datepickerProps}
+        >
+          <HGrid columns={4} gap="space-24">
+            <DatePicker.Input
+              {...fromInputProps}
+              label="Fra dato"
+              size="small"
+            />
+            <TextField
+              label="Fra tid"
+              size="small"
+              type="time"
+              value={fromTime}
+              onChange={(event) => setFromTime(event.target.value)}
+            />
+            <DatePicker.Input {...toInputProps} label="Til dato" size="small" />
+            <TextField
+              label="Til tid"
+              size="small"
+              type="time"
+              value={toTime}
+              onChange={(event) => setToTime(event.target.value)}
+            />
+          </HGrid>
+        </DatePicker>
+        <HStack justify="space-between" marginBlock="space-16">
+          <Button variant="tertiary" size="small" onClick={handleClearDates}>
+            Tøm datoer
+          </Button>
+          <Button
             size="small"
-          />
-          <HGrid gap="space-24" columns={2}>
-            <Select
-              label="Organisasjon"
-              size="small"
-              value={orgFilter}
-              onChange={(e) => setOrgFilter(e.target.value)}
-              id="organisation-filter"
-            >
-              <option value="">Alle organisasjoner</option>
-              {uniqueOrg.map((org) => (
-                <option key={org} value={org}>
-                  {org}
-                </option>
-              ))}
-            </Select>
-            <Select
-              label="Ressurser"
-              size="small"
-              value={resourceFilter}
-              onChange={(e) => setResourceFilter(e.target.value)}
-              id="resource-filter"
-            >
-              <option value="">Alle ressurser</option>
-              {uniqueResource.map((ressurs) => (
-                <option key={ressurs} value={ressurs}>
-                  {ressurs}
-                </option>
-              ))}
-            </Select>
-          </HGrid>
+            variant="tertiary"
+            icon={<FunnelIcon aria-hidden />}
+            onClick={() => {
+              const appliedDateRange = {
+                from: applyTimeToDate(dateRange.from, fromTime, false),
+                to: applyTimeToDate(dateRange.to, toTime, true),
+              };
 
-          <HGrid gap="space-24" columns={3}>
-            <CheckboxGroup
-              legend="Operasjon"
-              size="small"
-              value={Object.entries(operationFilter)
-                .filter(([, value]) => value)
-                .map(([key]) => key)}
-              onChange={(values: string[]) => {
-                setOperationFilter({
-                  CREATE: values.includes("CREATE"),
-                  UPDATE: values.includes("UPDATE"),
-                  DELETE: values.includes("DELETE"),
-                  VALIDATE: values.includes("VALIDATE"),
-                  UNKNOWN: values.includes("UNKNOWN"),
-                });
-              }}
-            >
-              <Checkbox value="CREATE">CREATE</Checkbox>
-              <Checkbox value="UPDATE">UPDATE</Checkbox>
-              <Checkbox value="DELETE">DELETE</Checkbox>
-              <Checkbox value="VALIDATE">VALIDATE</Checkbox>
-              <Checkbox value="UNKNOWN">UNKNOWN</Checkbox>
-            </CheckboxGroup>
-
-            <CheckboxGroup
-              legend="Status"
-              size="small"
-              value={Object.entries(statusFilter)
-                .filter(([, value]) => value)
-                .map(([key]) => key)}
-              onChange={(values: string[]) => {
-                setStatusFilter({
-                  ok: values.includes("ok"),
-                  error: values.includes("error"),
-                });
-              }}
-            >
-              <Checkbox value="ok">OK</Checkbox>
-              <Checkbox value="error">Feil</Checkbox>
-            </CheckboxGroup>
-            <DatePicker
-              key={`${dateRange.from?.getTime() ?? "none"}-${dateRange.to?.getTime() ?? "none"}`}
-              {...datepickerProps}
-            >
-              <HGrid columns={2} gap="space-24">
-                <DatePicker.Input
-                  {...fromInputProps}
-                  label="Fra dato"
-                  size="small"
-                />
-                <TextField
-                  label="Fra tid"
-                  size="small"
-                  type="time"
-                  value={fromTime}
-                  onChange={(event) => setFromTime(event.target.value)}
-                />
-                <DatePicker.Input
-                  {...toInputProps}
-                  label="Til dato"
-                  size="small"
-                />
-                <TextField
-                  label="Til tid"
-                  size="small"
-                  type="time"
-                  value={toTime}
-                  onChange={(event) => setToTime(event.target.value)}
-                />
-              </HGrid>
-            </DatePicker>
-          </HGrid>
-          <HStack justify="space-between">
-            <Button
-              variant="tertiary"
-              size="small"
-              onClick={handleClearFilters}
-            >
-              Tøm filtre
-            </Button>
-            <Button
-              size="small"
-              variant="tertiary"
-              icon={<FunnelIcon aria-hidden />}
-              onClick={() => {
-                const appliedDateRange = {
-                  from: applyTimeToDate(dateRange.from, fromTime, false),
-                  to: applyTimeToDate(dateRange.to, toTime, true),
-                };
-
-                onApplyFilters({
-                  searchFilter,
-                  dateRange: appliedDateRange,
-                  operationFilter,
-                  orgFilter,
-                  resourceFilter,
-                  statusFilter,
-                });
-              }}
-            >
-              Bruk filter
-            </Button>
-          </HStack>
-        </VStack>
-      </ExpansionCard.Content>
-    </ExpansionCard>
+              onApplyFilters({
+                ...filters,
+                dateRange: appliedDateRange,
+              });
+            }}
+          >
+            Bruk datoer
+          </Button>
+        </HStack>
+      </Box>
+    </VStack>
   );
 }

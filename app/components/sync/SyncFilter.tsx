@@ -7,7 +7,6 @@ import {
   HStack,
   TextField,
   useRangeDatepicker,
-  VStack,
 } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
 import {
@@ -73,64 +72,60 @@ export function SyncFilter({ filters, onApplyFilters }: SyncFilterProps) {
   };
 
   return (
-    <VStack gap="space-16">
-      <Box
-        padding="space-16"
-        borderRadius="8"
-        shadow="dialog"
-        marginBlock="space-16"
+    // <VStack gap="space-16">
+    <Box
+      padding="space-16"
+      borderRadius="8"
+      shadow="dialog"
+      marginBlock="space-16"
+    >
+      <DatePicker
+        key={`${dateRange.from?.getTime() ?? "none"}-${dateRange.to?.getTime() ?? "none"}`}
+        {...datepickerProps}
       >
-        <DatePicker
-          key={`${dateRange.from?.getTime() ?? "none"}-${dateRange.to?.getTime() ?? "none"}`}
-          {...datepickerProps}
-        >
-          <HGrid columns={4} gap="space-24">
-            <DatePicker.Input
-              {...fromInputProps}
-              label="Fra dato"
-              size="small"
-            />
-            <TextField
-              label="Fra tid"
-              size="small"
-              type="time"
-              value={fromTime}
-              onChange={(event) => setFromTime(event.target.value)}
-            />
-            <DatePicker.Input {...toInputProps} label="Til dato" size="small" />
-            <TextField
-              label="Til tid"
-              size="small"
-              type="time"
-              value={toTime}
-              onChange={(event) => setToTime(event.target.value)}
-            />
-          </HGrid>
-        </DatePicker>
-        <HStack justify="space-between" marginBlock="space-16">
-          <Button variant="tertiary" size="small" onClick={handleClearDates}>
-            Tøm datoer
-          </Button>
-          <Button
+        <HGrid columns={4} gap="space-24">
+          <DatePicker.Input {...fromInputProps} label="Fra dato" size="small" />
+          <TextField
+            label="Fra tid"
             size="small"
-            variant="tertiary"
-            icon={<FunnelIcon aria-hidden />}
-            onClick={() => {
-              const appliedDateRange = {
-                from: applyTimeToDate(dateRange.from, fromTime, false),
-                to: applyTimeToDate(dateRange.to, toTime, true),
-              };
+            type="time"
+            value={fromTime}
+            onChange={(event) => setFromTime(event.target.value)}
+          />
+          <DatePicker.Input {...toInputProps} label="Til dato" size="small" />
+          <TextField
+            label="Til tid"
+            size="small"
+            type="time"
+            value={toTime}
+            onChange={(event) => setToTime(event.target.value)}
+          />
+        </HGrid>
+      </DatePicker>
+      <HStack justify="space-between" marginBlock="space-8">
+        <Button
+          size="small"
+          variant="tertiary"
+          icon={<FunnelIcon aria-hidden />}
+          onClick={() => {
+            const appliedDateRange = {
+              from: applyTimeToDate(dateRange.from, fromTime, false),
+              to: applyTimeToDate(dateRange.to, toTime, true),
+            };
 
-              onApplyFilters({
-                ...filters,
-                dateRange: appliedDateRange,
-              });
-            }}
-          >
-            Bruk datoer
-          </Button>
-        </HStack>
-      </Box>
-    </VStack>
+            onApplyFilters({
+              ...filters,
+              dateRange: appliedDateRange,
+            });
+          }}
+        >
+          Bruk datoer
+        </Button>
+        <Button variant="tertiary" size="small" onClick={handleClearDates}>
+          Tøm datoer
+        </Button>
+      </HStack>
+    </Box>
+    // </VStack>
   );
 }
