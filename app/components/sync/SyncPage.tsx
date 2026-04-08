@@ -71,6 +71,53 @@ export function SyncPage({
     setCurrentPage(page);
   };
 
+  const handleStatusFilterChange = (value: "all" | "finished" | "ongoing") => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      statusFilter:
+        value === "all"
+          ? { finished: true, ongoing: true }
+          : {
+              finished: value === "finished",
+              ongoing: value === "ongoing",
+            },
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleSyncTypeFilterChange = (value: "all" | "FULL" | "DELTA") => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      syncTypeFilter:
+        value === "all"
+          ? { full: true, delta: true }
+          : {
+              full: value === "FULL",
+              delta: value === "DELTA",
+            },
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleHeaderTextFilterChange = (
+    key: "orgFilter" | "domainFilter" | "packageFilter" | "resourceFilter",
+    value: string,
+  ) => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleAdapterIdFilterChange = (value: string) => {
+    setAppliedFilters((prev) => ({
+      ...prev,
+      adapterIdFilter: value,
+    }));
+    setCurrentPage(1);
+  };
+
   const handleApplyFilters = (value: SyncFiltersState) => {
     setAppliedFilters(value);
     setCurrentPage(1);
@@ -180,37 +227,21 @@ export function SyncPage({
   });
 
   const uniqueOrg = [...new Set(initialData.map((item) => item.orgId))];
-  const uniqueDomain = [...new Set(filteredData.map((item) => item.domain))];
-  const uniquePakke = [...new Set(filteredData.map((item) => item.package))];
-  const uniqueResource = [
-    ...new Set(filteredData.map((item) => item.resource)),
+  const tableUniqueDomain = [
+    ...new Set(initialData.map((item) => item.domain)),
+  ];
+  const tableUniquePackage = [
+    ...new Set(initialData.map((item) => item.package)),
+  ];
+  const tableUniqueResource = [
+    ...new Set(initialData.map((item) => item.resource)),
   ].sort((a, b) => a.localeCompare(b));
-
-  function handleClearFilters() {
-    setAppliedFilters({
-      syncTypeFilter: { full: true, delta: true },
-      statusFilter: { finished: true, ongoing: true },
-      orgFilter: "",
-      domainFilter: "",
-      packageFilter: "",
-      resourceFilter: "",
-      adapterIdFilter: "",
-      dateRange: { from: undefined, to: undefined },
-    });
-    onDateRangeChange({ from: undefined, to: undefined });
-    setCurrentPage(1);
-  }
 
   return (
     <Box>
       <SyncFilter
         filters={appliedFilters}
-        uniqueOrg={uniqueOrg}
-        uniqueDomain={uniqueDomain}
-        uniquePacker={uniquePakke}
-        uniqueResource={uniqueResource}
         onApplyFilters={handleApplyFilters}
-        onClearFilters={handleClearFilters}
       />
       <SyncTable
         data={filteredData}
@@ -218,6 +249,50 @@ export function SyncPage({
         onPageChange={handlePageChange}
         itemsPerPage={itemsPerPage}
         onRowClick={handleRowClick}
+        activeFilters={{
+          status:
+            appliedFilters.statusFilter.finished &&
+            appliedFilters.statusFilter.ongoing
+              ? "all"
+              : appliedFilters.statusFilter.finished
+                ? "finished"
+                : appliedFilters.statusFilter.ongoing
+                  ? "ongoing"
+                  : "none",
+          syncType:
+            appliedFilters.syncTypeFilter.full &&
+            appliedFilters.syncTypeFilter.delta
+              ? "all"
+              : appliedFilters.syncTypeFilter.full
+                ? "FULL"
+                : appliedFilters.syncTypeFilter.delta
+                  ? "DELTA"
+                  : "none",
+          org: appliedFilters.orgFilter,
+          domain: appliedFilters.domainFilter,
+          package: appliedFilters.packageFilter,
+          resource: appliedFilters.resourceFilter,
+        }}
+        uniqueOrg={uniqueOrg}
+        uniqueDomain={tableUniqueDomain}
+        uniquePackage={tableUniquePackage}
+        uniqueResource={tableUniqueResource}
+        onStatusFilterChange={handleStatusFilterChange}
+        onSyncTypeFilterChange={handleSyncTypeFilterChange}
+        onOrgFilterChange={(value) =>
+          handleHeaderTextFilterChange("orgFilter", value)
+        }
+        onDomainFilterChange={(value) =>
+          handleHeaderTextFilterChange("domainFilter", value)
+        }
+        onPackageFilterChange={(value) =>
+          handleHeaderTextFilterChange("packageFilter", value)
+        }
+        onResourceFilterChange={(value) =>
+          handleHeaderTextFilterChange("resourceFilter", value)
+        }
+        adapterIdFilter={appliedFilters.adapterIdFilter}
+        onAdapterIdFilterChange={handleAdapterIdFilterChange}
       />
       {selectedSync && (
         <SyncModal

@@ -1,8 +1,17 @@
-import { Box, Pagination, ProgressBar, Table, Tag } from "@navikt/ds-react";
+import {
+  Box,
+  HStack,
+  Pagination,
+  ProgressBar,
+  Table,
+  Tag,
+  TextField,
+} from "@navikt/ds-react";
 import { ArrowCirclepathIcon, CheckmarkCircleIcon } from "@navikt/aksel-icons";
 import type { ISyncData } from "~/types";
 import { useMemo, useState } from "react";
 import { formatTimestampDetailed } from "~/utils/time";
+import { SyncActionMenu } from "~/components/sync/SyncActionMenu";
 
 interface SyncTableProps {
   data: ISyncData[];
@@ -10,6 +19,26 @@ interface SyncTableProps {
   onPageChange: (page: number) => void;
   itemsPerPage: number;
   onRowClick: (sync: ISyncData) => void;
+  activeFilters: {
+    status: "all" | "finished" | "ongoing" | "none";
+    syncType: "all" | "FULL" | "DELTA" | "none";
+    org: string;
+    domain: string;
+    package: string;
+    resource: string;
+  };
+  uniqueOrg: string[];
+  uniqueDomain: string[];
+  uniquePackage: string[];
+  uniqueResource: string[];
+  onStatusFilterChange: (value: "all" | "finished" | "ongoing") => void;
+  onSyncTypeFilterChange: (value: "all" | "FULL" | "DELTA") => void;
+  onOrgFilterChange: (value: string) => void;
+  onDomainFilterChange: (value: string) => void;
+  onPackageFilterChange: (value: string) => void;
+  onResourceFilterChange: (value: string) => void;
+  adapterIdFilter: string;
+  onAdapterIdFilterChange: (value: string) => void;
 }
 
 export function SyncTable({
@@ -18,6 +47,19 @@ export function SyncTable({
   onPageChange,
   itemsPerPage,
   onRowClick,
+  activeFilters,
+  uniqueOrg,
+  uniqueDomain,
+  uniquePackage,
+  uniqueResource,
+  onStatusFilterChange,
+  onSyncTypeFilterChange,
+  onOrgFilterChange,
+  onDomainFilterChange,
+  onPackageFilterChange,
+  onResourceFilterChange,
+  adapterIdFilter,
+  onAdapterIdFilterChange,
 }: SyncTableProps) {
   const [sort, setSort] = useState<
     { orderBy: string; direction: "ascending" | "descending" } | undefined
@@ -63,6 +105,14 @@ export function SyncTable({
       shadow="dialog"
       marginBlock={"space-16"}
     >
+      <Box marginBlock="space-16">
+        <TextField
+          label="Adapter ID"
+          size="small"
+          value={adapterIdFilter}
+          onChange={(event) => onAdapterIdFilterChange(event.target.value)}
+        />
+      </Box>
       <Table
         sort={sort}
         onSortChange={handleSort}
@@ -71,12 +121,109 @@ export function SyncTable({
       >
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Status</Table.HeaderCell>
-            <Table.HeaderCell>Organisasjon</Table.HeaderCell>
-            <Table.HeaderCell>Domene</Table.HeaderCell>
-            <Table.HeaderCell>Pakke</Table.HeaderCell>
-            <Table.HeaderCell>Ressurs</Table.HeaderCell>
-            <Table.HeaderCell>Type</Table.HeaderCell>
+            <Table.HeaderCell>
+              <HStack gap="space-4" align="center">
+                <span>Status</span>
+                <SyncActionMenu
+                  title="Status"
+                  options={[
+                    { value: "finished", label: "Fullfort" },
+                    { value: "ongoing", label: "Pagar" },
+                  ]}
+                  selectedValue={
+                    activeFilters.status === "all" ||
+                    activeFilters.status === "none"
+                      ? undefined
+                      : activeFilters.status
+                  }
+                  onSelect={(value) =>
+                    onStatusFilterChange(
+                      value as "all" | "finished" | "ongoing",
+                    )
+                  }
+                  onClear={() => onStatusFilterChange("all")}
+                />
+              </HStack>
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              <HStack gap="space-4" align="center">
+                <span>Organisasjon</span>
+                <SyncActionMenu
+                  title="Organisasjon"
+                  options={uniqueOrg.map((org) => ({ value: org, label: org }))}
+                  selectedValue={activeFilters.org || undefined}
+                  onSelect={onOrgFilterChange}
+                  onClear={() => onOrgFilterChange("")}
+                />
+              </HStack>
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              <HStack gap="space-4" align="center">
+                <span>Domene</span>
+                <SyncActionMenu
+                  title="Domene"
+                  options={uniqueDomain.map((domain) => ({
+                    value: domain,
+                    label: domain,
+                  }))}
+                  selectedValue={activeFilters.domain || undefined}
+                  onSelect={onDomainFilterChange}
+                  onClear={() => onDomainFilterChange("")}
+                />
+              </HStack>
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              <HStack gap="space-4" align="center">
+                <span>Pakke</span>
+                <SyncActionMenu
+                  title="Pakke"
+                  options={uniquePackage.map((pkg) => ({
+                    value: pkg,
+                    label: pkg,
+                  }))}
+                  selectedValue={activeFilters.package || undefined}
+                  onSelect={onPackageFilterChange}
+                  onClear={() => onPackageFilterChange("")}
+                />
+              </HStack>
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              <HStack gap="space-4" align="center">
+                <span>Ressurs</span>
+                <SyncActionMenu
+                  title="Ressurs"
+                  options={uniqueResource.map((resource) => ({
+                    value: resource,
+                    label: resource,
+                  }))}
+                  selectedValue={activeFilters.resource || undefined}
+                  onSelect={onResourceFilterChange}
+                  onClear={() => onResourceFilterChange("")}
+                />
+              </HStack>
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              <HStack gap="space-4" align="center">
+                <span>Type</span>
+                <SyncActionMenu
+                  title="Type"
+                  options={[
+                    { value: "FULL", label: "FULL" },
+                    { value: "DELTA", label: "DELTA" },
+                  ]}
+                  selectedValue={
+                    activeFilters.syncType === "all" ||
+                    activeFilters.syncType === "none"
+                      ? undefined
+                      : activeFilters.syncType
+                  }
+                  onSelect={(value) =>
+                    onSyncTypeFilterChange(value as "all" | "FULL" | "DELTA")
+                  }
+                  onClear={() => onSyncTypeFilterChange("all")}
+                />
+              </HStack>
+            </Table.HeaderCell>
             <Table.HeaderCell>Entiteter</Table.HeaderCell>
             <Table.HeaderCell>Sider</Table.HeaderCell>
             <Table.HeaderCell>Fremdrift</Table.HeaderCell>
