@@ -98,9 +98,6 @@ export function EventsFilter({ filters, onApplyFilters }: EventsFilterProps) {
           </HGrid>
         </DatePicker>
         <HStack justify="space-between" marginBlock="space-16">
-          <Button variant="tertiary" size="small" onClick={handleClearDates}>
-            Tøm datoer
-          </Button>
           <Button
             size="small"
             variant="tertiary"
@@ -118,6 +115,9 @@ export function EventsFilter({ filters, onApplyFilters }: EventsFilterProps) {
             }}
           >
             Bruk datoer
+          </Button>
+          <Button variant="tertiary" size="small" onClick={handleClearDates}>
+            Tøm datoer
           </Button>
         </HStack>
       </Box>
