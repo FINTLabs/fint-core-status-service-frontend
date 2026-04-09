@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
-import { EventsFilter } from "./EventsFilter";
+import { EventsFilter, type EventsFilters } from "./EventsFilter";
 import { EventsModal } from "./EventsModal";
 
 import { EventsTable } from "./EventsTable";
@@ -27,7 +27,7 @@ export function EventsPage({
   const routeFromTimestamp = dateRange.from?.getTime();
   const routeToTimestamp = dateRange.to?.getTime();
 
-  const [appliedFilters, setAppliedFilters] = useState({
+  const [appliedFilters, setAppliedFilters] = useState<EventsFilters>({
     searchFilter: "",
     dateRange,
     operationFilter: {
@@ -70,7 +70,7 @@ export function EventsPage({
     });
   }, [routeFromTimestamp, routeToTimestamp, dateRange.from, dateRange.to]);
 
-  const handleApplyFilters = (value: typeof appliedFilters) => {
+  const handleApplyFilters = (value: EventsFilters) => {
     setAppliedFilters(value);
     setCurrentPage(1);
 

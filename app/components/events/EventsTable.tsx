@@ -235,7 +235,11 @@ export function EventsTable({
         </Table>
       </Box>
       {totalPages > 1 && (
-        <Box paddingBlock="space-16">
+        <Box
+          paddingBlock="space-16"
+          className="flex justify-center"
+          data-cy="pagination"
+        >
           <Pagination
             page={currentPage}
             onPageChange={onPageChange}
