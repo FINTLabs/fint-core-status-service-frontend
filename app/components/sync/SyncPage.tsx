@@ -98,6 +98,22 @@ export function SyncPage({
     setCurrentPage(page);
   };
 
+  const updateSearchParams = (updates: Record<string, string | undefined>) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+
+      for (const [key, value] of Object.entries(updates)) {
+        if (!value || value.trim() === "" || value === "all") {
+          next.delete(key);
+        } else {
+          next.set(key, value);
+        }
+      }
+
+      return next;
+    });
+  };
+
   const handleStatusFilterChange = (value: "all" | "finished" | "ongoing") => {
     setAppliedFilters((prev) => ({
       ...prev,
@@ -109,9 +125,9 @@ export function SyncPage({
               ongoing: value === "ongoing",
             },
     }));
-    setSearchParams((prev) => {
-      prev.set("statusFilter", value);
-      return prev;
+
+    updateSearchParams({
+      statusFilter: value === "all" ? undefined : value,
     });
     setCurrentPage(1);
   };
@@ -127,9 +143,8 @@ export function SyncPage({
               delta: value === "DELTA",
             },
     }));
-    setSearchParams((prev) => {
-      prev.set("syncFilter", value);
-      return prev;
+    updateSearchParams({
+      syncFilter: value === "all" ? undefined : value,
     });
     setCurrentPage(1);
   };
@@ -142,9 +157,8 @@ export function SyncPage({
       ...prev,
       [key]: value,
     }));
-    setSearchParams((prev) => {
-      prev.set(key, value);
-      return prev;
+    updateSearchParams({
+      [key]: value,
     });
     setCurrentPage(1);
   };
