@@ -21,3 +21,23 @@ export interface ISyncData {
   finished: boolean;
   lastPageTime: number;
 }
+
+export interface SyncFiltersState {
+  syncTypeFilter: {
+    full: boolean;
+    delta: boolean;
+  };
+  statusFilter: {
+    finished: boolean;
+    ongoing: boolean;
+  };
+  orgFilter: string;
+  domainFilter: string;
+  packageFilter: string;
+  resourceFilter: string;
+  adapterIdFilter: string;
+  dateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  };
+}

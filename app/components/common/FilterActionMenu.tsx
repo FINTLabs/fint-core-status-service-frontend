@@ -1,4 +1,7 @@
-import { MenuElipsisVerticalIcon } from "@navikt/aksel-icons";
+import {
+  MagnifyingGlassCheckmarkIcon,
+  MenuElipsisVerticalIcon,
+} from "@navikt/aksel-icons";
 import { ActionMenu, Button } from "@navikt/ds-react";
 
 interface SyncActionMenuOption {
@@ -29,7 +32,15 @@ export function FilterActionMenu({
         <Button
           data-color="neutral"
           variant="tertiary"
-          icon={<MenuElipsisVerticalIcon title={`Filter for ${title}`} />}
+          icon={
+            selectedValue ? (
+              <MagnifyingGlassCheckmarkIcon
+                title={`Filter applied for ${title}`}
+              />
+            ) : (
+              <MenuElipsisVerticalIcon title={`Filter for ${title}`} />
+            )
+          }
           size="small"
         />
       </ActionMenu.Trigger>

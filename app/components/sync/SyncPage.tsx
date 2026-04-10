@@ -4,6 +4,8 @@ import { SyncFilter } from "./SyncFilter";
 import { SyncTable } from "./SyncTable";
 import { SyncModal } from "./SyncModal";
 import type { ISyncData } from "~/types";
+import type { SyncFiltersState } from "~/types/Sync";
+import { useSearchParams } from "react-router";
 
 interface SyncPageProps {
   initialData: ISyncData[];
@@ -18,26 +20,6 @@ interface SyncPageProps {
   }) => void;
 }
 
-interface SyncFiltersState {
-  syncTypeFilter: {
-    full: boolean;
-    delta: boolean;
-  };
-  statusFilter: {
-    finished: boolean;
-    ongoing: boolean;
-  };
-  orgFilter: string;
-  domainFilter: string;
-  packageFilter: string;
-  resourceFilter: string;
-  adapterIdFilter: string;
-  dateRange: {
-    from: Date | undefined;
-    to: Date | undefined;
-  };
-}
-
 export function SyncPage({
   initialData,
   dateRange,
@@ -49,15 +31,60 @@ export function SyncPage({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSync, setSelectedSync] = useState<ISyncData | null>(null);
 
-  const [appliedFilters, setAppliedFilters] = useState<SyncFiltersState>({
-    syncTypeFilter: { full: true, delta: true },
-    statusFilter: { finished: true, ongoing: true },
-    orgFilter: "",
-    domainFilter: "",
-    packageFilter: "",
-    resourceFilter: "",
-    adapterIdFilter: "",
-    dateRange,
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [appliedFilters, setAppliedFilters] = useState<SyncFiltersState>(() => {
+    const getParam = (...keys: string[]) => {
+      for (const key of keys) {
+        const value = searchParams.get(key);
+        if (value !== null) {
+          return value;
+        }
+      }
+      return null;
+    };
+
+    const syncTypeParam = getParam("syncFilter");
+    const statusParam = getParam("statusFilter");
+
+    const fromParam = getParam("from");
+    const toParam = getParam("to");
+    const fromTimestamp =
+      fromParam && !Number.isNaN(Number(fromParam))
+        ? Number(fromParam)
+        : undefined;
+    const toTimestamp =
+      toParam && !Number.isNaN(Number(toParam)) ? Number(toParam) : undefined;
+
+    return {
+      syncTypeFilter:
+        syncTypeParam === "FULL"
+          ? { full: true, delta: false }
+          : syncTypeParam === "DELTA"
+            ? { full: false, delta: true }
+            : { full: true, delta: true },
+      statusFilter:
+        statusParam === "finished"
+          ? { finished: true, ongoing: false }
+          : statusParam === "ongoing"
+            ? { finished: false, ongoing: true }
+            : { finished: true, ongoing: true },
+      orgFilter: getParam("orgFilter") ?? "",
+      domainFilter: getParam("domainFilter") ?? "",
+      packageFilter: getParam("packageFilter") ?? "",
+      resourceFilter: getParam("resourceFilter") ?? "",
+      adapterIdFilter: getParam("adapterIdFilter") ?? "",
+      dateRange: {
+        from:
+          typeof fromTimestamp === "number"
+            ? new Date(fromTimestamp)
+            : dateRange.from,
+        to:
+          typeof toTimestamp === "number"
+            ? new Date(toTimestamp)
+            : dateRange.to,
+      },
+    };
   });
 
   useEffect(() => {
@@ -82,6 +109,10 @@ export function SyncPage({
               ongoing: value === "ongoing",
             },
     }));
+    setSearchParams((prev) => {
+      prev.set("statusFilter", value);
+      return prev;
+    });
     setCurrentPage(1);
   };
 
@@ -96,6 +127,10 @@ export function SyncPage({
               delta: value === "DELTA",
             },
     }));
+    setSearchParams((prev) => {
+      prev.set("syncFilter", value);
+      return prev;
+    });
     setCurrentPage(1);
   };
 
@@ -107,6 +142,10 @@ export function SyncPage({
       ...prev,
       [key]: value,
     }));
+    setSearchParams((prev) => {
+      prev.set(key, value);
+      return prev;
+    });
     setCurrentPage(1);
   };
 

@@ -6,7 +6,7 @@ import { BASE_URL } from "./constants";
 export const syncHandlers = [
   // Sync API
   http.get(`${BASE_URL}/page-metadata`, async () => {
-    await delay(5000);
+    // await delay(5000);
     return HttpResponse.json(syncData);
   }),
 
@@ -15,4 +15,3 @@ export const syncHandlers = [
     return HttpResponse.json(syncDataApi);
   }),
 ];
-
