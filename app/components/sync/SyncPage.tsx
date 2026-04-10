@@ -98,20 +98,6 @@ export function SyncPage({
     setCurrentPage(page);
   };
 
-  const updateSearchParam = (key: string, value?: string) => {
-    setSearchParams((prev) => {
-      const next = new URLSearchParams(prev);
-
-      if (!value || value.trim() === "" || value === "all") {
-        next.delete(key);
-      } else {
-        next.set(key, value);
-      }
-
-      return next;
-    });
-  };
-
   const handleStatusFilterChange = (value: "all" | "finished" | "ongoing") => {
     setAppliedFilters((prev) => ({
       ...prev,
@@ -123,7 +109,10 @@ export function SyncPage({
               ongoing: value === "ongoing",
             },
     }));
-    updateSearchParam("statusFilter");
+    setSearchParams((prev) => {
+      prev.set("statusFilter", value);
+      return prev;
+    });
     setCurrentPage(1);
   };
 
@@ -138,7 +127,10 @@ export function SyncPage({
               delta: value === "DELTA",
             },
     }));
-    updateSearchParam("syncFilter");
+    setSearchParams((prev) => {
+      prev.set("syncFilter", value);
+      return prev;
+    });
     setCurrentPage(1);
   };
 
@@ -150,7 +142,10 @@ export function SyncPage({
       ...prev,
       [key]: value,
     }));
-    updateSearchParam(key);
+    setSearchParams((prev) => {
+      prev.set(key, value);
+      return prev;
+    });
     setCurrentPage(1);
   };
 
