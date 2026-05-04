@@ -5,7 +5,7 @@
     "orgId": "agderfk.no",
     "domain": "utdanning",
     "package": "kodeverk",
-    "resource": "otenhet",
+    "resource": "Klassemedlemskap",
     "totalPages": 1,
     "pagesAcquired": 1,
     "totalEntities": 15,
@@ -27,7 +27,7 @@
     "orgId": "rogfk.no",
     "domain": "administrasjon",
     "package": "personal",
-    "resource": "personalressurs",
+    "resource": "Klasse",
     "totalPages": 3,
     "pagesAcquired": 3,
     "totalEntities": 450,
@@ -180,4 +180,3 @@
     "lastPageTime": 1760182237350
   }
 ]
-

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   HStack,
   Pagination,
   ProgressBar,
@@ -39,6 +40,7 @@ interface SyncTableProps {
   onResourceFilterChange: (value: string) => void;
   adapterIdFilter: string;
   onAdapterIdFilterChange: (value: string) => void;
+  onClearFilters: () => void;
 }
 
 export function SyncTable({
@@ -60,6 +62,7 @@ export function SyncTable({
   onResourceFilterChange,
   adapterIdFilter,
   onAdapterIdFilterChange,
+  onClearFilters,
 }: SyncTableProps) {
   const [sort, setSort] = useState<
     { orderBy: string; direction: "ascending" | "descending" } | undefined
@@ -105,16 +108,21 @@ export function SyncTable({
       shadow="dialog"
       marginBlock={"space-16"}
     >
-      <Box marginBlock="space-16">
-        <Search
-          label="Adapter ID"
-          size="small"
-          value={adapterIdFilter}
-          onChange={onAdapterIdFilterChange}
-          placeholder="Søk adapter ID..."
-          variant="secondary"
-        />
-      </Box>
+      <HStack gap="space-16" align="end" marginBlock="space-16">
+        <Box style={{ flex: 1 }}>
+          <Search
+            label="Adapter ID"
+            size="small"
+            value={adapterIdFilter}
+            onChange={onAdapterIdFilterChange}
+            placeholder="Søk adapter ID..."
+            variant="secondary"
+          />
+        </Box>
+        <Button size="small" variant="tertiary" onClick={onClearFilters}>
+          Nullstill filtre
+        </Button>
+      </HStack>
       <Table
         sort={sort}
         onSortChange={handleSort}

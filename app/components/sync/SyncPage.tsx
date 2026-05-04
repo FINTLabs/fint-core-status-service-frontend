@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { SyncFilter } from "./SyncFilter";
 import { SyncTable } from "./SyncTable";
@@ -25,18 +25,30 @@ export function SyncPage({
   dateRange,
   onDateRangeChange,
 }: SyncPageProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const getDefaultFilters = (baseDateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  }): SyncFiltersState => ({
+    syncTypeFilter: { full: true, delta: true },
+    statusFilter: { finished: true, ongoing: true },
+    orgFilter: "",
+    domainFilter: "",
+    packageFilter: "",
+    resourceFilter: "",
+    adapterIdFilter: "",
+    dateRange: baseDateRange,
+  });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSync, setSelectedSync] = useState<ISyncData | null>(null);
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [appliedFilters, setAppliedFilters] = useState<SyncFiltersState>(() => {
+  const getFiltersFromSearchParams = (
+    params: URLSearchParams,
+    fallbackDateRange: {
+      from: Date | undefined;
+      to: Date | undefined;
+    },
+  ): SyncFiltersState => {
     const getParam = (...keys: string[]) => {
       for (const key of keys) {
-        const value = searchParams.get(key);
+        const value = params.get(key);
         if (value !== null) {
           return value;
         }
@@ -44,8 +56,8 @@ export function SyncPage({
       return null;
     };
 
-    const syncTypeParam = getParam("syncFilter");
-    const statusParam = getParam("statusFilter");
+    const syncTypeParam = getParam("syncType", "syncFilter", "syncTypeFilter");
+    const statusParam = getParam("status", "statusFilter");
 
     const fromParam = getParam("from");
     const toParam = getParam("to");
@@ -69,23 +81,123 @@ export function SyncPage({
           : statusParam === "ongoing"
             ? { finished: false, ongoing: true }
             : { finished: true, ongoing: true },
-      orgFilter: getParam("orgFilter") ?? "",
-      domainFilter: getParam("domainFilter") ?? "",
-      packageFilter: getParam("packageFilter") ?? "",
-      resourceFilter: getParam("resourceFilter") ?? "",
-      adapterIdFilter: getParam("adapterIdFilter") ?? "",
+      orgFilter: getParam("org", "orgFilter") ?? "",
+      domainFilter: getParam("domain", "domainFilter") ?? "",
+      packageFilter: getParam("package", "packageFilter") ?? "",
+      resourceFilter: getParam("resource", "resourceFilter") ?? "",
+      adapterIdFilter: getParam("adapterId", "adapterIdFilter") ?? "",
       dateRange: {
         from:
           typeof fromTimestamp === "number"
             ? new Date(fromTimestamp)
-            : dateRange.from,
+            : fallbackDateRange.from,
         to:
           typeof toTimestamp === "number"
             ? new Date(toTimestamp)
-            : dateRange.to,
+            : fallbackDateRange.to,
       },
     };
-  });
+  };
+
+  const matchesFilters = (
+    sync: ISyncData,
+    filters: SyncFiltersState,
+    ignoredKey?:
+      | "orgFilter"
+      | "domainFilter"
+      | "packageFilter"
+      | "resourceFilter"
+      | "adapterIdFilter",
+  ) => {
+    if (!filters.syncTypeFilter.full && sync.syncType === "FULL") {
+      return false;
+    }
+    if (!filters.syncTypeFilter.delta && sync.syncType === "DELTA") {
+      return false;
+    }
+
+    if (!filters.statusFilter.finished && sync.finished) {
+      return false;
+    }
+    if (!filters.statusFilter.ongoing && !sync.finished) {
+      return false;
+    }
+
+    if (
+      ignoredKey !== "orgFilter" &&
+      filters.orgFilter &&
+      sync.orgId.toLowerCase() !== filters.orgFilter.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (
+      ignoredKey !== "domainFilter" &&
+      filters.domainFilter &&
+      sync.domain.toLowerCase() !== filters.domainFilter.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (
+      ignoredKey !== "packageFilter" &&
+      filters.packageFilter &&
+      sync.package.toLowerCase() !== filters.packageFilter.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (
+      ignoredKey !== "resourceFilter" &&
+      filters.resourceFilter &&
+      sync.resource.toLowerCase() !== filters.resourceFilter.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (
+      ignoredKey !== "adapterIdFilter" &&
+      filters.adapterIdFilter &&
+      sync.adapterId.toLowerCase() !== filters.adapterIdFilter.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (filters.dateRange.from || filters.dateRange.to) {
+      const syncDate = new Date(sync.lastPageTime);
+      if (filters.dateRange.from && filters.dateRange.to) {
+        const fromDate = new Date(filters.dateRange.from);
+        const toDate = new Date(filters.dateRange.to);
+        if (syncDate < fromDate || syncDate > toDate) {
+          return false;
+        }
+      } else if (filters.dateRange.from) {
+        const fromDate = new Date(filters.dateRange.from);
+        if (syncDate < fromDate) {
+          return false;
+        }
+      } else if (filters.dateRange.to) {
+        const toDate = new Date(filters.dateRange.to);
+        if (syncDate > toDate) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSync, setSelectedSync] = useState<ISyncData | null>(null);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [appliedFilters, setAppliedFilters] = useState<SyncFiltersState>(() =>
+    getFiltersFromSearchParams(searchParams, dateRange),
+  );
 
   useEffect(() => {
     setAppliedFilters((prev) => ({
@@ -186,6 +298,30 @@ export function SyncPage({
     }
   };
 
+  const handleClearFilters = () => {
+    const clearedDateRange = { from: undefined, to: undefined };
+
+    setAppliedFilters(getDefaultFilters(clearedDateRange));
+    setCurrentPage(1);
+
+    onDateRangeChange(clearedDateRange);
+    updateSearchParams({
+      statusFilter: undefined,
+      syncFilter: undefined,
+      syncTypeFilter: undefined,
+      org: undefined,
+      orgFilter: undefined,
+      domain: undefined,
+      domainFilter: undefined,
+      package: undefined,
+      packageFilter: undefined,
+      resource: undefined,
+      resourceFilter: undefined,
+      adapterId: undefined,
+      adapterIdFilter: undefined,
+    });
+  };
+
   const handleRowClick = (sync: ISyncData) => {
     setSelectedSync(sync);
     setIsModalOpen(true);
@@ -196,99 +332,56 @@ export function SyncPage({
     setSelectedSync(null);
   };
 
-  const filteredData = initialData.filter((sync) => {
-    if (!appliedFilters.syncTypeFilter.full && sync.syncType === "FULL") {
-      return false;
-    }
-    if (!appliedFilters.syncTypeFilter.delta && sync.syncType === "DELTA") {
-      return false;
-    }
+  const filteredData = useMemo(
+    () => initialData.filter((sync) => matchesFilters(sync, appliedFilters)),
+    [initialData, appliedFilters],
+  );
 
-    if (!appliedFilters.statusFilter.finished && sync.finished) {
-      return false;
-    }
-    if (!appliedFilters.statusFilter.ongoing && !sync.finished) {
-      return false;
-    }
+  const uniqueOrg = useMemo(() => {
+    return [
+      ...new Set(
+        initialData
+          .filter((sync) => matchesFilters(sync, appliedFilters, "orgFilter"))
+          .map((item) => item.orgId),
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+  }, [initialData, appliedFilters]);
 
-    if (
-      appliedFilters.orgFilter &&
-      !sync.orgId.toLowerCase().includes(appliedFilters.orgFilter.toLowerCase())
-    ) {
-      return false;
-    }
+  const tableUniqueDomain = useMemo(() => {
+    return [
+      ...new Set(
+        initialData
+          .filter((sync) =>
+            matchesFilters(sync, appliedFilters, "domainFilter"),
+          )
+          .map((item) => item.domain),
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+  }, [initialData, appliedFilters]);
 
-    if (
-      appliedFilters.domainFilter &&
-      !sync.domain
-        .toLowerCase()
-        .includes(appliedFilters.domainFilter.toLowerCase())
-    ) {
-      return false;
-    }
+  const tableUniquePackage = useMemo(() => {
+    return [
+      ...new Set(
+        initialData
+          .filter((sync) =>
+            matchesFilters(sync, appliedFilters, "packageFilter"),
+          )
+          .map((item) => item.package),
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+  }, [initialData, appliedFilters]);
 
-    if (
-      appliedFilters.packageFilter &&
-      !sync.package
-        .toLowerCase()
-        .includes(appliedFilters.packageFilter.toLowerCase())
-    ) {
-      return false;
-    }
-
-    if (
-      appliedFilters.resourceFilter &&
-      !sync.resource
-        .toLowerCase()
-        .includes(appliedFilters.resourceFilter.toLowerCase())
-    ) {
-      return false;
-    }
-
-    if (
-      appliedFilters.adapterIdFilter &&
-      !sync.adapterId
-        .toLowerCase()
-        .includes(appliedFilters.adapterIdFilter.toLowerCase())
-    ) {
-      return false;
-    }
-
-    // Date range filter
-    if (appliedFilters.dateRange.from || appliedFilters.dateRange.to) {
-      const syncDate = new Date(sync.lastPageTime);
-      if (appliedFilters.dateRange.from && appliedFilters.dateRange.to) {
-        const fromDate = new Date(appliedFilters.dateRange.from);
-        const toDate = new Date(appliedFilters.dateRange.to);
-        if (syncDate < fromDate || syncDate > toDate) {
-          return false;
-        }
-      } else if (appliedFilters.dateRange.from) {
-        const fromDate = new Date(appliedFilters.dateRange.from);
-        if (syncDate < fromDate) {
-          return false;
-        }
-      } else if (appliedFilters.dateRange.to) {
-        const toDate = new Date(appliedFilters.dateRange.to);
-        if (syncDate > toDate) {
-          return false;
-        }
-      }
-    }
-
-    return true;
-  });
-
-  const uniqueOrg = [...new Set(initialData.map((item) => item.orgId))];
-  const tableUniqueDomain = [
-    ...new Set(initialData.map((item) => item.domain)),
-  ];
-  const tableUniquePackage = [
-    ...new Set(initialData.map((item) => item.package)),
-  ];
-  const tableUniqueResource = [
-    ...new Set(initialData.map((item) => item.resource)),
-  ].sort((a, b) => a.localeCompare(b));
+  const tableUniqueResource = useMemo(() => {
+    return [
+      ...new Set(
+        initialData
+          .filter((sync) =>
+            matchesFilters(sync, appliedFilters, "resourceFilter"),
+          )
+          .map((item) => item.resource),
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+  }, [initialData, appliedFilters]);
 
   return (
     <Box>
@@ -346,6 +439,7 @@ export function SyncPage({
         }
         adapterIdFilter={appliedFilters.adapterIdFilter}
         onAdapterIdFilterChange={handleAdapterIdFilterChange}
+        onClearFilters={handleClearFilters}
       />
       {selectedSync && (
         <SyncModal
