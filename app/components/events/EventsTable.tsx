@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   CopyButton,
   HStack,
   Loader,
@@ -22,6 +23,8 @@ interface HendelserTableProps {
   itemsPerPage: number;
   searchFilter: string;
   onSearchFilterChange: (value: string) => void;
+  uniqueStatus: ("ok" | "error")[];
+  uniqueOperation: ("CREATE" | "UPDATE" | "DELETE" | "VALIDATE" | "UNKNOWN")[];
   uniqueOrg: string[];
   uniqueResource: string[];
   activeFilters: {
@@ -43,6 +46,7 @@ interface HendelserTableProps {
   ) => void;
   onOrgFilterChange: (value: string) => void;
   onResourceFilterChange: (value: string) => void;
+  onClearFilters: () => void;
 }
 
 export function EventsTable({
@@ -54,6 +58,8 @@ export function EventsTable({
   itemsPerPage,
   searchFilter,
   onSearchFilterChange,
+  uniqueStatus,
+  uniqueOperation,
   uniqueOrg,
   uniqueResource,
   activeFilters,
@@ -61,6 +67,7 @@ export function EventsTable({
   onOperationFilterChange,
   onOrgFilterChange,
   onResourceFilterChange,
+  onClearFilters,
 }: HendelserTableProps) {
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -75,16 +82,21 @@ export function EventsTable({
         shadow="dialog"
         marginBlock={"space-16"}
       >
-        <Box marginBlock="space-16">
-          <Search
-            label="Søk hendelser ID"
-            value={searchFilter}
-            onChange={onSearchFilterChange}
-            placeholder="Søk hendelser ID..."
-            variant="secondary"
-            size="small"
-          />
-        </Box>
+        <HStack gap="space-16" align="end" marginBlock="space-16">
+          <Box style={{ flex: 1 }}>
+            <Search
+              label="Søk hendelser ID"
+              value={searchFilter}
+              onChange={onSearchFilterChange}
+              placeholder="Søk hendelser ID..."
+              variant="secondary"
+              size="small"
+            />
+          </Box>
+          <Button size="small" variant="tertiary" onClick={onClearFilters}>
+            Nullstill filtre
+          </Button>
+        </HStack>
         {loading && <Loader size="small" />}
         <Table size="small" zebraStripes={true}>
           <Table.Header>
@@ -94,10 +106,10 @@ export function EventsTable({
                   <span>Status</span>
                   <FilterActionMenu
                     title="Status"
-                    options={[
-                      { value: "ok", label: "OK" },
-                      { value: "error", label: "Feil" },
-                    ]}
+                    options={uniqueStatus.map((status) => ({
+                      value: status,
+                      label: status === "ok" ? "OK" : "Feil",
+                    }))}
                     selectedValue={
                       activeFilters.status === "all" ||
                       activeFilters.status === "none"
@@ -117,13 +129,10 @@ export function EventsTable({
                   <span>Operasjon</span>
                   <FilterActionMenu
                     title="Operasjon"
-                    options={[
-                      { value: "CREATE", label: "CREATE" },
-                      { value: "UPDATE", label: "UPDATE" },
-                      { value: "DELETE", label: "DELETE" },
-                      { value: "VALIDATE", label: "VALIDATE" },
-                      { value: "UNKNOWN", label: "UNKNOWN" },
-                    ]}
+                    options={uniqueOperation.map((operation) => ({
+                      value: operation,
+                      label: operation,
+                    }))}
                     selectedValue={
                       activeFilters.operation === "all" ||
                       activeFilters.operation === "none"

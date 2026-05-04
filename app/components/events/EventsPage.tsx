@@ -24,12 +24,12 @@ export function EventsPage({
   dateRange,
   onDateRangeChange,
 }: EventPageProps) {
-  const routeFromTimestamp = dateRange.from?.getTime();
-  const routeToTimestamp = dateRange.to?.getTime();
-
-  const [appliedFilters, setAppliedFilters] = useState<EventsFilters>({
+  const getDefaultFilters = (baseDateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  }): EventsFilters => ({
     searchFilter: "",
-    dateRange,
+    dateRange: baseDateRange,
     operationFilter: {
       CREATE: true,
       UPDATE: true,
@@ -41,6 +41,107 @@ export function EventsPage({
     resourceFilter: "",
     statusFilter: { ok: true, error: true },
   });
+
+  const matchesFilters = (
+    event: IEvent,
+    filters: EventsFilters,
+    ignoredKey?:
+      | "statusFilter"
+      | "operationFilter"
+      | "orgFilter"
+      | "resourceFilter",
+  ) => {
+    if (!event.requestEvent) {
+      return false;
+    }
+
+    if (filters.searchFilter) {
+      const searchTerm = filters.searchFilter.toLowerCase();
+      const matchesCorrId = event.corrId?.toLowerCase().includes(searchTerm);
+      const matchesOrgId = event.orgId?.toLowerCase().includes(searchTerm);
+      const matchesResource = event.requestEvent.resourceName
+        ?.toLowerCase()
+        .includes(searchTerm);
+      const matchesTopic = event.topic?.toLowerCase().includes(searchTerm);
+
+      if (
+        !matchesCorrId &&
+        !matchesOrgId &&
+        !matchesResource &&
+        !matchesTopic
+      ) {
+        return false;
+      }
+    }
+
+    if (ignoredKey !== "operationFilter") {
+      const operationType =
+        event.requestEvent.operationType?.toUpperCase() ?? "UNKNOWN";
+      if (
+        !filters.operationFilter[
+          operationType as keyof typeof filters.operationFilter
+        ]
+      ) {
+        return false;
+      }
+    }
+
+    if (
+      ignoredKey !== "orgFilter" &&
+      filters.orgFilter &&
+      event.orgId.toLowerCase() !== filters.orgFilter.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (
+      ignoredKey !== "resourceFilter" &&
+      filters.resourceFilter &&
+      event.requestEvent.resourceName.toLowerCase() !==
+        filters.resourceFilter.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (ignoredKey !== "statusFilter") {
+      if (!filters.statusFilter.ok && !event.hasError) {
+        return false;
+      }
+      if (!filters.statusFilter.error && event.hasError) {
+        return false;
+      }
+    }
+
+    if (filters.dateRange.from || filters.dateRange.to) {
+      const eventDate = new Date(event.requestEvent.created);
+      if (filters.dateRange.from && filters.dateRange.to) {
+        const fromDate = new Date(filters.dateRange.from);
+        const toDate = new Date(filters.dateRange.to);
+        if (eventDate < fromDate || eventDate > toDate) {
+          return false;
+        }
+      } else if (filters.dateRange.from) {
+        const fromDate = new Date(filters.dateRange.from);
+        if (eventDate < fromDate) {
+          return false;
+        }
+      } else if (filters.dateRange.to) {
+        const toDate = new Date(filters.dateRange.to);
+        if (eventDate > toDate) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const routeFromTimestamp = dateRange.from?.getTime();
+  const routeToTimestamp = dateRange.to?.getTime();
+
+  const [appliedFilters, setAppliedFilters] = useState<EventsFilters>(() =>
+    getDefaultFilters(dateRange),
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
@@ -148,6 +249,13 @@ export function EventsPage({
     setCurrentPage(1);
   };
 
+  const handleClearFilters = () => {
+    const clearedDateRange = { from: undefined, to: undefined };
+    setAppliedFilters(getDefaultFilters(clearedDateRange));
+    setCurrentPage(1);
+    onDateRangeChange(clearedDateRange);
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -179,89 +287,9 @@ export function EventsPage({
   // };
 
   const filteredData = useMemo(() => {
-    const filtered = initialData.filter((event) => {
-      // Skip events without requestEvent
-      if (!event.requestEvent) {
-        return false;
-      }
-
-      // Search filter
-      if (appliedFilters.searchFilter) {
-        const searchTerm = appliedFilters.searchFilter.toLowerCase();
-        const matchesCorrId = event.corrId?.toLowerCase().includes(searchTerm);
-        const matchesOrgId = event.orgId?.toLowerCase().includes(searchTerm);
-        const matchesResource = event.requestEvent.resourceName
-          ?.toLowerCase()
-          .includes(searchTerm);
-        const matchesTopic = event.topic?.toLowerCase().includes(searchTerm);
-
-        if (
-          !matchesCorrId &&
-          !matchesOrgId &&
-          !matchesResource &&
-          !matchesTopic
-        ) {
-          return false;
-        }
-      }
-
-      const operationType = event.requestEvent.operationType
-        ? event.requestEvent.operationType.toUpperCase()
-        : "";
-      if (
-        !appliedFilters.operationFilter[
-          operationType as keyof typeof appliedFilters.operationFilter
-        ]
-      ) {
-        return false;
-      }
-
-      if (
-        appliedFilters.orgFilter &&
-        event.orgId !== appliedFilters.orgFilter
-      ) {
-        return false;
-      }
-
-      if (
-        appliedFilters.resourceFilter &&
-        event.requestEvent.resourceName !== appliedFilters.resourceFilter
-      ) {
-        return false;
-      }
-
-      if (!appliedFilters.statusFilter.ok && !event.hasError) {
-        return false;
-      }
-      if (!appliedFilters.statusFilter.error && event.hasError) {
-        return false;
-      }
-
-      // Date range filter
-      if (appliedFilters.dateRange.from || appliedFilters.dateRange.to) {
-        const eventDate = new Date(event.requestEvent.created);
-
-        if (appliedFilters.dateRange.from && appliedFilters.dateRange.to) {
-          const fromDate = new Date(appliedFilters.dateRange.from);
-          const toDate = new Date(appliedFilters.dateRange.to);
-          if (eventDate < fromDate || eventDate > toDate) {
-            return false;
-          }
-        } else if (appliedFilters.dateRange.from) {
-          const fromDate = new Date(appliedFilters.dateRange.from);
-          if (eventDate < fromDate) {
-            return false;
-          }
-        } else if (appliedFilters.dateRange.to) {
-          const toDate = new Date(appliedFilters.dateRange.to);
-          if (eventDate > toDate) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    });
+    const filtered = initialData.filter((event) =>
+      matchesFilters(event, appliedFilters),
+    );
 
     // Sort by date, newest first
     return [...filtered].sort((a, b) => {
@@ -271,20 +299,72 @@ export function EventsPage({
     });
   }, [initialData, appliedFilters]);
 
-  const uniqueOrganisation = [
-    ...new Set(
+  const uniqueStatus = useMemo<("ok" | "error")[]>(() => {
+    const statusOptions: ("ok" | "error")[] = ["ok", "error"];
+    const statuses = new Set(
       initialData
-        .map((event) => event.orgId)
-        .filter((id): id is string => Boolean(id)),
-    ),
-  ].sort();
-  const uniqueResource = [
-    ...new Set(
-      initialData
-        .map((event) => event.requestEvent?.resourceName)
-        .filter((name): name is string => Boolean(name)),
-    ),
-  ].sort();
+        .filter((event) =>
+          matchesFilters(event, appliedFilters, "statusFilter"),
+        )
+        .map((event) => (event.hasError ? "error" : "ok")),
+    );
+
+    return statusOptions.filter((status) => statuses.has(status));
+  }, [initialData, appliedFilters]);
+
+  const uniqueOperation = useMemo<
+    ("CREATE" | "UPDATE" | "DELETE" | "VALIDATE" | "UNKNOWN")[]
+  >(() => {
+    return [
+      ...new Set(
+        initialData
+          .filter((event) =>
+            matchesFilters(event, appliedFilters, "operationFilter"),
+          )
+          .map(
+            (event) =>
+              event.requestEvent?.operationType?.toUpperCase() ?? "UNKNOWN",
+          )
+          .filter(
+            (
+              operation,
+            ): operation is
+              | "CREATE"
+              | "UPDATE"
+              | "DELETE"
+              | "VALIDATE"
+              | "UNKNOWN" =>
+              ["CREATE", "UPDATE", "DELETE", "VALIDATE", "UNKNOWN"].includes(
+                operation,
+              ),
+          ),
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+  }, [initialData, appliedFilters]);
+
+  const uniqueOrganisation = useMemo(() => {
+    return [
+      ...new Set(
+        initialData
+          .filter((event) => matchesFilters(event, appliedFilters, "orgFilter"))
+          .map((event) => event.orgId),
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+  }, [initialData, appliedFilters]);
+
+  const uniqueResource = useMemo(() => {
+    return [
+      ...new Set(
+        initialData
+          .filter((event) =>
+            matchesFilters(event, appliedFilters, "resourceFilter"),
+          )
+          .map((event) => event.requestEvent?.resourceName ?? ""),
+      ),
+    ]
+      .filter((resource) => resource !== "")
+      .sort((a, b) => a.localeCompare(b));
+  }, [initialData, appliedFilters]);
 
   const loadingDetail = false;
   return (
@@ -302,6 +382,8 @@ export function EventsPage({
         itemsPerPage={itemsPerPage}
         searchFilter={appliedFilters.searchFilter}
         onSearchFilterChange={handleSearchFilterChange}
+        uniqueStatus={uniqueStatus}
+        uniqueOperation={uniqueOperation}
         uniqueOrg={uniqueOrganisation}
         uniqueResource={uniqueResource}
         activeFilters={{
@@ -338,6 +420,7 @@ export function EventsPage({
         onOperationFilterChange={handleOperationFilterChange}
         onOrgFilterChange={handleOrgFilterChange}
         onResourceFilterChange={handleResourceFilterChange}
+        onClearFilters={handleClearFilters}
       />
 
       {selectedEvent && selectedEvent.requestEvent && (
