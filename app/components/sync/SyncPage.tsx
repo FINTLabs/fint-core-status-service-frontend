@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { SyncFilter } from "./SyncFilter";
 import { SyncTable } from "./SyncTable";
@@ -25,6 +25,40 @@ export function SyncPage({
   dateRange,
   onDateRangeChange,
 }: SyncPageProps) {
+  const getStatusFilterValue = (filter: {
+    finished: boolean;
+    ongoing: boolean;
+  }): "all" | "finished" | "ongoing" | "none" => {
+    if (filter.finished && filter.ongoing) {
+      return "all";
+    }
+    if (filter.finished) {
+      return "finished";
+    }
+    if (filter.ongoing) {
+      return "ongoing";
+    }
+
+    return "none";
+  };
+
+  const getSyncTypeFilterValue = (filter: {
+    full: boolean;
+    delta: boolean;
+  }): "all" | "FULL" | "DELTA" | "none" => {
+    if (filter.full && filter.delta) {
+      return "all";
+    }
+    if (filter.full) {
+      return "FULL";
+    }
+    if (filter.delta) {
+      return "DELTA";
+    }
+
+    return "none";
+  };
+
   const getDefaultFilters = (baseDateRange: {
     from: Date | undefined;
     to: Date | undefined;
@@ -337,51 +371,42 @@ export function SyncPage({
     [initialData, appliedFilters],
   );
 
+  const getUniqueFilteredValues = useCallback(
+    (
+      ignoredKey:
+        | "orgFilter"
+        | "domainFilter"
+        | "packageFilter"
+        | "resourceFilter"
+        | "adapterIdFilter",
+      selector: (sync: ISyncData) => string,
+    ) => {
+      return [
+        ...new Set(
+          initialData
+            .filter((sync) => matchesFilters(sync, appliedFilters, ignoredKey))
+            .map(selector),
+        ),
+      ].sort((a, b) => a.localeCompare(b));
+    },
+    [initialData, appliedFilters],
+  );
+
   const uniqueOrg = useMemo(() => {
-    return [
-      ...new Set(
-        initialData
-          .filter((sync) => matchesFilters(sync, appliedFilters, "orgFilter"))
-          .map((item) => item.orgId),
-      ),
-    ].sort((a, b) => a.localeCompare(b));
-  }, [initialData, appliedFilters]);
+    return getUniqueFilteredValues("orgFilter", (item) => item.orgId);
+  }, [getUniqueFilteredValues]);
 
   const tableUniqueDomain = useMemo(() => {
-    return [
-      ...new Set(
-        initialData
-          .filter((sync) =>
-            matchesFilters(sync, appliedFilters, "domainFilter"),
-          )
-          .map((item) => item.domain),
-      ),
-    ].sort((a, b) => a.localeCompare(b));
-  }, [initialData, appliedFilters]);
+    return getUniqueFilteredValues("domainFilter", (item) => item.domain);
+  }, [getUniqueFilteredValues]);
 
   const tableUniquePackage = useMemo(() => {
-    return [
-      ...new Set(
-        initialData
-          .filter((sync) =>
-            matchesFilters(sync, appliedFilters, "packageFilter"),
-          )
-          .map((item) => item.package),
-      ),
-    ].sort((a, b) => a.localeCompare(b));
-  }, [initialData, appliedFilters]);
+    return getUniqueFilteredValues("packageFilter", (item) => item.package);
+  }, [getUniqueFilteredValues]);
 
   const tableUniqueResource = useMemo(() => {
-    return [
-      ...new Set(
-        initialData
-          .filter((sync) =>
-            matchesFilters(sync, appliedFilters, "resourceFilter"),
-          )
-          .map((item) => item.resource),
-      ),
-    ].sort((a, b) => a.localeCompare(b));
-  }, [initialData, appliedFilters]);
+    return getUniqueFilteredValues("resourceFilter", (item) => item.resource);
+  }, [getUniqueFilteredValues]);
 
   return (
     <Box>
@@ -396,24 +421,8 @@ export function SyncPage({
         itemsPerPage={itemsPerPage}
         onRowClick={handleRowClick}
         activeFilters={{
-          status:
-            appliedFilters.statusFilter.finished &&
-            appliedFilters.statusFilter.ongoing
-              ? "all"
-              : appliedFilters.statusFilter.finished
-                ? "finished"
-                : appliedFilters.statusFilter.ongoing
-                  ? "ongoing"
-                  : "none",
-          syncType:
-            appliedFilters.syncTypeFilter.full &&
-            appliedFilters.syncTypeFilter.delta
-              ? "all"
-              : appliedFilters.syncTypeFilter.full
-                ? "FULL"
-                : appliedFilters.syncTypeFilter.delta
-                  ? "DELTA"
-                  : "none",
+          status: getStatusFilterValue(appliedFilters.statusFilter),
+          syncType: getSyncTypeFilterValue(appliedFilters.syncTypeFilter),
           org: appliedFilters.orgFilter,
           domain: appliedFilters.domainFilter,
           package: appliedFilters.packageFilter,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box } from "@navikt/ds-react";
 import { EventsFilter, type EventsFilters } from "./EventsFilter";
 import { EventsModal } from "./EventsModal";
@@ -24,6 +24,65 @@ export function EventsPage({
   dateRange,
   onDateRangeChange,
 }: EventPageProps) {
+  const getStatusFilterValue = (filter: {
+    ok: boolean;
+    error: boolean;
+  }): "all" | "ok" | "error" | "none" => {
+    if (filter.ok && filter.error) {
+      return "all";
+    }
+    if (filter.ok) {
+      return "ok";
+    }
+    if (filter.error) {
+      return "error";
+    }
+
+    return "none";
+  };
+
+  const getOperationFilterValue = (filter: {
+    CREATE: boolean;
+    UPDATE: boolean;
+    DELETE: boolean;
+    VALIDATE: boolean;
+    UNKNOWN: boolean;
+  }):
+    | "all"
+    | "CREATE"
+    | "UPDATE"
+    | "DELETE"
+    | "VALIDATE"
+    | "UNKNOWN"
+    | "none" => {
+    if (
+      filter.CREATE &&
+      filter.UPDATE &&
+      filter.DELETE &&
+      filter.VALIDATE &&
+      filter.UNKNOWN
+    ) {
+      return "all";
+    }
+    if (filter.CREATE) {
+      return "CREATE";
+    }
+    if (filter.UPDATE) {
+      return "UPDATE";
+    }
+    if (filter.DELETE) {
+      return "DELETE";
+    }
+    if (filter.VALIDATE) {
+      return "VALIDATE";
+    }
+    if (filter.UNKNOWN) {
+      return "UNKNOWN";
+    }
+
+    return "none";
+  };
+
   const getDefaultFilters = (baseDateRange: {
     from: Date | undefined;
     to: Date | undefined;
@@ -299,72 +358,79 @@ export function EventsPage({
     });
   }, [initialData, appliedFilters]);
 
+  const getUniqueFilteredValues = useCallback(
+    <T extends string>(
+      ignoredKey:
+        | "statusFilter"
+        | "operationFilter"
+        | "orgFilter"
+        | "resourceFilter",
+      selector: (event: IEvent) => T,
+    ): T[] => {
+      return [
+        ...new Set(
+          initialData
+            .filter((event) =>
+              matchesFilters(event, appliedFilters, ignoredKey),
+            )
+            .map(selector),
+        ),
+      ].sort((a, b) => a.localeCompare(b));
+    },
+    [initialData, appliedFilters],
+  );
+
   const uniqueStatus = useMemo<("ok" | "error")[]>(() => {
     const statusOptions: ("ok" | "error")[] = ["ok", "error"];
     const statuses = new Set(
-      initialData
-        .filter((event) =>
-          matchesFilters(event, appliedFilters, "statusFilter"),
-        )
-        .map((event) => (event.hasError ? "error" : "ok")),
+      getUniqueFilteredValues("statusFilter", (event) =>
+        event.hasError ? "error" : "ok",
+      ),
     );
 
     return statusOptions.filter((status) => statuses.has(status));
-  }, [initialData, appliedFilters]);
+  }, [getUniqueFilteredValues]);
 
   const uniqueOperation = useMemo<
     ("CREATE" | "UPDATE" | "DELETE" | "VALIDATE" | "UNKNOWN")[]
   >(() => {
-    return [
-      ...new Set(
-        initialData
-          .filter((event) =>
-            matchesFilters(event, appliedFilters, "operationFilter"),
-          )
-          .map(
-            (event) =>
-              event.requestEvent?.operationType?.toUpperCase() ?? "UNKNOWN",
-          )
-          .filter(
-            (
-              operation,
-            ): operation is
+    const operationOptions: (
+      | "CREATE"
+      | "UPDATE"
+      | "DELETE"
+      | "VALIDATE"
+      | "UNKNOWN"
+    )[] = ["CREATE", "UPDATE", "DELETE", "VALIDATE", "UNKNOWN"];
+
+    const operations = new Set(
+      getUniqueFilteredValues("operationFilter", (event) => {
+        const operation = event.requestEvent?.operationType?.toUpperCase();
+        return operationOptions.includes(
+          operation as "CREATE" | "UPDATE" | "DELETE" | "VALIDATE" | "UNKNOWN",
+        )
+          ? (operation as
               | "CREATE"
               | "UPDATE"
               | "DELETE"
               | "VALIDATE"
-              | "UNKNOWN" =>
-              ["CREATE", "UPDATE", "DELETE", "VALIDATE", "UNKNOWN"].includes(
-                operation,
-              ),
-          ),
-      ),
-    ].sort((a, b) => a.localeCompare(b));
-  }, [initialData, appliedFilters]);
+              | "UNKNOWN")
+          : "UNKNOWN";
+      }),
+    );
+
+    return operationOptions.filter((operation) => operations.has(operation));
+  }, [getUniqueFilteredValues]);
 
   const uniqueOrganisation = useMemo(() => {
-    return [
-      ...new Set(
-        initialData
-          .filter((event) => matchesFilters(event, appliedFilters, "orgFilter"))
-          .map((event) => event.orgId),
-      ),
-    ].sort((a, b) => a.localeCompare(b));
-  }, [initialData, appliedFilters]);
+    return getUniqueFilteredValues("orgFilter", (event) => event.orgId);
+  }, [getUniqueFilteredValues]);
 
   const uniqueResource = useMemo(() => {
-    return [
-      ...new Set(
-        initialData
-          .filter((event) =>
-            matchesFilters(event, appliedFilters, "resourceFilter"),
-          )
-          .map((event) => event.requestEvent?.resourceName ?? ""),
-      ),
-    ]
-      .filter((resource) => resource !== "")
-      .sort((a, b) => a.localeCompare(b));
-  }, [initialData, appliedFilters]);
+    return getUniqueFilteredValues(
+      "resourceFilter",
+      (event) => event.requestEvent?.resourceName ?? "",
+    ).filter((resource) => resource !== "");
+  }, [getUniqueFilteredValues]);
 
   const loadingDetail = false;
   return (
@@ -387,32 +453,8 @@ export function EventsPage({
         uniqueOrg={uniqueOrganisation}
         uniqueResource={uniqueResource}
         activeFilters={{
-          status:
-            appliedFilters.statusFilter.ok && appliedFilters.statusFilter.error
-              ? "all"
-              : appliedFilters.statusFilter.ok
-                ? "ok"
-                : appliedFilters.statusFilter.error
-                  ? "error"
-                  : "none",
-          operation:
-            appliedFilters.operationFilter.CREATE &&
-            appliedFilters.operationFilter.UPDATE &&
-            appliedFilters.operationFilter.DELETE &&
-            appliedFilters.operationFilter.VALIDATE &&
-            appliedFilters.operationFilter.UNKNOWN
-              ? "all"
-              : appliedFilters.operationFilter.CREATE
-                ? "CREATE"
-                : appliedFilters.operationFilter.UPDATE
-                  ? "UPDATE"
-                  : appliedFilters.operationFilter.DELETE
-                    ? "DELETE"
-                    : appliedFilters.operationFilter.VALIDATE
-                      ? "VALIDATE"
-                      : appliedFilters.operationFilter.UNKNOWN
-                        ? "UNKNOWN"
-                        : "none",
+          status: getStatusFilterValue(appliedFilters.statusFilter),
+          operation: getOperationFilterValue(appliedFilters.operationFilter),
           org: appliedFilters.orgFilter,
           resource: appliedFilters.resourceFilter,
         }}
