@@ -7,9 +7,6 @@ import type {
 } from "~/types";
 import { backendRoutesMap } from "./backendRoutes.js";
 
-const CONTRACT_DOMAIN_RETRY_ATTEMPTS = 3;
-const CONTRACT_DOMAIN_RETRY_DELAY_MS = 750;
-
 const apiManagerBeta = new NovariApiManager({
   baseUrl: backendRoutesMap.beta,
 });
@@ -27,41 +24,6 @@ const apiManagers = {
   api: apiManagerApi,
   alpha: apiManagerAlpha,
 } as const;
-
-const wait = (delayMs: number) =>
-  new Promise((resolve) => setTimeout(resolve, delayMs));
-
-function isRetryableResponse<T>(response: ApiResponse<T>) {
-  if (response.success) {
-    return false;
-  }
-
-  if (!response.status) {
-    return true;
-  }
-
-  return (
-    response.status === 408 || response.status === 429 || response.status >= 500
-  );
-}
-
-async function callWithRetry<T>(
-  callApi: () => Promise<ApiResponse<T>>,
-  attempts = CONTRACT_DOMAIN_RETRY_ATTEMPTS,
-): Promise<ApiResponse<T>> {
-  let response = await callApi();
-
-  for (
-    let attempt = 1;
-    attempt < attempts && isRetryableResponse(response);
-    attempt += 1
-  ) {
-    await wait(CONTRACT_DOMAIN_RETRY_DELAY_MS * attempt);
-    response = await callApi();
-  }
-
-  return response;
-}
 
 class ContractApi {
   static async getContractStatus(
@@ -119,16 +81,14 @@ class ContractApi {
       };
     }
 
-    return await callWithRetry(() =>
-      apiManager.call<IContractDomain[]>({
-        method: "GET",
-        endpoint: `/contract/${orgId}/domain/${domainId}`,
-        functionName: "getAdapterContractDetail",
-        additionalHeaders: {
-          Authorization: token,
-        },
-      }),
-    );
+    return await apiManager.call<IContractDomain[]>({
+      method: "GET",
+      endpoint: `/contract/${orgId}/domain/${domainId}`,
+      functionName: "getAdapterContractDetail",
+      additionalHeaders: {
+        Authorization: token,
+      },
+    });
   }
 
   // /contract/fintlabs.no/component/personvern-samtykke
