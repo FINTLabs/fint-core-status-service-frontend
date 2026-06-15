@@ -8,7 +8,7 @@ import {
   VStack,
 } from "@navikt/ds-react";
 import {
-  ArrowRightLeftIcon,
+  ArrowRightLeftIcon, ArrowsCirclepathIcon,
   ArrowsSquarepathIcon,
   ExclamationmarkTriangleIcon,
   HeartIcon,
@@ -16,7 +16,6 @@ import {
   TasklistIcon,
 } from "@navikt/aksel-icons";
 
-import { NovariCircularProgressBar } from "novari-frontend-components";
 import type { IStats } from "~/types";
 
 interface DashboardStatsProps {
@@ -25,6 +24,13 @@ interface DashboardStatsProps {
 }
 
 export function DashboardStats({ stats, env }: DashboardStatsProps) {
+  const totalContracts = stats.ContractsMetrics?.["total"] ?? 0;
+  const noContactContracts = stats.ContractsMetrics?.["no contact"] ?? 0;
+  const totalEvents = stats.EventsMetrics?.["total"] ?? 0;
+  const eventErrors = stats.EventsMetrics?.["errors"] ?? 0;
+  const fullSyncs = stats.SyncMetrics?.["full"] ?? 0;
+  const deltaSyncs = stats.SyncMetrics?.["delta"] ?? 0;
+
   return (
     <InfoCard data-color="brand-magenta">
       <InfoCard.Header icon={<SealCheckmarkFillIcon />}>
@@ -39,25 +45,14 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
               background={"neutral-soft"}
             >
               <Heading align="center" size="medium" spacing>
-                Adaptere
+                Kontrakter
               </Heading>
               <HStack gap={"space-8"} justify={"center"}>
                 <HeartIcon title="Healty heartbeats" fontSize="1.5rem" />
-                {stats.hasContectAmount}
+                {totalContracts}
                 <TasklistIcon title="Total Contracts" fontSize="1.5rem" />
-                {stats.adapterContractAmount} total
+                {noContactContracts}
               </HStack>
-            </Box>
-            <Box
-              padding={"space-40"}
-              borderRadius="12"
-              className={"flex justify-center items-center"}
-              background={"neutral-soft"}
-            >
-              <NovariCircularProgressBar
-                maxValue={stats.adapterContractAmount}
-                value={stats.hasContectAmount}
-              />
             </Box>
           </VStack>
 
@@ -72,26 +67,10 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
               </Heading>
               <HStack gap={"space-8"} justify={"center"}>
                 <ArrowRightLeftIcon title="Total requests" fontSize="1.5rem" />
-                {stats.eventAmount}
-                <ArrowsSquarepathIcon
-                  title="Total responses"
-                  fontSize="1.5rem"
-                />
-                {stats.eventResponses}
+                {totalEvents}
                 <ExclamationmarkTriangleIcon title="Errors" fontSize="1.5rem" />
-                {stats.eventErrors}
+                {eventErrors}
               </HStack>
-            </Box>
-            <Box
-              padding={"space-40"}
-              borderRadius="12"
-              className={"flex justify-center items-center"}
-              background={"neutral-soft"}
-            >
-              <NovariCircularProgressBar
-                maxValue={stats.eventAmount}
-                value={stats.eventResponses}
-              />
             </Box>
           </VStack>
 
@@ -103,7 +82,12 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
             <Heading align="center" size="medium">
               Synkroniseringer
             </Heading>
-            <Detail className={"w-fit"}>Will be added later</Detail>
+            <HStack gap={"space-8"} justify={"center"}>
+              <ArrowsCirclepathIcon title="a11y-title" fontSize="1.5rem"> </ArrowsCirclepathIcon>
+              {fullSyncs}
+              <ArrowsSquarepathIcon title="a11y-title" fontSize="1.5rem" />
+              {deltaSyncs}
+            </HStack>
           </Box>
         </HGrid>
       </InfoCard.Content>
