@@ -18,47 +18,41 @@
     "lint:fix": "eslint app/ cypress/ --fix"
   },
   "dependencies": {
-    "@cypress/react": "^9.0.1",
-    "@navikt/aksel-icons": "^7.31.0",
-    "@navikt/ds-css": "^8.5.2",
-    "@navikt/ds-react": "^8.5.2",
-    "@react-router/node": "^7.13.0",
-    "@react-router/serve": "^7.13.0",
-    "depcheck": "^1.4.7",
-    "isbot": "^5.1.31",
-    "msw": "^2.11.5",
-    "novari-frontend-components": "^6.4.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-router": "7.13.0"
+    "@cypress/react": "^9.0.2",
+    "@navikt/aksel-icons": "^8.13.0",
+    "@navikt/ds-css": "^8.13.0",
+    "@navikt/ds-react": "^8.13.0",
+    "@react-router/node": "^7.18.0",
+    "@react-router/serve": "^7.18.0",
+    "isbot": "^5.1.43",
+    "msw": "^2.14.6",
+    "novari-frontend-components": "^7.0.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router": "7.18.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.36.0",
-    "@navikt/aksel": "^8.5.2",
-    "@react-router/dev": "^7.13.0",
-    "@tailwindcss/vite": "^4.1.13",
+    "@eslint/js": "^10.0.1",
+    "@navikt/aksel": "^8.13.0",
+    "@react-router/dev": "^7.18.0",
+    "@tailwindcss/vite": "^4.3.1",
     "@types/node": "^22",
-    "@types/react": "^19.1.13",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.1.9",
-    "@typescript-eslint/eslint-plugin": "^8.45.0",
-    "@typescript-eslint/parser": "^8.45.0",
-    "cypress": "^15.9.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-cypress": "^5.2.0",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-prettier": "^5.5.4",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^6.1.0",
-    "prettier": "^3.6.2",
-    "tailwindcss": "^4.1.13",
-    "typescript": "^5.9.2",
-    "vite": "^7.3.2",
-    "vite-tsconfig-paths": "^5.1.4"
+    "@typescript-eslint/eslint-plugin": "^8.61.1",
+    "@typescript-eslint/parser": "^8.61.1",
+    "cypress": "^15.17.0",
+    "prettier": "^3.8.4",
+    "tailwindcss": "^4.3.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16"
   },
   "msw": {
     "workerDirectory": [
       "public"
     ]
+  },
+  "overrides": {
+    "esbuild": "0.28.1"
   }
 }
