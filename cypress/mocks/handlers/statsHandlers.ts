@@ -6,7 +6,7 @@ import { BASE_URL, API_URL, ALPHA_URL } from "./constants";
 
 export const statsHandlers = [
   // Stats API - Beta
-  http.get(`${BASE_URL}/events/metrics`, () => {
+  http.get(`${BASE_URL}/event/metrics`, () => {
     return HttpResponse.json(eventsMetrics);
   }),
 
@@ -19,7 +19,7 @@ export const statsHandlers = [
   }),
 
   // Stats API - API
-  http.get(`${API_URL}/events/metrics`, () => {
+  http.get(`${API_URL}/event/metrics`, () => {
     return HttpResponse.json(eventsMetrics);
   }),
 
@@ -32,7 +32,7 @@ export const statsHandlers = [
   }),
 
   // Stats API - ALPHA
-  http.get(`${ALPHA_URL}/events/metrics`, () => {
+  http.get(`${ALPHA_URL}/event/metrics`, () => {
     return HttpResponse.json(eventsMetrics);
   }),
 
