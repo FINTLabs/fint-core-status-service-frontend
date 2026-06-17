@@ -8,26 +8,32 @@ import {
   VStack,
 } from "@navikt/ds-react";
 import {
-  ArrowRightLeftIcon,
+  ArrowRightLeftIcon, ArrowsCirclepathIcon,
   ArrowsSquarepathIcon,
   ExclamationmarkTriangleIcon,
   HeartIcon,
   SealCheckmarkFillIcon,
-  TasklistIcon,
+  TasklistIcon, TasklistSaveIcon, TasklistSendIcon,
 } from "@navikt/aksel-icons";
 
-import { NovariCircularProgressBar } from "novari-frontend-components";
-import type { IStats } from "~/types";
+import type {IStats} from "~/types";
 
 interface DashboardStatsProps {
   stats: IStats;
   env: string;
 }
 
-export function DashboardStats({ stats, env }: DashboardStatsProps) {
+export function DashboardStats({stats, env}: DashboardStatsProps) {
+  const totalContracts = stats.ContractsMetrics?.["total"] ?? 0;
+  const noContactContracts = stats.ContractsMetrics?.["no contact"] ?? 0;
+  const totalEvents = stats.EventsMetrics?.["total"] ?? 0;
+  const eventErrors = stats.EventsMetrics?.["errors"] ?? 0;
+  const fullSyncs = stats.SyncMetrics?.["full"] ?? 0;
+  const deltaSyncs = stats.SyncMetrics?.["delta"] ?? 0;
+
   return (
     <InfoCard data-color="brand-magenta">
-      <InfoCard.Header icon={<SealCheckmarkFillIcon />}>
+      <InfoCard.Header icon={<SealCheckmarkFillIcon/>}>
         <InfoCard.Title>Miljø Oversikt - {env}</InfoCard.Title>
       </InfoCard.Header>
       <InfoCard.Content className={"full-width"}>
@@ -39,25 +45,14 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
               background={"neutral-soft"}
             >
               <Heading align="center" size="medium" spacing>
-                Adaptere
+                Kontrakter
               </Heading>
               <HStack gap={"space-8"} justify={"center"}>
-                <HeartIcon title="Healty heartbeats" fontSize="1.5rem" />
-                {stats.hasContectAmount}
-                <TasklistIcon title="Total Contracts" fontSize="1.5rem" />
-                {stats.adapterContractAmount} total
+                <HeartIcon title="Healty heartbeats" fontSize="1.5rem"/>
+                {totalContracts}
+                <TasklistIcon title="Total Contracts" fontSize="1.5rem"/>
+                {noContactContracts}
               </HStack>
-            </Box>
-            <Box
-              padding={"space-40"}
-              borderRadius="12"
-              className={"flex justify-center items-center"}
-              background={"neutral-soft"}
-            >
-              <NovariCircularProgressBar
-                maxValue={stats.adapterContractAmount}
-                value={stats.hasContectAmount}
-              />
             </Box>
           </VStack>
 
@@ -71,27 +66,11 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
                 Hendelser
               </Heading>
               <HStack gap={"space-8"} justify={"center"}>
-                <ArrowRightLeftIcon title="Total requests" fontSize="1.5rem" />
-                {stats.eventAmount}
-                <ArrowsSquarepathIcon
-                  title="Total responses"
-                  fontSize="1.5rem"
-                />
-                {stats.eventResponses}
-                <ExclamationmarkTriangleIcon title="Errors" fontSize="1.5rem" />
-                {stats.eventErrors}
+                <ArrowRightLeftIcon title="Total requests" fontSize="1.5rem"/>
+                {totalEvents}
+                <ExclamationmarkTriangleIcon title="Errors" fontSize="1.5rem"/>
+                {eventErrors}
               </HStack>
-            </Box>
-            <Box
-              padding={"space-40"}
-              borderRadius="12"
-              className={"flex justify-center items-center"}
-              background={"neutral-soft"}
-            >
-              <NovariCircularProgressBar
-                maxValue={stats.eventAmount}
-                value={stats.eventResponses}
-              />
             </Box>
           </VStack>
 
@@ -103,7 +82,12 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
             <Heading align="center" size="medium">
               Synkroniseringer
             </Heading>
-            <Detail className={"w-fit"}>Will be added later</Detail>
+            <HStack gap={"space-8"} justify={"center"}>
+              <TasklistSaveIcon title="Full-syncs" fontSize="1.5rem"/>
+              {fullSyncs}
+              <TasklistSendIcon title="Delta-syncs" fontSize="1.5rem"/>
+              {deltaSyncs}
+            </HStack>
           </Box>
         </HGrid>
       </InfoCard.Content>
