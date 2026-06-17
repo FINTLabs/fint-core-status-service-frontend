@@ -13,17 +13,17 @@ import {
   ExclamationmarkTriangleIcon,
   HeartIcon,
   SealCheckmarkFillIcon,
-  TasklistIcon,
+  TasklistIcon, TasklistSaveIcon, TasklistSendIcon,
 } from "@navikt/aksel-icons";
 
-import type { IStats } from "~/types";
+import type {IStats} from "~/types";
 
 interface DashboardStatsProps {
   stats: IStats;
   env: string;
 }
 
-export function DashboardStats({ stats, env }: DashboardStatsProps) {
+export function DashboardStats({stats, env}: DashboardStatsProps) {
   const totalContracts = stats.ContractsMetrics?.["total"] ?? 0;
   const noContactContracts = stats.ContractsMetrics?.["no contact"] ?? 0;
   const totalEvents = stats.EventsMetrics?.["total"] ?? 0;
@@ -33,7 +33,7 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
 
   return (
     <InfoCard data-color="brand-magenta">
-      <InfoCard.Header icon={<SealCheckmarkFillIcon />}>
+      <InfoCard.Header icon={<SealCheckmarkFillIcon/>}>
         <InfoCard.Title>Miljø Oversikt - {env}</InfoCard.Title>
       </InfoCard.Header>
       <InfoCard.Content className={"full-width"}>
@@ -48,9 +48,9 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
                 Kontrakter
               </Heading>
               <HStack gap={"space-8"} justify={"center"}>
-                <HeartIcon title="Healty heartbeats" fontSize="1.5rem" />
+                <HeartIcon title="Healty heartbeats" fontSize="1.5rem"/>
                 {totalContracts}
-                <TasklistIcon title="Total Contracts" fontSize="1.5rem" />
+                <TasklistIcon title="Total Contracts" fontSize="1.5rem"/>
                 {noContactContracts}
               </HStack>
             </Box>
@@ -66,9 +66,9 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
                 Hendelser
               </Heading>
               <HStack gap={"space-8"} justify={"center"}>
-                <ArrowRightLeftIcon title="Total requests" fontSize="1.5rem" />
+                <ArrowRightLeftIcon title="Total requests" fontSize="1.5rem"/>
                 {totalEvents}
-                <ExclamationmarkTriangleIcon title="Errors" fontSize="1.5rem" />
+                <ExclamationmarkTriangleIcon title="Errors" fontSize="1.5rem"/>
                 {eventErrors}
               </HStack>
             </Box>
@@ -83,9 +83,9 @@ export function DashboardStats({ stats, env }: DashboardStatsProps) {
               Synkroniseringer
             </Heading>
             <HStack gap={"space-8"} justify={"center"}>
-              <ArrowsCirclepathIcon title="a11y-title" fontSize="1.5rem"> </ArrowsCirclepathIcon>
+              <TasklistSaveIcon title="Full-syncs" fontSize="1.5rem"/>
               {fullSyncs}
-              <ArrowsSquarepathIcon title="a11y-title" fontSize="1.5rem" />
+              <TasklistSendIcon title="Delta-syncs" fontSize="1.5rem"/>
               {deltaSyncs}
             </HStack>
           </Box>
