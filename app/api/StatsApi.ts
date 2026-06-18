@@ -28,6 +28,7 @@ class StatsApi {
     token: string
   ): Promise<ApiResponse<ContractsStatsResponse>> {
     const apiManager = apiManagers[env];
+    console.log("env", token)
 
     if (!apiManager) {
       return {
@@ -156,11 +157,12 @@ class StatsApi {
     };
   }
 
-  static async getAllStats(token: string): Promise<{
+  static async getAllStats(): Promise<{
     beta: ApiResponse<IStats>;
     api: ApiResponse<IStats>;
     alpha: ApiResponse<IStats>;
   }> {
+    const token = AuthProperties.getToken();
     const [beta, api, alpha] = await Promise.all([
       this.getStatsForEnv("beta", token),
       this.getStatsForEnv("api", token),

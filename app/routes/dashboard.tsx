@@ -29,8 +29,7 @@ export function meta() {
 
 export const loader: LoaderFunction = async () => {
   const token = AuthProperties.getToken()
-  console.log("token", token)
-  const statsPromises = StatsApi.getAllStats(token);
+  const statsPromises = StatsApi.getAllStats();
 
   return {
     betaStats: (await statsPromises).beta,
