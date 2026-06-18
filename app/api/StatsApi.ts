@@ -117,6 +117,7 @@ class StatsApi {
     if (!contractResponse.success || !contractResponse.data) {
       return {
         success: false,
+        status: syncResponse.status,
         message: contractResponse.message ?? "Kunne ikke hente kontraktstatistikk",
         data: undefined,
         variant: "error",
@@ -126,6 +127,7 @@ class StatsApi {
     if (!eventResponse.success || !eventResponse.data) {
       return {
         success: false,
+        status: syncResponse.status,
         message: eventResponse.message ?? "Kunne ikke hente eventstatistikk",
         data: undefined,
         variant: "error",
@@ -135,6 +137,7 @@ class StatsApi {
     if (!syncResponse.success || !syncResponse.data) {
       return {
         success: false,
+        status: syncResponse.status,
         message: syncResponse.message ?? "Kunne ikke hente syncstatistikk",
         data: undefined,
         variant: "error",
