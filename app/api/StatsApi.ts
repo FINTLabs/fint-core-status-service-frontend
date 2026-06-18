@@ -167,6 +167,9 @@ class StatsApi {
       this.getStatsForEnv("api", token),
       this.getStatsForEnv("alpha", token),
     ]);
+    if (!beta.success || !api.success || !alpha.success) {
+      console.error("Failed to get stats for one or more environments", "Api: ", api.status, "Beta: ", beta.status, "Alpha", alpha.status);
+    }
 
     return {
       beta,
