@@ -41,7 +41,7 @@ class StatsApi {
 
     return await apiManager.call<ContractsStatsResponse>({
       method: "GET",
-      endpoint: "/contract/metrics",
+      endpoint: "/contract/contract-metrics",
       functionName: "getContractMetrics",
       customErrorMessage: "Kunne ikke hente statistikk for kontrakter",
       customSuccessMessage: "Statistikk hentet vellykket",
@@ -68,7 +68,7 @@ class StatsApi {
 
     return await apiManager.call<EventStatsResponse>({
       method: "GET",
-      endpoint: "/event/metrics",
+      endpoint: "/event/event-metrics",
       functionName: "getEventsMetrics",
       customErrorMessage: "Kunne ikke hente statistikk for eventer",
       customSuccessMessage: "Eventstatistikk hentet vellykket",
@@ -95,7 +95,7 @@ class StatsApi {
 
     return await apiManager.call<SyncStatsResponse>({
       method: "GET",
-      endpoint: "/page-metadata/metrics",
+      endpoint: "/page-metadata/sync-metrics",
       functionName: "getSyncMetrics",
       customErrorMessage: "Kunne ikke hente statistikk for synkronisering",
       customSuccessMessage: "Synkroniseringsstatistikk hentet vellykket",
