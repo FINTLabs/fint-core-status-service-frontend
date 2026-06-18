@@ -18,6 +18,7 @@ import { Alert, Box, Button, Loader } from "@navikt/ds-react";
 import { PageHeader } from "~/components/layout/PageHeader";
 import { DonutChartIcon, ArrowCirclepathIcon } from "@navikt/aksel-icons";
 import type { IStats } from "~/types/Stats";
+import {AuthProperties} from "~/utils/auth";
 
 export function meta() {
   return [
@@ -27,7 +28,8 @@ export function meta() {
 }
 
 export const loader: LoaderFunction = async () => {
-  const statsPromises = StatsApi.getAllStats();
+  const token = AuthProperties.getToken()
+  const statsPromises = StatsApi.getAllStats(token);
 
   return {
     betaStats: (await statsPromises).beta,

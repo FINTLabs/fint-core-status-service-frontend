@@ -156,19 +156,18 @@ class StatsApi {
     };
   }
 
-  static async getAllStats(): Promise<{
+  static async getAllStats(token: string): Promise<{
     beta: ApiResponse<IStats>;
     api: ApiResponse<IStats>;
     alpha: ApiResponse<IStats>;
   }> {
-    const token = AuthProperties.getToken();
     const [beta, api, alpha] = await Promise.all([
       this.getStatsForEnv("beta", token),
       this.getStatsForEnv("api", token),
       this.getStatsForEnv("alpha", token),
     ]);
     if (!beta.success || !api.success || !alpha.success) {
-      console.error("Failed to get stats for one or more environments", "Api: ", api.status, "Beta: ", beta.status, "Alpha", alpha.status);
+      console.error("Failed to get stats for one or more environments", "Api:", api.status, "Beta:", beta.status, "Alpha:", alpha.status);
     }
 
     return {
