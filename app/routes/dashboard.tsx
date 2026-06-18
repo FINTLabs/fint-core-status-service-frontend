@@ -28,7 +28,6 @@ export function meta() {
 }
 
 export const loader: LoaderFunction = async () => {
-  const token = AuthProperties.getToken()
   const statsPromises = StatsApi.getAllStats();
 
   return {
