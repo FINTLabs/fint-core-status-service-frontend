@@ -170,7 +170,7 @@ class StatsApi {
     ]);
     if (!beta.success || !api.success || !alpha.success) {
       console.error("Failed to get stats for one or more environments", "Api:", api.status, "Beta:", beta.status, "Alpha:", alpha.status);
-      console.error("Api message:", api.message, beta.message, alpha.message);
+      console.error("Api message:", api.body, beta.body, alpha.body);
     }
 
     return {
